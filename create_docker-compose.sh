@@ -5,6 +5,13 @@ function ask_question() {
   echo -e "\033[33m$1\033[0m"
 }
 
+# Fonction pour créer un répertoire s'il n'existe pas
+function create_directory() {
+  if [ ! -d "$1" ]; then
+    mkdir -p "$1"
+  fi
+}
+
 # Chemin par défaut pour le fichier .env
 env_file_path="/home/$USER"
 env_file="$env_file_path/.env"
@@ -21,6 +28,9 @@ if [ -z "$folder_app_settings" ]; then
   folder_app_settings="/home/$USER/seedbox/app_settings"
 fi
 
+# Créer le répertoire si nécessaire
+create_directory "$folder_app_settings"
+
 # Demander à l'utilisateur le Chemin du dossier rclone (par défaut /home/$user/rclone)
 ask_question "Veuillez entrer le Chemin du dossier rclone : par défaut /home/$user/rclone : "
 read folder_rclone
@@ -29,6 +39,9 @@ read folder_rclone
 if [ -z "$folder_rclone" ]; then
   folder_rclone="/home/$USER/rclone"
 fi
+
+# Créer le répertoire si nécessaire
+create_directory "$folder_rclone"
 
 # Demander à l'utilisateur la clé API de RealDebrid
 ask_question "Veuillez entrer votre clé API RealDebrid : "
@@ -59,9 +72,6 @@ echo -e "\e[32mConfiguration terminée. Les informations ont été écrites dans
 # Copier le contenu du fichier includes/templates/docker-compose.yml vers $folder_app_settings
 cp includes/templates/docker-compose.yml "$folder_app_settings"
 
-# Copier le contenu du fichier includes/templates/docker-compose.yml vers $folder_app_settings
-cp includes/templates/docker-compose.yml "$folder_app_settings/docker-compose.yml"
-
 # Remplacer les variables dans docker-compose.yml en utilisant les valeurs du .env
 env_vars=$(grep -oE '\{\{[A-Za-z_][A-Za-z_0-9]*\}\}' "$folder_app_settings/docker-compose.yml")
 
@@ -73,4 +83,3 @@ done
 
 # Afficher un message
 echo -e "\033[32mLes informations ont été ajoutées au fichier docker-compose.yml.\033[0m"
-
