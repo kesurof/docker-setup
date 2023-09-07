@@ -203,12 +203,12 @@ services:
       - /home/$USER/seedbox/rclone:/rclone
     cap_add:
       - SYS_ADMIN
-    depends_on:
-      - pdrcrd
     security_opt:
       - apparmor:unconfined
       - no-new-privileges
-    restart: unless-stopped    
+    restart: unless-stopped
+    depends_on:
+      - pdrcrd
 
   pdrcrd:
     container_name: pdrcrd
@@ -226,7 +226,7 @@ services:
       - RCLONE_DIR_CACHE_TIME=10s
       - PLEX_USER=$plex_user
       - PLEX_TOKEN=$plex_token
-      - PLEX_ADDRESS=http://$plex_address:32400
+      - PLEX_ADDRESS=$plex_address
       - SHOW_MENU=false
     devices:
       - /dev/fuse:/dev/fuse:rwm
@@ -236,8 +236,8 @@ services:
       - apparmor:unconfined    
       - no-new-privileges
     restart: unless-stopped
-    #depends_on:
-      #- wireguard   
+    depends_on:
+      - wireguard   
 
   overseerr:
     image: lscr.io/linuxserver/overseerr
@@ -297,13 +297,17 @@ services:
     container_name: wireguard
     cap_add:
       - NET_ADMIN
+      - SYS_MODULE
+    environment:
+      - TZ=Europe/Paris
     volumes:
       - $container_volumes_path/wireguard/config:/config
-    ports:
-      - 51820:51820/udp
+      - /usr/src:/usr/src
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+    #ports:
+      #- 51820:51820/udp
     restart: unless-stopped
-    #depends_on:
-      #- pdrcrd
 
 networks:
   your_custom_network:
