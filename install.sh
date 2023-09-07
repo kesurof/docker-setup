@@ -147,6 +147,7 @@ fi
 		echo "Le code de configuration WireGuard a été enregistré dans $wg0_config_path."
 
     # Génération du fichier docker-compose.yml avec la clé API RealDebrid, l'adresse du serveur Plex, l'identifiant Plex et le token Plex
+    
     cat <<EOL > docker-compose.yml
 version: '3'
 
