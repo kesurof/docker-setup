@@ -98,7 +98,4 @@ Après l'installation de Docker Setup, le script créera une structure de dossie
 
 Chacun de ces dossiers contient les données et configurations spécifiques à chaque service Docker pour faciliter la gestion et la sauvegarde des données.
 
-N'hésitez pas à personnaliser cette section pour refléter la structure exacte des dossiers créés par votre script et à ajouter des détails supplémentaires si nécessaire.
-
-
 ---
