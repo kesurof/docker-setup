@@ -62,7 +62,7 @@ Suivez ces étapes pour installer Docker Setup sur votre système :
 3. **Exécutez le script** : Après avoir accédé au répertoire, assurez-vous que le script est exécutable en utilisant la commande `chmod` si nécessaire :
 
    ```bash
-   chmod +x install.sh"
+   chmod +x install.sh
    ```
 
    Ensuite, exécutez le script :
