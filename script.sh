@@ -302,7 +302,6 @@ services:
       - TZ=Europe/Paris
     volumes:
       - $container_volumes_path/wireguard/config:/config
-      - /usr/src:/usr/src
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
     #ports:
