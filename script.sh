@@ -153,11 +153,18 @@ ask_question_and_store_in_env "Veuillez entrer le nom de domaine ou l'adresse IP
 ask_question_and_store_in_env "Veuillez entrer votre identifiant Plex : " PLEX_USER
 ask_question_and_store_in_env "Veuillez entrer votre claim Plex (https://www.plex.tv/claim/): " PLEX_TOKEN
 
+# Vérifier si le fichier .env existe
+if [ ! -f .env ]; then
+    echo "Le fichier .env est introuvable."
+    exit 1
+fi
+
 # Charger les variables du fichier .env
 source .env
 
 # Chemin complet pour enregistrer le fichier docker-compose.yml
 docker_compose_file="docker-compose.yml"
+
 
 # Génération du fichier docker-compose.yml avec la clé API RealDebrid, l'adresse du serveur Plex, l'identifiant Plex et le token Plex
 cat <<EOL > docker-compose.yml
