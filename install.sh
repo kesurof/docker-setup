@@ -146,159 +146,159 @@ done
 echo -e "$wireguard_config" > "$wg0_config_path"
 echo "Le code de configuration WireGuard a été enregistré dans $wg0_config_path."
 
-    # Génération du fichier docker-compose.yml avec la clé API RealDebrid, l'adresse du serveur Plex, l'identifiant Plex et le token Plex
-    
-    cat <<EOL > docker-compose.yml
-    version: '3'
+# Génération du fichier docker-compose.yml avec la clé API RealDebrid, l'adresse du serveur Plex, l'identifiant Plex et le token Plex
 
-    services:
-    npm:
+cat <<EOL > docker-compose.yml
+version: '3'
+
+services:
+  npm:
     image: 'jc21/nginx-proxy-manager:latest'
     container_name: nginx-proxy-manager
     restart: unless-stopped
     ports:
-    - 80:80
-    - 81:81
-    - 443:443
+      - 80:80
+      - 81:81
+      - 443:443
     volumes:
-    - $container_volumes_path/nginx-proxy-manager/data:/data
-    - $container_volumes_path/nginx-proxy-manager/letsencrypt:/etc/letsencrypt
+      - $container_volumes_path/nginx-proxy-manager/data:/data
+      - $container_volumes_path/nginx-proxy-manager/letsencrypt:/etc/letsencrypt
 
-    portainer:
+  portainer:
     image: portainer/portainer-ce
     container_name: portainer-ce
     restart: unless-stopped
     volumes: 
-    - /var/run/docker.sock:/var/run/docker.sock
-    - $container_volumes_path/portainer:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+      - $container_volumes_path/portainer:/data
     ports:
-    - 9000:9000
+      - 9000:9000
 
-    plex:
+  plex:
     image: lscr.io/linuxserver/plex:latest
     container_name: plex
     environment:
-    - VERSION=docker
-    - PUID=1000
-    - PGID=1000
-    - PLEX_CLAIM=$PLEX_TOKEN
-    - TZ=Europe/Paris
+      - VERSION=docker
+      - PUID=1000
+      - PGID=1000
+      - PLEX_CLAIM=$PLEX_TOKEN
+      - TZ=Europe/Paris
     network_mode: host
     volumes:
-    - $container_volumes_path/plex/config:/config
-    - $container_volumes_path/plex/transcode:/transcode
-    - /home/$USER/seedbox/rclone:/rclone
+      - $container_volumes_path/plex/config:/config
+      - $container_volumes_path/plex/transcode:/transcode
+      - /home/$USER/seedbox/rclone:/rclone
     cap_add:
-    - SYS_ADMIN
+      - SYS_ADMIN
     security_opt:
-    - apparmor:unconfined
-    - no-new-privileges
+      - apparmor:unconfined
+      - no-new-privileges
     restart: unless-stopped
     depends_on:
-    - pdrcrd
+      - pdrcrd
 
-    pdrcrd:
+  pdrcrd:
     container_name: pdrcrd
     image: iampuid0/pdrcrd:latest  
     stdin_open: true # docker run -i
     tty: true        # docker run -t    
     volumes:
-    - $container_volumes_path/pdrcrd/config:/config
-    - $container_volumes_path/pdrcrd/log:/log
-    - /home/$USER/seedbox/rclone:/data:shared
+      - $container_volumes_path/pdrcrd/config:/config
+      - $container_volumes_path/pdrcrd/log:/log
+      - /home/$USER/seedbox/rclone:/data:shared
     environment:
-    - TZ=Europe/Paris
-    - RD_API_KEY=$RD_API_KEY
-    - RCLONE_MOUNT_NAME=realdebrid
-    - RCLONE_DIR_CACHE_TIME=10s
-    - PLEX_USER=$PLEX_USER
-    - PLEX_TOKEN=$PLEX_TOKEN
-    - PLEX_ADDRESS=$PLEX_ADDRESS
-    - SHOW_MENU=false
+      - TZ=Europe/Paris
+      - RD_API_KEY=$RD_API_KEY
+      - RCLONE_MOUNT_NAME=realdebrid
+      - RCLONE_DIR_CACHE_TIME=10s
+      - PLEX_USER=$PLEX_USER
+      - PLEX_TOKEN=$PLEX_TOKEN
+      - PLEX_ADDRESS=$PLEX_ADDRESS
+      - SHOW_MENU=false
     devices:
-    - /dev/fuse:/dev/fuse:rwm
+      - /dev/fuse:/dev/fuse:rwm
     cap_add:
-    - SYS_ADMIN   
+      - SYS_ADMIN   
     security_opt:
-    - apparmor:unconfined    
-    - no-new-privileges
+      - apparmor:unconfined    
+      - no-new-privileges
     restart: unless-stopped
     depends_on:
-    - wireguard   
+      - wireguard   
 
-    overseerr:
+  overseerr:
     image: lscr.io/linuxserver/overseerr
     container_name: overseerr
     environment:
-    - PUID=1000
-    - PGID=1000
-    - TZ=Europe/Paris
-    - VERSION=latest
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
+      - VERSION=latest
     volumes:
-    - $container_volumes_path/overseerr/config:/config
+      - $container_volumes_path/overseerr/config:/config
     ports:
-    - 5055:5055
+      - 5055:5055
     restart: unless-stopped     
 
-    tautulli:
+  tautulli:
     image: lscr.io/linuxserver/tautulli
     container_name: tautulli
     environment:
-    - PUID=1000
-    - PGID=1000
-    - TZ=Europe/Paris
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
     volumes:
-    - $container_volumes_path/tautulli/config:/config
+      - $container_volumes_path/tautulli/config:/config
     ports:
-    - 8181:8181
+      - 8181:8181
     restart: unless-stopped        
 
-    jackett:
+  jackett:
     image: lscr.io/linuxserver/jackett:latest
     container_name: jackett
     environment:
-    - PUID=1000
-    - PGID=1000
-    - TZ=Europe/Paris        
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris        
     volumes:
-    - $container_volumes_path/jackett/config:/config
-    - $container_volumes_path/jackett/blackhole/:/downloads   
+      - $container_volumes_path/jackett/config:/config
+      - $container_volumes_path/jackett/blackhole/:/downloads   
     ports:
-    - 9117:9117      
+      - 9117:9117      
     restart: unless-stopped
 
-    flaresolverr:
+  flaresolverr:
     image: ghcr.io/flaresolverr/flaresolverr:latest
     container_name: flaresolverr
     security_opt:
-    - no-new-privileges:true    
+      - no-new-privileges:true    
     environment:
-    - TZ=Europe/Paris  
-    - LOG_LEVEL=${LOG_LEVEL:-info}
-    - LOG_HTML=${LOG_HTML:-false}      
-    - CAPTCHA_SOLVER=${CAPTCHA_SOLVER:-none}       
+      - TZ=Europe/Paris  
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - LOG_HTML=${LOG_HTML:-false}      
+      - CAPTCHA_SOLVER=${CAPTCHA_SOLVER:-none}       
     restart: unless-stopped
 
-    wireguard:
+  wireguard:
     image: linuxserver/wireguard:latest
     container_name: wireguard
     cap_add:
-    - NET_ADMIN
-    - SYS_MODULE
+      - NET_ADMIN
+      - SYS_MODULE
     environment:
-    - TZ=Europe/Paris
+      - TZ=Europe/Paris
     volumes:
-    - $container_volumes_path/wireguard/config:/config
+      - $container_volumes_path/wireguard/config:/config
     sysctls:
-    - net.ipv4.conf.all.src_valid_mark=1
+      - net.ipv4.conf.all.src_valid_mark=1
     #ports:
-    #- 51820:51820/udp
+      #- 51820:51820/udp
     restart: unless-stopped
 
-    networks:
-    your_custom_network:
+networks:
+  your_custom_network:
     driver: bridge
-    EOL
+EOL
 
     # Définissez le chemin complet vers le fichier docker-compose.yml
     docker_compose_file="/home/$USER/docker-setup/docker-compose.yml"
