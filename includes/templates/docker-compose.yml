@@ -30,7 +30,7 @@ services:
       - VERSION=docker
       - PUID=1000
       - PGID=1000
-      - PLEX_CLAIM={PLEX_TOKEN}
+      - PLEX_CLAIM={{PLEX_TOKEN}}
       - TZ=Europe/Paris
     network_mode: host
     volumes:
