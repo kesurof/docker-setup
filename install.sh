@@ -299,7 +299,16 @@ networks:
     driver: bridge
 EOL
 
-# Exécution de Docker Compose pour installer et démarrer les services
+# Remplacer les valeurs dans docker-compose.yml
+sed -i "s/\$PLEX_TOKEN/$plex_token/g" docker-compose.yml
+sed -i "s/\$RD_API_KEY/$rd_api_key/g" docker-compose.yml
+sed -i "s/\$PLEX_USER/$plex_user/g" docker-compose.yml
+sed -i "s/\$PLEX_ADDRESS/$plex_address/g" docker-compose.yml
+
+# Afficher un message
+echo "Les informations ont été ajoutées au fichier docker-compose.yml."
+
+# Exécuter Docker Compose pour installer et démarrer les services
 ask_question "Voulez-vous installer et démarrer les services Docker maintenant ? (Oui/Non) "
 read start_services_choice
 if [ "$start_services_choice" = "oui" ] || [ "$start_services_choice" = "Oui" ] || [ "$start_services_choice" = "o" ] || [ "$start_services_choice" = "O" ]; then
