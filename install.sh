@@ -114,16 +114,16 @@
     ask_question "Veuillez entrer votre identifiant Plex : "
     read plex_user
 
-    # Demander à l'utilisateur le token Plex
+    # Demander à l'utilisateur le claim Plex (https://www.plex.tv/claim/)
     ask_question "Veuillez entrer votre token Plex : "
     read plex_token
 
     # Chemin complet pour enregistrer le fichier wg0.conf
-container_volumes_path="/home/$USER/seedbox/app_settings"  # Définissez le chemin ici
-wg0_config_path="$container_volumes_path/wireguard/config/wg0.conf"
+		container_volumes_path="/home/$USER/seedbox/app_settings"  # Définissez le chemin ici
+		wg0_config_path="$container_volumes_path/wireguard/config/wg0.conf"
 
-# Vérifier si le répertoire $container_volumes_path/wireguard/config existe, sinon le créer
-if [ ! -d "$container_volumes_path/wireguard/config" ]; then
+		# Vérifier si le répertoire $container_volumes_path/wireguard/config existe, sinon le créer
+		if [ ! -d "$container_volumes_path/wireguard/config" ]; then
     ask_question "Le répertoire $container_volumes_path/wireguard/config n'existe pas. Voulez-vous le créer ? (Oui/Non) "
     read create_dir_choice
     if [ "$create_dir_choice" = "oui" ] || [ "$create_dir_choice" = "Oui" ] || [ "$create_dir_choice" = "o" ] || [ "$create_dir_choice" = "O" ]; then
@@ -135,16 +135,16 @@ if [ ! -d "$container_volumes_path/wireguard/config" ]; then
     fi
 fi
 
-# Demander à l'utilisateur de coller le code de configuration WireGuard
-ask_question "Veuillez coller le code de configuration WireGuard ci-dessous (appuyez sur Entrée puis Ctrl+D pour terminer) : "
-wireguard_config=""
-while IFS= read -r line; do
+		# Demander à l'utilisateur de coller le code de configuration WireGuard
+		ask_question "Veuillez coller le code de configuration WireGuard ci-dessous (appuyez sur Entrée puis Ctrl+D pour terminer) : "
+		wireguard_config=""
+		while IFS= read -r line; do
     wireguard_config+="$line\n"
-done
+		done
 
-# Enregistrez le code de configuration WireGuard dans le fichier
-echo -e "$wireguard_config" > "$wg0_config_path"
-echo "Le code de configuration WireGuard a été enregistré dans $wg0_config_path."
+		# Enregistrez le code de configuration WireGuard dans le fichier
+		echo -e "$wireguard_config" > "$wg0_config_path"
+		echo "Le code de configuration WireGuard a été enregistré dans $wg0_config_path."
 
     # Génération du fichier docker-compose.yml avec la clé API RealDebrid, l'adresse du serveur Plex, l'identifiant Plex et le token Plex
     cat <<EOL > docker-compose.yml
