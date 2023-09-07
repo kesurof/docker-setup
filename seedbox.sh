@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Répertoire complet où se trouvent les scripts
-scripts_dir="/home/$USER/docker-setup/includes/scripts"
+# Répertoire complet où se trouvent les scripts (à la racine)
+scripts_dir="$(dirname "$0")"
 
 # Liste des noms de scripts à exécuter dans l'ordre spécifié
 scripts=("install_docker.sh" "create_docker-compose.sh" "conf_wireguard.sh" "install_container.sh")
