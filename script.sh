@@ -3,6 +3,11 @@
 # Chemin vers le fichier .env à la racine de l'utilisateur
 env_file="/home/$USER/.env"
 
+# Fonction pour afficher une question en jaune
+    function ask_question() {
+        echo -e "\033[33m$1\033[0m"
+    }
+
 # Fonction pour afficher une question en jaune et stocker la réponse dans le fichier .env
 function ask_question_and_store_in_env() {
     local question="$1"
