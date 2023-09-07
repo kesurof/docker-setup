@@ -9,31 +9,25 @@ function ask_question() {
 env_file_path="/home/$USER"
 env_file="$env_file_path/.env"
 
-# Vérifier si le fichier .env existe, sinon le créer
-if [ ! -f "$env_file" ]; then
-  echo "Le fichier .env n'existe pas. Il sera créé."
-  touch "$env_file"
-fi
-
 echo "Fichier .env sera enregistré à : $env_file"
 echo "Veuillez fournir les informations suivantes :"
 
-# Demander à l'utilisateur le chemin d'installation des volumes des containers (par défaut /home/$USER/seedbox/app_settings/)
-ask_question "Veuillez entrer le chemin d'installation des volumes des containers : par défaut /home/$USER/seedbox/app_settings/  "
+# Demander à l'utilisateur le chemin d'installation des volumes des containers (par défaut /home/$USER/seedbox/app_settings)
+ask_question "Veuillez entrer le chemin d'installation des volumes des containers : par défaut /home/$USER/seedbox/app_settings  "
 read folder_app_settings
 
 # Utiliser le chemin par défaut si l'utilisateur n'a rien saisi
 if [ -z "$folder_app_settings" ]; then
-  folder_app_settings="/home/$USER/seedbox/app_settings/"
+  folder_app_settings="/home/$USER/seedbox/app_settings"
 fi
 
-# Demander à l'utilisateur le Chemin du dossier rclone (par défaut /home/$USER/rclone/)
-ask_question "Veuillez entrer le Chemin du dossier rclone : par défaut /home/$USER/rclone/ : "
+# Demander à l'utilisateur le Chemin du dossier rclone (par défaut /home/$user/rclone)
+ask_question "Veuillez entrer le Chemin du dossier rclone : par défaut /home/$user/rclone : "
 read folder_rclone
 
 # Utiliser le chemin par défaut si l'utilisateur n'a rien saisi
 if [ -z "$folder_rclone" ]; then
-  folder_rclone="/home/$USER/rclone/"
+  folder_rclone="/home/$USER/rclone"
 fi
 
 # Demander à l'utilisateur la clé API de RealDebrid
@@ -66,14 +60,17 @@ echo -e "\e[32mConfiguration terminée. Les informations ont été écrites dans
 cp includes/templates/docker-compose.yml "$folder_app_settings"
 
 # Copier le contenu du fichier includes/templates/docker-compose.yml vers $folder_app_settings
-cp includes/templates/docker-compose.yml "$folder_app_settings""/docker-compose.yml"
+cp includes/templates/docker-compose.yml "$folder_app_settings/docker-compose.yml"
+
 # Remplacer les variables dans docker-compose.yml en utilisant les valeurs du .env
 env_vars=$(grep -oE '\{\{[A-Za-z_][A-Za-z_0-9]*\}\}' "$folder_app_settings/docker-compose.yml")
 
 for var in $env_vars; do
   var_name=$(echo "$var" | sed 's/[{}]//g')
   var_value=$(grep "^$var_name=" "$env_file" | cut -d'=' -f2)
-  sed -i "s|{{${var_name}}}|${var_value}|g" "$folder_app_settings""/docker-compose.yml"done
+  sed -i "s|{{${var_name}}}|${var_value}|g" "$folder_app_settings/docker-compose.yml"
+done
 
 # Afficher un message
 echo -e "\033[32mLes informations ont été ajoutées au fichier docker-compose.yml.\033[0m"
+
