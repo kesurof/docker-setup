@@ -137,12 +137,14 @@
 # Demander à l'utilisateur de coller le code de configuration WireGuard ci-dessous
 ask_question "Veuillez coller le code de configuration WireGuard ci-dessous (appuyez sur Entrée puis Ctrl+D pour terminer) :"
 
-# Utiliser la commande cat pour capturer l'entrée utilisateur
-wireguard_config=$(cat)
+# Utiliser un fichier temporaire pour stocker le code de configuration WireGuard
+tmp_file=$(mktemp)
+cat > "$tmp_file"
 
-# Enregistrer le code de configuration WireGuard dans le fichier
-echo -e "$wireguard_config" > "$wg0_config_path"
+# Enregistrer le code de configuration WireGuard dans le fichier final
+mv "$tmp_file" "$wg0_config_path"
 echo "Le code de configuration WireGuard a été enregistré dans $wg0_config_path."
+
 
 # Demander à l'utilisateur s'il souhaite continuer l'installation
 ask_to_continue
