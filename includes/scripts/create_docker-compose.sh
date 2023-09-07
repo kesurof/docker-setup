@@ -9,6 +9,12 @@ function ask_question() {
 env_file_path="/home/$USER"
 env_file="$env_file_path/.env"
 
+# Vérifier si le fichier .env existe, sinon le créer
+if [ ! -f "$env_file" ]; then
+  echo "Le fichier .env n'existe pas. Il sera créé."
+  touch "$env_file"
+fi
+
 echo "Fichier .env sera enregistré à : $env_file"
 echo "Veuillez fournir les informations suivantes :"
 
@@ -73,4 +79,3 @@ done
 
 # Afficher un message
 echo -e "\033[32mLes informations ont été ajoutées au fichier docker-compose.yml.\033[0m"
-
