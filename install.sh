@@ -118,37 +118,6 @@
     ask_question "Veuillez entrer votre claim Plex (https://www.plex.tv/claim/): "
     read plex_token
 
-    # Chemin complet pour enregistrer le fichier wg0.conf
-    wg0_config_path="$container_volumes_path/wireguard/config/wg0.conf"
-
-    # Vérifier si le répertoire $container_volumes_path/wireguard/config existe, sinon le créer
-    if [ ! -d "$container_volumes_path/wireguard/config" ]; then
-        ask_question "Le répertoire $container_volumes_path/wireguard/config n'existe pas. Voulez-vous le créer ? (Oui/Non) "
-        read create_dir_choice
-        if [ "$create_dir_choice" = "oui" ] || [ "$create_dir_choice" = "Oui" ] || [ "$create_dir_choice" = "o" ] || [ "$create_dir_choice" = "O" ]; then
-            mkdir -p "$container_volumes_path/wireguard/config"
-            echo "Le répertoire $container_volumes_path/wireguard/config a été créé."
-        else
-            echo "Le répertoire $container_volumes_path/wireguard/config n'a pas été créé. Le fichier WireGuard n'a pas été enregistré."
-            exit 1
-        fi
-    fi
-
-# Demander à l'utilisateur de coller le code de configuration WireGuard ci-dessous
-ask_question "Veuillez coller le code de configuration WireGuard ci-dessous (appuyez sur Entrée puis Ctrl+D pour terminer) :"
-
-# Utiliser un fichier temporaire pour stocker le code de configuration WireGuard
-tmp_file=$(mktemp)
-cat > "$tmp_file"
-
-# Enregistrer le code de configuration WireGuard dans le fichier final
-mv "$tmp_file" "$wg0_config_path"
-echo "Le code de configuration WireGuard a été enregistré dans $wg0_config_path."
-
-
-# Demander à l'utilisateur s'il souhaite continuer l'installation
-ask_to_continue
-
     # Génération du fichier docker-compose.yml avec la clé API RealDebrid, l'adresse du serveur Plex, l'identifiant Plex et le token Plex
     cat <<EOL > docker-compose.yml
 version: '3'
