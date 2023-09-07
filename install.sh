@@ -294,3 +294,13 @@ networks:
   your_custom_network:
     driver: bridge
 EOL
+
+# Exécution de Docker Compose pour installer et démarrer les services
+ask_question "Voulez-vous installer et démarrer les services Docker maintenant ? (Oui/Non) "
+read start_services_choice
+if [ "$start_services_choice" = "oui" ] || [ "$start_services_choice" = "Oui" ] || [ "$start_services_choice" = "o" ] || [ "$start_services_choice" = "O" ]; then
+    docker-compose up -d
+    echo "Les services Docker ont été installés et démarrés avec succès."
+else
+    echo "L'installation des services Docker a été annulée. Vous pouvez les installer ultérieurement en exécutant 'docker-compose up -d' dans le répertoire du fichier docker-compose.yml."
+fi
