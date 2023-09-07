@@ -66,16 +66,14 @@ echo -e "\e[32mConfiguration terminée. Les informations ont été écrites dans
 cp includes/templates/docker-compose.yml "$folder_app_settings"
 
 # Copier le contenu du fichier includes/templates/docker-compose.yml vers $folder_app_settings
-cp includes/templates/docker-compose.yml "$folder_app_settings/docker-compose.yml"
-
+cp includes/templates/docker-compose.yml "$folder_app_settings""/docker-compose.yml"
 # Remplacer les variables dans docker-compose.yml en utilisant les valeurs du .env
 env_vars=$(grep -oE '\{\{[A-Za-z_][A-Za-z_0-9]*\}\}' "$folder_app_settings/docker-compose.yml")
 
 for var in $env_vars; do
   var_name=$(echo "$var" | sed 's/[{}]//g')
   var_value=$(grep "^$var_name=" "$env_file" | cut -d'=' -f2)
-  sed -i "s|{{${var_name}}}|${var_value}|g" "$folder_app_settings/docker-compose.yml"
-done
+  sed -i "s|{{${var_name}}}|${var_value}|g" "$folder_app_settings""/docker-compose.yml"done
 
 # Afficher un message
 echo -e "\033[32mLes informations ont été ajoutées au fichier docker-compose.yml.\033[0m"
