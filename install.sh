@@ -137,15 +137,16 @@
 # Demander à l'utilisateur de coller le code de configuration WireGuard
 ask_question "Veuillez coller le code de configuration WireGuard ci-dessous, puis appuyez sur Entrée (Ctrl+D pour terminer) :"
 
-# Lire le code de configuration WireGuard jusqu'à ce que Ctrl+D soit enfoncé
+# Lire le code de configuration WireGuard
 wireguard_config=""
-while IFS= read -r line; do
+while IFS= read -r line || [[ -n "$line" ]]; do
     wireguard_config="${wireguard_config}${line}\n"
 done
 
 # Enregistrer le code de configuration WireGuard dans le fichier
 echo -e "$wireguard_config" > "$wg0_config_path"
 echo "Le code de configuration WireGuard a été enregistré dans $wg0_config_path."
+
 
 
 
