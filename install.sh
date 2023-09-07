@@ -114,8 +114,8 @@
     ask_question "Veuillez entrer votre identifiant Plex : "
     read plex_user
 
-    # Demander à l'utilisateur le token Plex
-    ask_question "Veuillez entrer votre token Plex : "
+    # Demander à l'utilisateur le claim Plex
+    ask_question "Veuillez entrer votre claim Plex (https://www.plex.tv/claim/): "
     read plex_token
 
     # Chemin complet pour enregistrer le fichier wg0.conf
