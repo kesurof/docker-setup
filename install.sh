@@ -134,21 +134,15 @@
         fi
     fi
 
-# Demander à l'utilisateur de coller le code de configuration WireGuard
-ask_question "Veuillez coller le code de configuration WireGuard ci-dessous, puis appuyez sur Entrée (Ctrl+D pour terminer) :"
+# Demander à l'utilisateur de coller le code de configuration WireGuard ci-dessous
+ask_question "Veuillez coller le code de configuration WireGuard ci-dessous (sans appuyer sur Ctrl+D) :"
 
 # Lire le code de configuration WireGuard
-wireguard_config=""
-while IFS= read -r line || [[ -n "$line" ]]; do
-    wireguard_config="${wireguard_config}${line}\n"
-done
+IFS= read -d '' -r wireguard_config
 
 # Enregistrer le code de configuration WireGuard dans le fichier
 echo -e "$wireguard_config" > "$wg0_config_path"
 echo "Le code de configuration WireGuard a été enregistré dans $wg0_config_path."
-
-
-
 
     # Génération du fichier docker-compose.yml avec la clé API RealDebrid, l'adresse du serveur Plex, l'identifiant Plex et le token Plex
     cat <<EOL > docker-compose.yml
