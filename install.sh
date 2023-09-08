@@ -15,16 +15,6 @@ for script in "${scripts[@]}"; do
     script_paths+=("$scripts_dir/$script")
 done
 
-# Fonction pour afficher le menu
-afficher_menu() {
-    clear
-    echo "Menu d'options :"
-    for i in "${!script_names[@]}"; do
-        echo "$((i + 1)). ${script_names[i]}"
-    done
-    echo "Q. Quitter"
-}
-
 # Fonction pour exécuter un script
 executer_script() {
     script_path="$1"
@@ -40,22 +30,22 @@ for script_path in "${script_paths[@]}"; do
     fi
 done
 
-# Boucle principale du menu
 while true; do
-    afficher_menu
+    choix=$(dialog --clear --backtitle "Menu d'options" --title "Sélectionnez une option" \
+        --menu "Utilisez les touches haut/bas pour naviguer et la touche Entrée pour sélectionner :" \
+        15 50 6 "${script_names[@]}" "Quitter" 3>&1 1>&2 2>&3)
 
-    read -p "Sélectionnez une option (1-${#script_names[@]}, Q pour quitter) : " choix
-
-    if [ "$choix" == "Q" ] || [ "$choix" == "q" ]; then
+    if [ "$choix" == "Quitter" ]; then
         echo "Au revoir !"
         exit 0
     fi
 
-    if [[ "$choix" =~ ^[0-9]+$ ]] && [ "$choix" -ge 1 ] && [ "$choix" -le ${#script_names[@]} ]; then
-        index=$((choix - 1))
-        executer_script "${script_paths[index]}"
-    else
-        echo "Option invalide. Veuillez sélectionner une option valide."
-        read -p "Appuyez sur Entrée pour continuer..."
-    fi
+    index=0
+    for name in "${script_names[@]}"; do
+        if [ "$choix" == "$name" ]; then
+            executer_script "${script_paths[index]}"
+            break
+        fi
+        index=$((index + 1))
+    done
 done
