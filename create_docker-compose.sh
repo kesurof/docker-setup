@@ -47,17 +47,45 @@ create_directory "$folder_rclone"
 ask_question "Veuillez entrer votre clé API RealDebrid : "
 read rd_api_key
 
-# Demander à l'utilisateur la token plex pour Plex_debrid
-ask_question "Veuillez entrer votre token Plex pour Plex_debrid : "
-read rd_token_plex
+# recuperation token Plex token pour Plex_debrid
+
+if [ -z "$plex_user" ] || [ -z "$plex_passwd" ]; then
+    plex_user=$1
+    plex_passwd=$2
+fi
+
+while [ -z "$plex_user" ]; do
+    ask_question "Veuillez entrer utilisateur plex : "
+    read plex_user
+done
+while [ -z "$plex_passwd" ]; do
+    ask_question "Veuillez entrer passwd plex : "
+    read plex_passwd
+done
+    ask_question "Récupération du token Plex... "
+
+curl -qu "${plex_user}":"${plex_passwd}" 'https://plex.tv/users/sign_in.xml' \
+    -X POST -H 'X-Plex-Device-Name: PlexMediaServer' \
+    -H 'X-Plex-Provides: server' \
+    -H 'X-Plex-Version: 0.9' \
+    -H 'X-Plex-Platform-Version: 0.9' \
+    -H 'X-Plex-Platform: xcid' \
+    -H 'X-Plex-Product: Plex Media Server'\
+    -H 'X-Plex-Device: Linux'\
+    -H 'X-Plex-Client-Identifier: XXXX' --compressed >/tmp/plex_sign_in
+rd_token_plex=$(sed -n 's/.*<authentication-token>\(.*\)<\/authentication-token>.*/\1/p' /tmp/plex_sign_in)
+if [ -z "$rd_token_plex" ]; then
+    #cat /tmp/plex_sign_in
+    rd_token_plex=$(cat /tmp/plex_sign_in)
+    rm -f /tmp/plex_sign_in
+    >&2 echo 'Failed to retrieve the X-Plex-Token.'
+    exit 0
+fi
+rm -f /tmp/plex_sign_in
 
 # Demander à l'utilisateur le nom de domaine ou l'adresse IP du serveur Plex
 ask_question "Veuillez entrer le nom de domaine ou l'adresse IP du serveur Plex : "
 read plex_address
-
-# Demander à l'utilisateur l'identifiant Plex
-ask_question "Veuillez entrer votre identifiant Plex : "
-read plex_user
 
 # Demander à l'utilisateur le claim Plex (https://www.plex.tv/claim/)
 ask_question "Veuillez entrer votre claim Plex (https://www.plex.tv/claim/) : "
@@ -88,3 +116,4 @@ done
 
 # Afficher un message
 echo -e "\033[32mLes informations ont été ajoutées au fichier docker-compose.yml.\033[0m"
+
