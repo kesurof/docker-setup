@@ -9,6 +9,10 @@ function ask_question() {
   echo -e "\033[33m$1\033[0m"
 }
 
+# Chemin par défaut pour le fichier .env
+env_file_path="/home/$USER"
+env_file="$env_file_path/.env"
+
 # Fonction pour charger les variables depuis le fichier .env
 function load_env_variables() {
   local env_file="$1"
@@ -19,6 +23,12 @@ function load_env_variables() {
     exit 1
   fi
 }
+
+# Charger les variables depuis le fichier .env
+load_env_variables "$env_file"
+
+# Chemin vers le fichier docker-compose.yml
+docker_compose_file="$folder_app_settings/docker-compose.yml"
 
 # Fonction pour exécuter Docker Compose
 function start_docker_services() {
@@ -32,16 +42,6 @@ function start_docker_services() {
     echo "L'installation des services Docker a été annulée. Vous pouvez les installer ultérieurement en exécutant 'docker-compose -f $docker_compose_file up -d' dans le répertoire du fichier docker-compose.yml."
   fi
 }
-
-# Chemin par défaut pour le fichier .env
-env_file_path="/home/$USER"
-env_file="$env_file_path/.env"
-
-# Charger les variables depuis le fichier .env
-load_env_variables "$env_file"
-
-# Chemin vers le fichier docker-compose.yml
-docker_compose_file="$folder_app_settings/docker-compose.yml"
 
 # Exécuter Docker Compose pour installer et démarrer les services
 start_docker_services "$docker_compose_file"
