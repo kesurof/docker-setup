@@ -1,5 +1,24 @@
 #!/bin/bash
 
+# Vérifier si dialog est installé, sinon proposer de l'installer
+if ! command -v dialog &>/dev/null; then
+    echo "Le programme 'dialog' n'est pas installé."
+    read -p "Voulez-vous l'installer maintenant ? (O/n) " install_dialog
+    if [ "$install_dialog" == "O" ] || [ "$install_dialog" == "o" ]; then
+        if [ -x "$(command -v apt-get)" ]; then
+            sudo apt-get install dialog
+        elif [ -x "$(command -v yum)" ]; then
+            sudo yum install dialog
+        else
+            echo "Impossible de trouver un gestionnaire de paquets compatible. Veuillez installer 'dialog' manuellement."
+            exit 1
+        fi
+    else
+        echo "Vous devez installer 'dialog' pour utiliser ce script."
+        exit 1
+    fi
+fi
+
 # Répertoire complet où se trouvent les scripts (à la racine)
 scripts_dir="$(dirname "$0")/includes/scripts"
 
