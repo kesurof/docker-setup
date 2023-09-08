@@ -62,13 +62,13 @@ Suivez ces étapes pour installer Docker Setup sur votre système :
 3. **Exécutez le script** : Après avoir accédé au répertoire, assurez-vous que le script est exécutable en utilisant la commande `chmod` si nécessaire :
 
    ```bash
-   chmod +x script.sh
+   chmod +x seedbox.sh
    ```
 
    Ensuite, exécutez le script :
 
    ```bash
-   ./script.sh
+   ./seedbox.sh
    ```
 
 4. **Suivez les instructions du script** : Pendant l'exécution du script, il vous demandera peut-être des informations spécifiques ou des confirmations. Assurez-vous de suivre ces instructions et de fournir les informations requises.
@@ -97,5 +97,33 @@ Après l'installation de Docker Setup, le script créera une structure de dossie
 - **jackett/config** : Les fichiers de configuration de Jackett, un agrégateur de torrents.
 
 Chacun de ces dossiers contient les données et configurations spécifiques à chaque service Docker pour faciliter la gestion et la sauvegarde des données.
+
+
+Pour utiliser les fonctions répertoriées dans un nouveau script, vous pouvez les inclure en important le contenu du fichier contenant les fonctions. Voici comment vous pouvez procéder :
+
+Créez un nouveau fichier pour votre script, par exemple, nouveau_script.sh.
+
+Ajoutez le code suivant au début de nouveau_script.sh pour inclure les fonctions du fichier contenant les fonctions :
+
+bash
+Copy code
+#!/bin/bash
+
+# Inclure les fonctions du fichier contenant les fonctions
+source fonctions.sh
+Assurez-vous que fonctions.sh est le nom du fichier où vous avez répertorié les fonctions. Modifiez-le si nécessaire pour correspondre au nom réel de votre fichier.
+
+Après avoir inclus les fonctions, vous pouvez les utiliser dans votre script comme n'importe quelle autre fonction. Par exemple, vous pouvez appeler une fonction comme ceci :
+bash
+Copy code
+# Appeler la fonction ask_question
+ask_question "Veuillez entrer votre nom : "
+read nom
+echo "Bonjour, $nom !"
+Écrivez le reste de votre script en utilisant les fonctions nécessaires en fonction de vos besoins.
+
+Assurez-vous que le fichier fonctions.sh est dans le même répertoire que votre nouveau script ou que le chemin vers le fichier fonctions.sh est correctement spécifié dans l'inclusion.
+
+Avec cette approche, vous pouvez réutiliser les fonctions existantes dans votre nouveau script sans avoir à les réécrire, ce qui facilite la réutilisation du code et la maintenance.
 
 ---
