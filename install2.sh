@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Chemin complet vers le répertoire des scripts
-scripts_dir="/chemin/complet/vers/le/repertoire/includes/scripts"
+# Répertoire complet où se trouvent les scripts (à la racine)
+scripts_dir="$(dirname "$0")/includes/scripts"
 
 # Liste des noms de scripts à exécuter dans l'ordre spécifié
 scripts=("install_docker.sh" "create_docker-compose.sh" "conf_wireguard.sh" "install_container.sh")
@@ -16,7 +16,7 @@ done
 afficher_menu() {
     clear
     echo "Menu d'options :"
-    for ((i = 0; i < ${#scripts[@]}; i++)); do
+    for i in "${!scripts[@]}"; do
         echo "$((i + 1)). Exécuter ${scripts[i]}"
     done
     echo "Q. Quitter"
@@ -35,7 +35,7 @@ for script_path in "${script_paths[@]}"; do
     if [ ! -x "$script_path" ]; then
         chmod +x "$script_path"
     fi
-}
+done
 
 # Boucle principale du menu
 while true; do
