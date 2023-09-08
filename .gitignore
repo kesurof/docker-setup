@@ -1,0 +1,66 @@
+# Fichiers système
+.DS_Store
+
+# Fichiers d'éditeurs de texte
+*.swp
+*.swo
+*.swn
+*.swm
+*.bak
+*~
+*.log
+
+# Fichiers de sauvegarde
+backup
+backups
+*.backup
+
+# Répertoire de dépendances
+node_modules/
+
+# Fichiers de construction
+/build/
+/dist/
+/out/
+/target/
+/bin/
+/obj/
+/release/
+/.vscode/
+
+# Fichiers générés par l'environnement
+.env
+
+# Fichiers de configuration locaux
+*.local
+
+# Fichiers de caches
+.cache/
+.caches/
+
+# Fichiers d'archives
+*.zip
+*.rar
+*.gz
+*.tar
+*.7z
+
+# Fichiers de débogage
+.vscode/
+.idea/
+.project
+*.iml
+
+# Fichiers de configuration utilisateur
+.editorconfig
+.eslintrc
+.jshintrc
+.stylelintrc
+*.sublime-project
+*.sublime-workspace
+
+# Fichiers de configuration de système de construction
+*.beam
+rebar.lock
+*.plt
+ebin/

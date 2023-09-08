@@ -1,0 +1,10 @@
+# Utiliser LF (saut de ligne) pour les EOL pour tous les fichiers texte
+* text eol=lf
+
+# Ignorer les EOL pour les fichiers binaires et les types de fichiers spécifiques
+*.png binary
+*.jpg binary
+*.gif binary
+*.pdf binary
+*.doc binary
+*.zip binary
