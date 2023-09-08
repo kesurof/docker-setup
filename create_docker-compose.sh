@@ -12,16 +12,6 @@ function create_directory() {
   fi
 }
 
-# Fonction pour demander à l'utilisateur une valeur et utiliser une valeur par défaut si nécessaire
-function ask_with_default() {
-  ask_question "$1"
-  read user_input
-  if [ -z "$user_input" ]; then
-    user_input="$2"
-  fi
-  echo "$user_input"
-}
-
 # Chemin par défaut pour le fichier .env
 env_file_path="/home/$USER"
 env_file="$env_file_path/.env"
@@ -30,31 +20,76 @@ echo "Fichier .env sera enregistré à : $env_file"
 echo "Veuillez fournir les informations suivantes :"
 
 # Demander à l'utilisateur le chemin d'installation des volumes des containers (par défaut /home/$USER/seedbox/app_settings)
-folder_app_settings=$(ask_with_default "Veuillez entrer le chemin d'installation des volumes des containers : par défaut /home/$USER/seedbox/app_settings" "/home/$USER/seedbox/app_settings")
+ask_question "Veuillez entrer le chemin d'installation des volumes des containers : par défaut /home/$USER/seedbox/app_settings  "
+read folder_app_settings
+
+# Utiliser le chemin par défaut si l'utilisateur n'a rien saisi
+if [ -z "$folder_app_settings" ]; then
+  folder_app_settings="/home/$USER/seedbox/app_settings"
+fi
 
 # Créer le répertoire si nécessaire
 create_directory "$folder_app_settings"
 
 # Demander à l'utilisateur le Chemin du dossier rclone (par défaut /home/$user/rclone)
-folder_rclone=$(ask_with_default "Veuillez entrer le Chemin du dossier rclone : par défaut /home/$user/rclone" "/home/$USER/rclone")
+ask_question "Veuillez entrer le Chemin du dossier rclone : par défaut /home/$user/rclone : "
+read folder_rclone
+
+# Utiliser le chemin par défaut si l'utilisateur n'a rien saisi
+if [ -z "$folder_rclone" ]; then
+  folder_rclone="/home/$USER/rclone"
+fi
 
 # Créer le répertoire si nécessaire
 create_directory "$folder_rclone"
 
 # Demander à l'utilisateur la clé API de RealDebrid
-rd_api_key=$(ask_question "Veuillez entrer votre clé API RealDebrid : ")
+ask_question "Veuillez entrer votre clé API RealDebrid : "
+read rd_api_key
 
-# Demander à l'utilisateur la token plex pour Plex_debrid
-rd_token_plex=$(ask_question "Veuillez entrer votre token Plex pour Plex_debrid : ")
+# recuperation token Plex token pour Plex_debrid
+
+if [ -z "$plex_user" ] || [ -z "$plex_passwd" ]; then
+    plex_user=$1
+    plex_passwd=$2
+fi
+
+while [ -z "$plex_user" ]; do
+    ask_question "Veuillez entrer utilisateur plex : "
+    read plex_user
+done
+while [ -z "$plex_passwd" ]; do
+    ask_question "Veuillez entrer passwd plex : "
+    read plex_passwd
+done
+    ask_question "Récupération du token Plex... "
+
+curl -qu "${plex_user}":"${plex_passwd}" 'https://plex.tv/users/sign_in.xml' \
+    -X POST -H 'X-Plex-Device-Name: PlexMediaServer' \
+    -H 'X-Plex-Provides: server' \
+    -H 'X-Plex-Version: 0.9' \
+    -H 'X-Plex-Platform-Version: 0.9' \
+    -H 'X-Plex-Platform: xcid' \
+    -H 'X-Plex-Product: Plex Media Server'\
+    -H 'X-Plex-Device: Linux'\
+    -H 'X-Plex-Client-Identifier: XXXX' --compressed >/tmp/plex_sign_in
+rd_token_plex=$(sed -n 's/.*<authentication-token>\(.*\)<\/authentication-token>.*/\1/p' /tmp/plex_sign_in)
+if [ -z "$rd_token_plex" ]; then
+    #cat /tmp/plex_sign_in
+    rd_token_plex=$(cat /tmp/plex_sign_in)
+    rm -f /tmp/plex_sign_in
+    >&2 echo 'Failed to retrieve the X-Plex-Token.'
+    exit 0
+fi
+rm -f /tmp/plex_sign_in
 
 # Demander à l'utilisateur le nom de domaine ou l'adresse IP du serveur Plex
-plex_address=$(ask_question "Veuillez entrer le nom de domaine ou l'adresse IP du serveur Plex : ")
-
-# Demander à l'utilisateur l'identifiant Plex
-plex_user=$(ask_question "Veuillez entrer votre identifiant Plex : ")
+ask_question "Veuillez entrer le nom de domaine ou l'adresse IP du serveur Plex : "
+read plex_address
 
 # Demander à l'utilisateur le claim Plex (https://www.plex.tv/claim/)
-plex_claim=$(ask_question "Veuillez entrer votre claim Plex (https://www.plex.tv/claim/) : ")
+ask_question "Veuillez entrer votre claim Plex (https://www.plex.tv/claim/) : "
+read plex_claim
 
 # Écrit les réponses dans le fichier .env
 echo "FOLDER_APP_SETTINGS=$folder_app_settings" > "$env_file"
