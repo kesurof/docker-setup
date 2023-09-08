@@ -15,10 +15,20 @@ for script in "${scripts[@]}"; do
     script_paths+=("$scripts_dir/$script")
 done
 
+# Fonction pour afficher le menu
+afficher_menu() {
+    clear
+    echo -e "\e[32mMenu d'options :\e[0m"
+    for i in "${!script_names[@]}"; do
+        echo -e "\e[1;33m$((i + 1)).\e[0m ${script_names[i]}"
+    done
+    echo -e "\e[31mQ. Quitter\e[0m"
+}
+
 # Fonction pour exécuter un script
 executer_script() {
     script_path="$1"
-    echo "Exécution de $script_path :"
+    echo -e "\e[1;33mExécution de $script_path :\e[0m"
     "$script_path"
     read -p "Appuyez sur Entrée pour revenir au menu..."
 }
@@ -30,22 +40,22 @@ for script_path in "${script_paths[@]}"; do
     fi
 done
 
+# Boucle principale du menu
 while true; do
-    clear
-    echo "Menu d'options :"
-    select option in "${script_names[@]}" "Quitter"; do
-        case $option in
-            "Quitter")
-                echo "Au revoir !"
-                exit 0
-                ;;
-            *)
-                for i in "${!script_names[@]}"; do
-                    if [ "$option" == "${script_names[i]}" ]; then
-                        executer_script "${script_paths[i]}"
-                    fi
-                done
-                ;;
-        esac
-    done
+    afficher_menu
+
+    read -p "Sélectionnez une option (1-${#script_names[@]}, \e[31mQ\e[0m pour quitter) : " choix
+
+    if [ "$choix" == "Q" ] || [ "$choix" == "q" ]; then
+        echo -e "\e[31mAu revoir !\e[0m"
+        exit 0
+    fi
+
+    if [[ "$choix" =~ ^[0-9]+$ ]] && [ "$choix" -ge 1 ] && [ "$choix" -le ${#script_names[@]} ]; then
+        index=$((choix - 1))
+        executer_script "${script_paths[index]}"
+    else
+        echo -e "\e[31mOption invalide. Veuillez sélectionner une option valide.\e[0m"
+        read -p "Appuyez sur Entrée pour continuer..."
+    fi
 done
