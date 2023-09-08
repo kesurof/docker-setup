@@ -31,8 +31,8 @@ fi
 # Créer le répertoire si nécessaire
 create_directory "$folder_app_settings"
 
-# Demander à l'utilisateur le Chemin du dossier rclone (par défaut /home/$user/rclone)
-ask_question "Veuillez entrer le Chemin du dossier rclone : par défaut /home/$user/rclone : "
+# Demander à l'utilisateur le Chemin du dossier rclone (par défaut /home/$USER/rclone)
+ask_question "Veuillez entrer le Chemin du dossier rclone : par défaut /home/$USER/rclone : "
 read folder_rclone
 
 # Utiliser le chemin par défaut si l'utilisateur n'a rien saisi
@@ -116,4 +116,3 @@ done
 
 # Afficher un message
 echo -e "\033[32mLes informations ont été ajoutées au fichier docker-compose.yml.\033[0m"
-
