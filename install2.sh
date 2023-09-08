@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Répertoire complet où se trouvent les scripts (à la racine)
-scripts_dir="$(dirname "$0")/includes/scripts"
+# Chemin complet vers le répertoire des scripts
+scripts_dir="/chemin/complet/vers/le/repertoire/includes/scripts"
 
 # Liste des noms de scripts à exécuter dans l'ordre spécifié
 scripts=("install_docker.sh" "create_docker-compose.sh" "conf_wireguard.sh" "install_container.sh")
@@ -22,17 +22,18 @@ afficher_menu() {
     echo "Q. Quitter"
 }
 
-# Fonction pour exécuter un script après avoir appliqué chmod +x
+# Fonction pour exécuter un script
 executer_script() {
     script_path="$1"
-    if [ -x "$script_path" ]; then
-        script_name=$(basename "$script_path")
-        echo "Exécution de $script_name :"
-        "$script_path"
-        read -p "Appuyez sur Entrée pour revenir au menu..."
-    else
-        echo "Le script $script_path n'est pas exécutable."
-        read -p "Appuyez sur Entrée pour revenir au menu..."
+    echo "Exécution de $script_path :"
+    "$script_path"
+    read -p "Appuyez sur Entrée pour revenir au menu..."
+}
+
+# Rendre les scripts exécutables s'ils ne le sont pas déjà
+for script_path in "${script_paths[@]}"; do
+    if [ ! -x "$script_path" ]; then
+        chmod +x "$script_path"
     fi
 }
 
