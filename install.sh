@@ -1,24 +1,5 @@
 #!/bin/bash
 
-# Vérifier si dialog est installé, sinon proposer de l'installer
-if ! command -v dialog &>/dev/null; then
-    echo "Le programme 'dialog' n'est pas installé."
-    read -p "Voulez-vous l'installer maintenant ? (O/n) " install_dialog
-    if [ "$install_dialog" == "O" ] || [ "$install_dialog" == "o" ]; then
-        if [ -x "$(command -v apt-get)" ]; then
-            sudo apt-get install dialog
-        elif [ -x "$(command -v yum)" ]; then
-            sudo yum install dialog
-        else
-            echo "Impossible de trouver un gestionnaire de paquets compatible. Veuillez installer 'dialog' manuellement."
-            exit 1
-        fi
-    else
-        echo "Vous devez installer 'dialog' pour utiliser ce script."
-        exit 1
-    fi
-fi
-
 # Répertoire complet où se trouvent les scripts (à la racine)
 scripts_dir="$(dirname "$0")/includes/scripts"
 
@@ -50,21 +31,21 @@ for script_path in "${script_paths[@]}"; do
 done
 
 while true; do
-    choix=$(dialog --clear --backtitle "Menu d'options" --title "Sélectionnez une option" \
-        --menu "Utilisez les touches haut/bas pour naviguer et la touche Entrée pour sélectionner :" \
-        15 50 6 "${script_names[@]}" "Quitter" 3>&1 1>&2 2>&3)
-
-    if [ "$choix" == "Quitter" ]; then
-        echo "Au revoir !"
-        exit 0
-    fi
-
-    index=0
-    for name in "${script_names[@]}"; do
-        if [ "$choix" == "$name" ]; then
-            executer_script "${script_paths[index]}"
-            break
-        fi
-        index=$((index + 1))
+    clear
+    echo "Menu d'options :"
+    select option in "${script_names[@]}" "Quitter"; do
+        case $option in
+            "Quitter")
+                echo "Au revoir !"
+                exit 0
+                ;;
+            *)
+                for i in "${!script_names[@]}"; do
+                    if [ "$option" == "${script_names[i]}" ]; then
+                        executer_script "${script_paths[i]}"
+                    fi
+                done
+                ;;
+        esac
     done
 done
