@@ -47,6 +47,10 @@ create_directory "$folder_rclone"
 ask_question "Veuillez entrer votre clé API RealDebrid : "
 read rd_api_key
 
+# Demander à l'utilisateur la token plex pour RealDebrid
+ask_question "Veuillez entrer votre token pour RealDebrid : "
+read rd_token_plex
+
 # Demander à l'utilisateur le nom de domaine ou l'adresse IP du serveur Plex
 ask_question "Veuillez entrer le nom de domaine ou l'adresse IP du serveur Plex : "
 read plex_address
@@ -57,14 +61,15 @@ read plex_user
 
 # Demander à l'utilisateur le claim Plex (https://www.plex.tv/claim/)
 ask_question "Veuillez entrer votre token Plex : "
-read plex_token
+read plex_claim
 
 # Écrit les réponses dans le fichier .env
 echo "FOLDER_APP_SETTINGS=$folder_app_settings" > "$env_file"
 echo "FOLDER_RCLONE=$folder_rclone" >> "$env_file"
 echo "RD_API_KEY=$rd_api_key" >> "$env_file"
+echo "RD_TOKEN_PLEX=$rd_token_plex" >> "$env_file"
 echo "PLEX_USER=$plex_user" >> "$env_file"
-echo "PLEX_TOKEN=$plex_token" >> "$env_file"
+echo "PLEX_CLAIM=$plex_claim" >> "$env_file"
 echo "PLEX_ADDRESS=$plex_address" >> "$env_file"
 
 echo -e "\e[32mConfiguration terminée. Les informations ont été écrites dans le fichier $env_file.\e[0m"

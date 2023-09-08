@@ -30,18 +30,13 @@ services:
       - VERSION=docker
       - PUID=1000
       - PGID=1000
-      - PLEX_CLAIM={{PLEX_TOKEN}}
+      - PLEX_CLAIM={{PLEX_CLAIM}}
       - TZ=Europe/Paris
     network_mode: host
     volumes:
       - {{FOLDER_APP_SETTINGS}}/plex/config:/config
       - {{FOLDER_APP_SETTINGS}}/plex/transcode:/transcode
       - {{FOLDER_RCLONE}}:/rclone
-    cap_add:
-      - SYS_ADMIN
-    security_opt:
-      - apparmor:unconfined
-      - no-new-privileges
     restart: unless-stopped
     depends_on:
       - pdrcrd
@@ -61,7 +56,7 @@ services:
       - RCLONE_MOUNT_NAME=realdebrid
       - RCLONE_DIR_CACHE_TIME=10s
       - PLEX_USER={{PLEX_USER}}
-      - PLEX_TOKEN={{PLEX_TOKEN}}
+      - PLEX_TOKEN={{RD_TOKEN_PLEX}}
       - PLEX_ADDRESS={{PLEX_ADDRESS}}
       - SHOW_MENU=false
     devices:
