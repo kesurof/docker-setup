@@ -33,4 +33,3 @@ for script_path in "${script_paths[@]}"; do
         echo "Le script $script_path n'est pas exécutable."
     fi
 done
-
