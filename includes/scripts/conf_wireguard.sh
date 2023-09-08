@@ -1,9 +1,5 @@
 #!/bin/bash
 
-#Ce code divise le script en fonctions distinctes pour faciliter la lecture et la maintenance.
-#La fonction create_directory gère la création du répertoire si nécessaire,
-#et la fonction save_wireguard_config gère l'enregistrement du code de configuration WireGuard dans le fichier spécifié.
-
 # Fonction pour afficher une question en jaune
 function ask_question() {
   echo -e "\033[33m$1\033[0m"
@@ -48,6 +44,9 @@ wg0_config_path="$folder_app_settings/wireguard/config/wg0.conf"
 
 # Vérifier et créer le répertoire si nécessaire
 create_directory "$folder_app_settings/wireguard/config"
+
+# Assurer les autorisations pour l'utilisateur actuel
+sudo chown -R "$USER:$USER" "$folder_app_settings/wireguard"
 
 # Enregistrer le code de configuration WireGuard
 save_wireguard_config "$wg0_config_path"
