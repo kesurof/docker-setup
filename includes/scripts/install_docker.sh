@@ -45,7 +45,7 @@ function install_docker() {
   local docker_repo
 
   if [ "$distro" != "Ubuntu" ] && [ "$distro" != "Debian" ]; then
-    echo "Ce script ne prend en charge que les distributions Ubuntu et Debian."
+    echo "Ce script ne prend en charge que les distributions Ubuntu 20.04/22.04 et Debian11/12."
     exit 1
   fi
 
