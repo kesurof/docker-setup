@@ -1,9 +1,5 @@
 #!/bin/bash
 
-#Ce code divise le script en fonctions distinctes pour faciliter la lecture et la maintenance.
-#La fonction load_env_variables gère le chargement des variables depuis le fichier .env,
-#et la fonction start_docker_services gère l'exécution de Docker Compose pour installer et démarrer les services.
-
 # Fonction pour afficher une question en jaune
 function ask_question() {
   echo -e "\033[33m$1\033[0m"
@@ -13,22 +9,24 @@ function ask_question() {
 env_file_path="/home/$USER"
 env_file="$env_file_path/.env"
 
-# Fonction pour charger les variables depuis le fichier .env
+# Fonction pour charger toutes les variables depuis le fichier .env
 function load_env_variables() {
   local env_file="$1"
   if [ -f "$env_file" ]; then
     source "$env_file"
   else
-    echo "Le fichier .env n'a pas été trouvé dans $env_file_path. Assurez-vous qu'il existe avant de continuer."
+    echo "Le fichier .env n'a pas été trouvé à $env_file. Assurez-vous qu'il existe avant de continuer."
     exit 1
   fi
 }
 
-# Charger les variables depuis le fichier .env
+# Charger toutes les variables depuis le fichier .env
 load_env_variables "$env_file"
 
+# À partir de ce point, toutes les variables du fichier .env sont disponibles, y compris $FOLDER_APP_SETTINGS
+
 # Chemin vers le fichier docker-compose.yml
-docker_compose_file="$folder_app_settings/docker-compose.yml"
+docker_compose_file="$FOLDER_APP_SETTINGS/docker-compose.yml"
 
 # Fonction pour exécuter Docker Compose
 function start_docker_services() {
