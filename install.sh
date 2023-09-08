@@ -44,7 +44,7 @@ done
 while true; do
     afficher_menu
 
-    read -p "Sélectionnez une option (1-${#script_names[@]}, \e[31mQ\e[0m pour quitter) : " choix
+    read -p "Sélectionnez une option (1-${#script_names[@]}, Q pour quitter) : " choix
 
     if [ "$choix" == "Q" ] || [ "$choix" == "q" ]; then
         echo -e "\e[31mAu revoir !\e[0m"
