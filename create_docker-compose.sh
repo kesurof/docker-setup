@@ -47,8 +47,8 @@ create_directory "$folder_rclone"
 ask_question "Veuillez entrer votre clé API RealDebrid : "
 read rd_api_key
 
-# Demander à l'utilisateur la token plex pour RealDebrid
-ask_question "Veuillez entrer votre token pour RealDebrid : "
+# Demander à l'utilisateur la token plex pour Plex_debrid
+ask_question "Veuillez entrer votre token Plex pour Plex_debrid : "
 read rd_token_plex
 
 # Demander à l'utilisateur le nom de domaine ou l'adresse IP du serveur Plex
@@ -60,7 +60,7 @@ ask_question "Veuillez entrer votre identifiant Plex : "
 read plex_user
 
 # Demander à l'utilisateur le claim Plex (https://www.plex.tv/claim/)
-ask_question "Veuillez entrer votre token Plex : "
+ask_question "Veuillez entrer votre claim Plex (https://www.plex.tv/claim/) : "
 read plex_claim
 
 # Écrit les réponses dans le fichier .env
