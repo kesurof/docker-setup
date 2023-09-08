@@ -21,6 +21,22 @@ function create_directory() {
   fi
 }
 
+# Fonction pour vérifier si le fichier existe et demander à l'utilisateur s'il doit être supprimé
+function check_and_remove_file() {
+  local file_path="$1"
+  if [ -e "$file_path" ]; then
+    ask_question "Le fichier $file_path existe déjà. Voulez-vous le supprimer ? (Oui/Non) "
+    read remove_file_choice
+    if [ "$remove_file_choice" = "oui" ] || [ "$remove_file_choice" = "Oui" ] || [ "$remove_file_choice" = "o" ] || [ "$remove_file_choice" = "O" ]; then
+      rm -f "$file_path"
+      echo "Le fichier $file_path a été supprimé."
+    else
+      echo "Le fichier $file_path ne sera pas supprimé. Le script est terminé."
+      exit 0
+    fi
+  fi
+}
+
 # Fonction pour enregistrer le code de configuration WireGuard
 function save_wireguard_config() {
   local config_path="$1"
@@ -44,6 +60,9 @@ wg0_config_path="$folder_app_settings/wireguard/config/wg0.conf"
 
 # Vérifier et créer le répertoire si nécessaire
 create_directory "$folder_app_settings/wireguard/config"
+
+# Vérifier si le fichier wg0.conf existe et demander s'il doit être supprimé
+check_and_remove_file "$wg0_config_path"
 
 # Assurer les autorisations pour l'utilisateur actuel
 sudo chown -R "$USER:$USER" "$folder_app_settings/wireguard"
