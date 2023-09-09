@@ -1,5 +1,20 @@
 #!/bin/bash
 
+# Fonction pour afficher une question en jaune
+function ask_question() {
+  echo -e "\033[33m$1\033[0m"
+}
+
+# Fonction pour demander à l'utilisateur de continuer ou d'annuler
+function ask_to_continue() {
+  ask_question "Voulez-vous continuer la configuration de wireguard ? (Oui/Non) "
+  read continue_choice
+  if [ "$continue_choice" != "oui" ] && [ "$continue_choice" != "Oui" ] && [ "$continue_choice" != "o" ] && [ "$continue_choice" != "O" ]; then
+    echo "Installation annulée."
+    exit 1
+  fi
+}
+
 echo "Veuillez fournir les informations suivantes :"
 
 # Chemin complet pour enregistrer le fichier wg0.conf
@@ -8,8 +23,9 @@ wg0_config_path="$folder_app_settings/wireguard/config/wg0.conf"
 
 # Vérifier si le fichier wg0.conf existe
 if [ -e "$wg0_config_path" ]; then
-  echo "Le fichier $wg0_config_path existe déjà."
-  read -p "Voulez-vous le supprimer ? (Oui/Non) " remove_file_choice
+  echo -e "\033[33mLe fichier $wg0_config_path existe déjà.\033[0m"
+  echo -e "\033[33mVoulez-vous le supprimer ? (Oui/Non)\033[0m"
+  read remove_file_choice
   if [ "$remove_file_choice" = "oui" ] || [ "$remove_file_choice" = "Oui" ] || [ "$remove_file_choice" = "o" ] || [ "$remove_file_choice" = "O" ]; then
     rm -f "$wg0_config_path"
     echo "Le fichier $wg0_config_path a été supprimé."
@@ -47,3 +63,4 @@ done
 echo -e "$wireguard_config" > "$wg0_config_path"
 chmod 755 "$wg0_config_path"  # Appliquer les permissions rwxr-xr-x au fichier
 echo -e "Le code de configuration WireGuard a été enregistré dans $wg0_config_path avec les permissions rwxr-xr-x."
+
