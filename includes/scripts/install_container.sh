@@ -43,3 +43,4 @@ function start_docker_services() {
 
 # Exécuter Docker Compose pour installer et démarrer les services
 start_docker_services "$docker_compose_file"
+
