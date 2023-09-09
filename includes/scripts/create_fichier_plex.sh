@@ -52,10 +52,7 @@ for dossier in "$create_fichier_shows" "$create_fichier_movies" "$create_fichier
   
   # Utiliser 'dd' pour créer un fichier vide de la taille spécifiée
   dd if=/dev/zero of="$chemin_fichier" bs="$taille_octets" count=1
-
-  # Ajouter un en-tête minimal pour faire croire à Plex que c'est un fichier vidéo
-  echo -n -e "\x1A\x45\xDF\xA3\n"
-
+done
 
 # Chemin par défaut pour le dossier à changer de propriétaire
 folder_to_change_owner="$FOLDER_RCLONE"
