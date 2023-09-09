@@ -62,8 +62,44 @@ create_directory "$folder_rclone"
 ask_question "Veuillez entrer votre clé API RealDebrid : "
 read rd_api_key
 
+# Recuperation token Plex token pour Plex_debrid
+
+if [ -z "$plex_user" ] || [ -z "$plex_passwd" ]; then
+    plex_user=$1
+    plex_passwd=$2
+fi
+
+while [ -z "$plex_user" ]; do
+    ask_question "Veuillez entrer votre nom d'utilisateur plex : "
+    read plex_user
+done
+while [ -z "$plex_passwd" ]; do
+    ask_question "Veuillez entrer votre mot de passe plex : "
+    read plex_passwd
+done
+    ask_question "Récupération du token Plex... "
+
+curl -qu "${plex_user}":"${plex_passwd}" 'https://plex.tv/users/sign_in.xml' \
+    -X POST -H 'X-Plex-Device-Name: PlexMediaServer' \
+    -H 'X-Plex-Provides: server' \
+    -H 'X-Plex-Version: 0.9' \
+    -H 'X-Plex-Platform-Version: 0.9' \
+    -H 'X-Plex-Platform: xcid' \
+    -H 'X-Plex-Product: Plex Media Server'\
+    -H 'X-Plex-Device: Linux'\
+    -H 'X-Plex-Client-Identifier: XXXX' --compressed >/tmp/plex_sign_in
+rd_token_plex=$(sed -n 's/.*<authentication-token>\(.*\)<\/authentication-token>.*/\1/p' /tmp/plex_sign_in)
+if [ -z "$rd_token_plex" ]; then
+    #cat /tmp/plex_sign_in
+    rd_token_plex=$(cat /tmp/plex_sign_in)
+    rm -f /tmp/plex_sign_in
+    >&2 echo 'Failed to retrieve the X-Plex-Token.'
+    exit 0
+fi
+rm -f /tmp/plex_sign_in
+
 # Demander à l'utilisateur le nom de domaine ou l'adresse IP du serveur Plex
-ask_question "Veuillez entrer le nom de domaine ou l'adresse IP du serveur Plex : "
+ask_question "Veuillez entrer le nom de domaine ou l'adresse IP:32400 du serveur Plex : "
 read plex_address
 
 # Demander à l'utilisateur le claim Plex (https://www.plex.tv/claim/)
@@ -74,7 +110,10 @@ read plex_claim
 echo "FOLDER_APP_SETTINGS=$folder_app_settings" > "$env_file"
 echo "FOLDER_RCLONE=$folder_rclone" >> "$env_file"
 echo "RD_API_KEY=$rd_api_key" >> "$env_file"
+echo "RD_TOKEN_PLEX=$rd_token_plex" >> "$env_file"
 echo "PLEX_ADDRESS=$plex_address" >> "$env_file"
+echo "PLEX_USER=$plex_user" >> "$env_file"
+echo "PLEX_PASSWD=$plex_passwd" >> "$env_file"
 echo "PLEX_CLAIM=$plex_claim" >> "$env_file"
 
 echo -e "\e[32mConfiguration terminée. Les informations ont été écrites dans le fichier $env_file.\e[0m"
