@@ -25,7 +25,8 @@ if [ ! -d "$folder_app_settings/wireguard/config" ]; then
   read create_dir_choice
   if [ "$create_dir_choice" = "oui" ] || [ "$create_dir_choice" = "Oui" ] || [ "$create_dir_choice" = "o" ] || [ "$create_dir_choice" = "O" ]; then
     mkdir -p "$folder_app_settings/wireguard/config"
-    echo "Le répertoire $folder_app_settings/wireguard/config a été créé."
+    chmod 755 "$folder_app_settings/wireguard/config"  # Appliquer les permissions rwxr-xr-x
+    echo "Le répertoire $folder_app_settings/wireguard/config a été créé et les permissions ont été définies."
   else
     echo "Le répertoire $folder_app_settings/wireguard/config n'a pas été créé. Le fichier WireGuard ne sera pas enregistré."
     exit 1
@@ -44,4 +45,5 @@ done
 
 # Enregistrez le code de configuration WireGuard dans le fichier
 echo -e "$wireguard_config" > "$wg0_config_path"
-echo -e "Le code de configuration WireGuard a été enregistré dans $wg0_config_path."
+chmod 755 "$wg0_config_path"  # Appliquer les permissions rwxr-xr-x au fichier
+echo -e "Le code de configuration WireGuard a été enregistré dans $wg0_config_path avec les permissions rwxr-xr-x."
