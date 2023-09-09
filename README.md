@@ -41,8 +41,22 @@ Voici un exemple de documentation que vous pouvez ajouter dans le fichier `READM
 
 Avant d'installer Docker Setup, assurez-vous de disposer des éléments suivants sur votre système :
 
-- **Git** : Installez Git en suivant les instructions pour votre système d'exploitation. Vous pouvez vérifier si Git est installé en exécutant `git --version` dans votre terminal.
+- **Utilisateur** : Vous devez créer un utilisateur non root et lui accorder les droits suivants **(remplacer USER par le votre à créer)** :
+  
+  ```bash
+  adduser USER
+  ```
+  ```bash
+  usermod -aG sudo USER && groupadd docker && usermod -aG docker USER
+  ```
+- Vous devez ensuite vous déconnecter de root, afin de vous connecter avec le nouvel utilisateur
 
+- **Git et mise à jour** : Installez Git et mettre à jour :
+  
+   ```bash
+   sudo apt-get update && sudo apt-get upgrade -y && sudo apt install git -y
+   ```
+   
 ## Procédure d'Installation
 
 Suivez ces étapes pour installer Docker Setup sur votre système :
@@ -69,6 +83,10 @@ Suivez ces étapes pour installer Docker Setup sur votre système :
 
    ```bash
    ./install.sh
+   ```
+   **en version rapide**
+   ```bash
+   git clone https://github.com/kesurof/docker-setup.git && cd docker-setup && chmod +x install.sh && ./install.sh
    ```
 
 4. **Suivez les instructions du script** : Pendant l'exécution du script, il vous demandera peut-être des informations spécifiques ou des confirmations. Assurez-vous de suivre ces instructions et de fournir les informations requises.
