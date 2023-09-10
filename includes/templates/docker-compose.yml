@@ -59,6 +59,8 @@ services:
       - PLEX_TOKEN={{RD_TOKEN_PLEX}}
       - PLEX_ADDRESS={{PLEX_ADDRESS}}
       - SHOW_MENU=false
+      - RCLONE_LOG_LEVEL=INFO
+      - RCLONE_LOG_FILE=/log/realdebrid.log
     network_mode: "service:wireguard"
     devices:
       - /dev/fuse:/dev/fuse:rwm
