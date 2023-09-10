@@ -44,6 +44,8 @@ for dossier in "$create_fichier_shows" "$create_fichier_movies" "$create_fichier
 
   chemin_fichier="$dossier/$nom_fichier"
 
+  # Créez le fichier vide
+  touch "$chemin_fichier"
 done
 
 # Redémarrer le conteneur Docker Plex
