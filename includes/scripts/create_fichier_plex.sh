@@ -26,8 +26,8 @@ load_env_variables "$env_file"
 # À partir de ce point, toutes les variables du fichier .env sont disponibles, y compris $FOLDER_APP_SETTINGS
 
 # Chemin vers les dossiers
-create_fichier_shows="$FOLDER_RCLONE/realdebrid/shows/"
-create_fichier_movies="$FOLDER_RCLONE/realdebrid/movies/"
+create_fichier_shows="$FOLDER_RCLONE/realdebrid/shows"
+create_fichier_movies="$FOLDER_RCLONE/realdebrid/movies"
 create_fichier_default="$FOLDER_RCLONE/realdebrid/default"
 
 # Définir les noms des fichiers
