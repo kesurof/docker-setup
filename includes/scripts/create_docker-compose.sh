@@ -30,20 +30,20 @@ if [ -f "$env_file" ]; then
     read generate_docker_compose
 
     if [ "$generate_docker_compose" == "O" ] || [ "$generate_docker_compose" == "o" ]; then
+      # Demander à l'utilisateur le chemin d'installation des volumes des containers (par défaut /home/$USER/seedbox/app_settings)
+      ask_question "Veuillez entrer le chemin d'installation des volumes des containers : par défaut /home/$USER/seedbox/app_settings  "
+      read folder_app_settings
+
+      # Utiliser le chemin par défaut si l'utilisateur n'a rien saisi
+      if [ -z "$folder_app_settings" ]; then
+        folder_app_settings="/home/$USER/seedbox/app_settings"
+      fi
+
       # Créer le répertoire si nécessaire
       create_directory "$folder_app_settings"
 
       # Écrire les réponses dans le fichier .env
       echo "FOLDER_APP_SETTINGS=$folder_app_settings" > "$env_file"
-      echo "FOLDER_RCLONE=$folder_rclone" >> "$env_file"
-      echo "RD_API_KEY=$rd_api_key" >> "$env_file"
-      echo "RD_TOKEN_PLEX=$rd_token_plex" >> "$env_file"
-      echo "PLEX_ADDRESS=$plex_address" >> "$env_file"
-      echo "PLEX_USER=$plex_user" >> "$env_file"
-      echo "PLEX_PASSWD=$plex_passwd" >> "$env_file"
-      echo "PLEX_CLAIM=$plex_claim" >> "$env_file"
-
-      echo -e "\e[32mConfiguration terminée. Les informations ont été écrites dans le fichier $env_file.\e[0m"
 
       # Copier le contenu du fichier includes/templates/docker-compose.yml vers $folder_app_settings
       cp includes/templates/docker-compose.yml "$folder_app_settings/docker-compose.yml"
@@ -58,7 +58,7 @@ if [ -f "$env_file" ]; then
       done
 
       # Afficher un message
-      echo -e "\033[32mLes informations ont été ajoutées au fichier docker-compose.yml.\033[0m"
+      echo -e "\033[32mLes informations ont été ajoutées au fichier docker-compose.yml dans $folder_app_settings.\033[0m"
     fi
 
     exit 0
@@ -153,7 +153,7 @@ echo "PLEX_USER=$plex_user" >> "$env_file"
 echo "PLEX_PASSWD=$plex_passwd" >> "$env_file"
 echo "PLEX_CLAIM=$plex_claim" >> "$env_file"
 
-echo -e "\e[32mConfiguration terminée. Les informations ont été écrites dans le fichier $env_file.\e[0m"
+echo -e "\e[32mConfiguration terminée. Les informations ont été écrites dans le fichier $env_file.\033[0m"
 
 # Copier le contenu du fichier includes/templates/docker-compose.yml vers $folder_app_settings
 cp includes/templates/docker-compose.yml "$folder_app_settings/docker-compose.yml"
