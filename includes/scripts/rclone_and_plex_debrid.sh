@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Chemin par défaut pour le fichier .env
-env_file_path="/home/$USER"
+env_file_path="/home/$(logname)"
 env_file="$env_file_path/.env"
 
 # Fonction pour charger toutes les variables depuis le fichier .env
@@ -77,7 +77,7 @@ sudo chown -R $(logname):$(logname) "$folder_rclone"
 
 # Donner des droits d'écriture au propriétaire du point de montage
 afficher_texte_jaune "8) Donner des droits d'écriture au propriétaire du point de montage"
-chmod +w /mnt/torrents
+chmod +w "$folder_rclone"
 
 # Vérifier si le service systemd pour rclone est configuré
 if [ ! -f "/etc/systemd/system/rclone.service" ]; then
