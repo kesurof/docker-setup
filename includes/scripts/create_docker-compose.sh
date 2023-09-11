@@ -26,41 +26,7 @@ if [ -f "$env_file" ]; then
   if [ "$modify_choice" == "O" ] || [ "$modify_choice" == "o" ]; then
     echo "Veuillez fournir les informations suivantes :"
   else
-    ask_question "Souhaitez-vous générer un nouveau fichier docker-compose avec ces informations ? (O/N) "
-    read generate_docker_compose
-
-    if [ "$generate_docker_compose" == "O" ] || [ "$generate_docker_compose" == "o" ]; then
-      # Demander à l'utilisateur le chemin d'installation des volumes des containers (par défaut /home/$USER/seedbox/app_settings)
-      ask_question "Veuillez entrer le chemin d'installation des volumes des containers : par défaut /home/$USER/seedbox/app_settings  "
-      read folder_app_settings
-
-      # Utiliser le chemin par défaut si l'utilisateur n'a rien saisi
-      if [ -z "$folder_app_settings" ]; then
-        folder_app_settings="/home/$USER/seedbox/app_settings"
-      fi
-
-      # Créer le répertoire si nécessaire
-      create_directory "$folder_app_settings"
-
-      # Écrire les réponses dans le fichier .env
-      echo "FOLDER_APP_SETTINGS=$folder_app_settings" > "$env_file"
-
-      # Copier le contenu du fichier includes/templates/docker-compose.yml vers $folder_app_settings
-      cp includes/templates/docker-compose.yml "$folder_app_settings/docker-compose.yml"
-
-      # Remplacer les variables dans docker-compose.yml en utilisant les valeurs du .env
-      env_vars=$(grep -oE '\{\{[A-Za-z_][A-Za-z_0-9]*\}\}' "$folder_app_settings/docker-compose.yml")
-
-      for var in $env_vars; do
-        var_name=$(echo "$var" | sed 's/[{}]//g')
-        var_value=$(grep "^$var_name=" "$env_file" | cut -d'=' -f2)
-        sed -i "s|{{${var_name}}}|${var_value}|g" "$folder_app_settings/docker-compose.yml"
-      done
-
-      # Afficher un message
-      echo -e "\033[32mLes informations ont été ajoutées au fichier docker-compose.yml dans $folder_app_settings.\033[0m"
-    fi
-
+    echo "La configuration existante sera conservée. Sortie du script."
     exit 0
   fi
 else
@@ -96,7 +62,8 @@ create_directory "$folder_rclone"
 ask_question "Veuillez entrer votre clé API RealDebrid : "
 read rd_api_key
 
-# Récuperation token Plex token pour Plex_debrid
+# Recuperation token Plex token pour Plex_debrid
+
 if [ -z "$plex_user" ] || [ -z "$plex_passwd" ]; then
     plex_user=$1
     plex_passwd=$2
@@ -106,13 +73,11 @@ while [ -z "$plex_user" ]; do
     ask_question "Veuillez entrer votre nom d'utilisateur plex : "
     read plex_user
 done
-
 while [ -z "$plex_passwd" ]; do
     ask_question "Veuillez entrer votre mot de passe plex : "
     read plex_passwd
 done
-
-ask_question "Récupération du token Plex... "
+    ask_question "Récupération du token Plex... "
 
 curl -qu "${plex_user}":"${plex_passwd}" 'https://plex.tv/users/sign_in.xml' \
     -X POST -H 'X-Plex-Device-Name: PlexMediaServer' \
@@ -120,19 +85,17 @@ curl -qu "${plex_user}":"${plex_passwd}" 'https://plex.tv/users/sign_in.xml' \
     -H 'X-Plex-Version: 0.9' \
     -H 'X-Plex-Platform-Version: 0.9' \
     -H 'X-Plex-Platform: xcid' \
-    -H 'X-Plex-Product: Plex Media Server' \
-    -H 'X-Plex-Device: Linux' \
+    -H 'X-Plex-Product: Plex Media Server'\
+    -H 'X-Plex-Device: Linux'\
     -H 'X-Plex-Client-Identifier: XXXX' --compressed >/tmp/plex_sign_in
-
 rd_token_plex=$(sed -n 's/.*<authentication-token>\(.*\)<\/authentication-token>.*/\1/p' /tmp/plex_sign_in)
-
 if [ -z "$rd_token_plex" ]; then
+    #cat /tmp/plex_sign_in
     rd_token_plex=$(cat /tmp/plex_sign_in)
     rm -f /tmp/plex_sign_in
     >&2 echo 'Failed to retrieve the X-Plex-Token.'
     exit 0
 fi
-
 rm -f /tmp/plex_sign_in
 
 # Demander à l'utilisateur le nom de domaine ou l'adresse IP du serveur Plex
@@ -143,7 +106,7 @@ read plex_address
 ask_question "Veuillez entrer votre claim Plex (https://www.plex.tv/claim/) : "
 read plex_claim
 
-# Écrire les réponses dans le fichier .env
+# Écrit les réponses dans le fichier .env
 echo "FOLDER_APP_SETTINGS=$folder_app_settings" > "$env_file"
 echo "FOLDER_RCLONE=$folder_rclone" >> "$env_file"
 echo "RD_API_KEY=$rd_api_key" >> "$env_file"
@@ -153,10 +116,10 @@ echo "PLEX_USER=$plex_user" >> "$env_file"
 echo "PLEX_PASSWD=$plex_passwd" >> "$env_file"
 echo "PLEX_CLAIM=$plex_claim" >> "$env_file"
 
-echo -e "\e[32mConfiguration terminée. Les informations ont été écrites dans le fichier $env_file.\033[0m"
+echo -e "\e[32mConfiguration terminée. Les informations ont été écrites dans le fichier $env_file.\e[0m"
 
 # Copier le contenu du fichier includes/templates/docker-compose.yml vers $folder_app_settings
-cp includes/templates/docker-compose.yml "$folder_app_settings/docker-compose.yml"
+cp includes/templates/docker-compose.yml "$folder_app_settings"
 
 # Remplacer les variables dans docker-compose.yml en utilisant les valeurs du .env
 env_vars=$(grep -oE '\{\{[A-Za-z_][A-Za-z_0-9]*\}\}' "$folder_app_settings/docker-compose.yml")
