@@ -32,7 +32,7 @@ services:
       - PGID=1000
       - PLEX_CLAIM={{PLEX_CLAIM}}
       - TZ=Europe/Paris
-    network_mode: host
+    network_mode: bridge
     volumes:
       - {{FOLDER_APP_SETTINGS}}/plex/config:/config
       - {{FOLDER_APP_SETTINGS}}/plex/transcode:/transcode
@@ -167,6 +167,3 @@ services:
       WATCHTOWER_NO_STARTUP_MESSAGE: "true"
       WATCHTOWER_SCHEDULE: "0 0 4 * * *"
 
-networks:
-  your_custom_network:
-    driver: bridge
