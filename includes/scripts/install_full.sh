@@ -4,7 +4,7 @@
 scripts_dir="$(dirname "$0")"
 
 # Liste des noms de scripts à exécuter dans l'ordre spécifié
-scripts=("install_docker.sh" "create_docker-compose.sh" "conf_wireguard.sh" "install_container.sh")
+scripts=("install_docker.sh" "create_docker-compose.sh" "conf_wireguard.sh" "install_container.sh" "rclone_and_plex_debrid.sh")
 
 # Chemin complet vers les scripts
 script_paths=()
