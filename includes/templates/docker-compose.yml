@@ -26,6 +26,8 @@ services:
   plex:
     image: lscr.io/linuxserver/plex:latest
     container_name: plex
+    ports:
+      - 32400:32400
     environment:
       - VERSION=docker
       - PUID=1000
@@ -38,40 +40,40 @@ services:
       - {{FOLDER_APP_SETTINGS}}/plex/transcode:/transcode
       - {{FOLDER_RCLONE}}:/rclone
     restart: unless-stopped
-    depends_on:
-      - pdrcrd
+    #depends_on:
+      #- pdrcrd
 
-  pdrcrd:
-    container_name: pdrcrd
-    image: iampuid0/pdrcrd:latest  
-    stdin_open: true # docker run -i
-    tty: true        # docker run -t    
-    volumes:
-      - {{FOLDER_APP_SETTINGS}}/pdrcrd/config:/config
-      - {{FOLDER_APP_SETTINGS}}/pdrcrd/log:/log
-      - {{FOLDER_RCLONE}}:/data:shared
-    environment:
-      - TZ=Europe/Paris
-      - RD_API_KEY={{RD_API_KEY}}
-      - RCLONE_MOUNT_NAME=realdebrid
-      - RCLONE_DIR_CACHE_TIME=10s
-      - PLEX_USER={{PLEX_USER}}
-      - PLEX_TOKEN={{RD_TOKEN_PLEX}}
-      - PLEX_ADDRESS={{PLEX_ADDRESS}}
-      - SHOW_MENU=false
-      - RCLONE_LOG_LEVEL=INFO
-      - RCLONE_LOG_FILE=/log/realdebrid.log
-    network_mode: "service:wireguard"
-    devices:
-      - /dev/fuse:/dev/fuse:rwm
-    cap_add:
-      - SYS_ADMIN   
-    security_opt:
-      - apparmor:unconfined    
-      - no-new-privileges
-    restart: unless-stopped
-    depends_on:
-      - wireguard   
+  #pdrcrd:
+    #container_name: pdrcrd
+    #image: iampuid0/pdrcrd:latest  
+    #stdin_open: true # docker run -i
+    #tty: true        # docker run -t    
+    #volumes:
+      #- {{FOLDER_APP_SETTINGS}}/pdrcrd/config:/config
+      #- {{FOLDER_APP_SETTINGS}}/pdrcrd/log:/log
+      #- {{FOLDER_RCLONE}}:/data:shared
+    #environment:
+      #- TZ=Europe/Paris
+      #- RD_API_KEY={{RD_API_KEY}}
+      #- RCLONE_MOUNT_NAME=realdebrid
+      #- RCLONE_DIR_CACHE_TIME=10s
+      #- PLEX_USER={{PLEX_USER}}
+      #- PLEX_TOKEN={{RD_TOKEN_PLEX}}
+      #- PLEX_ADDRESS={{PLEX_ADDRESS}}
+      #- SHOW_MENU=false
+      #- RCLONE_LOG_LEVEL=INFO
+      #- RCLONE_LOG_FILE=/log/realdebrid.log
+    #network_mode: "service:wireguard"
+    #devices:
+      #- /dev/fuse:/dev/fuse:rwm
+    #cap_add:
+      #- SYS_ADMIN   
+    #security_opt:
+      #- apparmor:unconfined    
+      #- no-new-privileges
+    #restart: unless-stopped
+    #depends_on:
+      #- wireguard   
 
   overseerr:
     image: lscr.io/linuxserver/overseerr
