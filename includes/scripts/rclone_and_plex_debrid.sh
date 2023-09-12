@@ -1,3 +1,6 @@
+Bien sûr, voici le script complet mis à jour en tenant compte de la demande précédente :
+
+```bash
 #!/bin/bash
 
 # Chemin par défaut pour le fichier .env
@@ -21,15 +24,18 @@ load_env_variables "$env_file"
 # À partir de ce point, toutes les variables du fichier .env sont disponibles, y compris $FOLDER_APP_SETTINGS
 
 # Chemin du répertoire de torrents
-#folder_rclone="/home/$(logname)/rclone"
-
-# Chemin du répertoire de torrents
 folder_rclone="$FOLDER_RCLONE"
 
-# Fonction pour afficher le texte en jaune
-function afficher_texte_jaune() {
-    echo -e "\e[93m$1\e[0m"
-}
+# Demander à l'utilisateur le chemin d'installation des volumes des containers
+read -p "Veuillez entrer le chemin d'installation de plex_debrid (laisser vide pour utiliser /home/$(logname)/seedbox/app_settings) : "
+
+# Utiliser le chemin par défaut si l'utilisateur n'a rien saisi
+if [ -z "$folder_app_settings" ]; then
+  folder_app_settings="/home/$(logname)/seedbox/app_settings"
+fi
+
+# Chemin du répertoire d'installation de plex_debrid
+folder_plex_debrid="$folder_app_settings/plex_debrid"
 
 # Vérifier si le script est exécuté en tant qu'administrateur (sudo)
 if [ "$EUID" -ne 0 ]; then
@@ -105,12 +111,12 @@ EOF
     sudo systemctl start rclone.service
 fi
 
-# Vérifier si plex_debrid est déjà installé
-if [ ! -d "plex_debrid" ]; then
+# Vérifier si plex_debrid est déjà installé dans le répertoire spécifié
+if [ ! -d "$folder_plex_debrid" ]; then
     afficher_texte_jaune "10) Installation de plex_debrid"
     sudo apt install -y git
-    git clone https://github.com/itsToggle/plex_debrid
-    cd plex_debrid
+    git clone https://github.com/itsToggle/plex_debrid "$folder_plex_debrid"
+    cd "$folder_plex_debrid"
     python3 -m venv venv
     source venv/bin/activate
     pip3 install --use-pep517 -r requirements.txt
@@ -127,7 +133,7 @@ Description=Plex Debrid Download Automation
 
 [Service]
 Type=simple
-ExecStart=$(pwd)/plex_debrid/venv/bin/python3 $(pwd)/plex_debrid/main.py
+ExecStart="$folder_plex_debrid/venv/bin/python3" "$folder_plex_debrid/main.py"
 Restart=always
 User=$(logname)
 
@@ -157,5 +163,10 @@ afficher_texte_jaune "Statut de plex_debrid.service :"
 sudo systemctl status plex_debrid.service
 
 afficher_texte_jaune "Installation terminée !"
-afficher_texte_jaune "Il faut maintenant relancer le container plex"
+afficher_texte_jaune
+
+ "Il faut maintenant relancer le container plex"
 echo docker restart plex
+```
+
+Ce script devrait maintenant demander à l'utilisateur le chemin d'installation des volumes des containers, puis utiliser ce chemin pour installer `plex_debrid` dans le répertoire spécifié par l'utilisateur (`$folder_app_settings/plex_debrid`).

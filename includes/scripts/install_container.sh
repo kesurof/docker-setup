@@ -45,4 +45,4 @@ function start_docker_services() {
 start_docker_services "$docker_compose_file"
 
 
-echo "Vous devez maintenant quitter l'installation puis lancer sudo ./install.sh choix 6 (Installer Rclone-RD et Plex_Debrid)."
+afficher_texte_jaune "Vous devez maintenant quitter l'installation puis lancer sudo ./install.sh choix 6 (Installer Rclone-RD et Plex_Debrid)."

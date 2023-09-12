@@ -35,7 +35,7 @@ else
 fi
 
 # Demander à l'utilisateur le chemin d'installation des volumes des containers (par défaut /home/$(logname)/seedbox/app_settings)
-ask_question "Veuillez entrer le chemin d'installation des volumes des containers : par défaut /home/$(logname)/seedbox/app_settings  "
+ask_question "Veuillez entrer le chemin d'installation des volumes des containers : laisser vide pour utiliser  /home/$(logname)/seedbox/app_settings  "
 read folder_app_settings
 
 # Utiliser le chemin par défaut si l'utilisateur n'a rien saisi
@@ -47,7 +47,7 @@ fi
 create_directory "$folder_app_settings"
 
 # Demander à l'utilisateur le Chemin du dossier rclone (par défaut /home/$(logname)/rclone)
-ask_question "Veuillez entrer le Chemin du dossier rclone : par défaut /home/$(logname)/rclone : "
+ask_question "Veuillez entrer le Chemin du dossier rclone : laisser vide pour utiliser /home/$(logname)/rclone : "
 read folder_rclone
 
 # Utiliser le chemin par défaut si l'utilisateur n'a rien saisi
@@ -63,7 +63,7 @@ ask_question "Veuillez entrer votre clé API RealDebrid : "
 read rd_api_key
 
 # Demander à l'utilisateur le chemin de rclone.config
-ask_question "Veuillez entrer le chemin de rclone.config ou laisser par default : par défault /home/$(logname)/.config/rclone "
+ask_question "Veuillez entrer le chemin de rclone.config : laisser vide pour utiliser /home/$(logname)/.config/rclone "
 read rclone_config
 
 # Utiliser le chemin du fichier rclone.conf personnalisé s'il est défini, sinon utiliser le chemin par défaut
