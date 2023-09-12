@@ -107,8 +107,6 @@ Après l'installation de Docker Setup, le script créera une structure de dossie
 - **portainer** : Les données de Portainer, un gestionnaire de conteneurs Docker.
 - **plex/config** : Les fichiers de configuration de Plex Media Server.
 - **plex/transcode** : L'emplacement où Plex stocke les fichiers transcodés.
-- **pdrcrd/config** : Les fichiers de configuration de pdrcrd, un outil de gestion de téléchargement.
-- **pdrcrd/log** : Les fichiers journaux de pdrcrd.
 - **wireguard/config** : Les fichiers de configuration de WireGuard pour les connexions VPN.
 - **overseerr/config** : Les fichiers de configuration d'Overseerr, une application de demande de contenu.
 - **tautulli/config** : Les fichiers de configuration de Tautulli, un moniteur de serveur Plex.
