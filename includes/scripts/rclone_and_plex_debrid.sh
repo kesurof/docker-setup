@@ -165,10 +165,7 @@ afficher_texte_jaune "Statut de plex_debrid.service :"
 sudo systemctl status plex_debrid.service
 
 afficher_texte_jaune "Installation terminée !"
-afficher_texte_jaune
 
- "Il faut maintenant relancer le container plex"
-echo docker restart plex
-```
-
-Ce script devrait maintenant demander à l'utilisateur le chemin d'installation des volumes des containers, puis utiliser ce chemin pour installer `plex_debrid` dans le répertoire spécifié par l'utilisateur (`$folder_app_settings/plex_debrid`).
+# Afficher un message pour indiquer à l'utilisateur de relancer le container plex
+echo "Il faut maintenant relancer le container plex"
+docker restart plex
