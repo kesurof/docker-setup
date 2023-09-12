@@ -62,10 +62,15 @@ if ! command -v rclone &> /dev/null; then
     wget https://github.com/itsToggle/rclone_RD/releases/download/v1.58.1-rd.2.2/rclone-linux
     chmod +x rclone-linux
     sudo mv rclone-linux /usr/local/bin/rclone
+
+    # Définir le répertoire de configuration de rclone
+    mkdir -p /home/$(logname)/.config/rclone
+    export RCLONE_CONFIG=/home/$(logname)/.config/rclone/rclone.conf
+
     rclone config
 fi
 
-# Vérifier si le dossier "/mnt/torrents" existe
+# Vérifier si le dossier "$folder_rclone" existe
 if [ ! -d "$folder_rclone" ]; then
     afficher_texte_jaune "6) Création du dossier $folder_rclone"
     sudo mkdir -p "$folder_rclone"
