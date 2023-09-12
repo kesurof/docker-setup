@@ -26,8 +26,6 @@ services:
   plex:
     image: lscr.io/linuxserver/plex:latest
     container_name: plex
-    ports:
-      - 32400:32400
     environment:
       - VERSION=docker
       - PUID=1000
@@ -35,6 +33,8 @@ services:
       - PLEX_CLAIM={{PLEX_CLAIM}}
       - TZ=Europe/Paris
     network_mode: bridge
+    ports:
+      - 32400:32400
     volumes:
       - {{FOLDER_APP_SETTINGS}}/plex/config:/config
       - {{FOLDER_APP_SETTINGS}}/plex/transcode:/transcode
