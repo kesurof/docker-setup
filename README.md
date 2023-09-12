@@ -116,7 +116,7 @@ Chacun de ces dossiers contient les données et configurations spécifiques à c
 
 ## Script d'installation - Installer Rclone-RD et Plex_Debrid
 
-**-> Le script ./install.sh doit êre lancé avec sudo uniquement pour ce choix.**
+**-> Le script ./install.sh doit être lancé avec sudo uniquement pour ce choix (N°6).**
 
 Le script d'installation est conçu pour simplifier la configuration d'un environnement de téléchargement et de streaming utilisant les services Real Debrid, Rclone, et Plex Debrid sur un système Linux. Il automatise l'installation et la configuration de ces composants pour une utilisation plus facile et plus efficace.
 
