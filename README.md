@@ -114,4 +114,67 @@ Après l'installation de Docker Setup, le script créera une structure de dossie
 
 Chacun de ces dossiers contient les données et configurations spécifiques à chaque service Docker pour faciliter la gestion et la sauvegarde des données.
 
+## Script d'installation - Installer Rclone-RD et Plex_Debrid
+
+Le script d'installation est conçu pour simplifier la configuration d'un environnement de téléchargement et de streaming utilisant les services Real Debrid, Rclone, et Plex Debrid sur un système Linux. Il automatise l'installation et la configuration de ces composants pour une utilisation plus facile et plus efficace.
+
+---
+
+## Avantages
+
+1. **Simplicité d'installation** : Le script automatise le processus d'installation de plusieurs composants, éliminant ainsi la nécessité de configurer manuellement chaque service.
+
+2. **Gestion des dépendances** : Le script vérifie et installe automatiquement les dépendances nécessaires, telles que Python 3, python3-venv, et pip3, garantissant que le système est prêt à exécuter les services.
+
+3. **Configuration de Rclone** : Rclone est configuré pour monter un lecteur Real Debrid, simplifiant ainsi l'accès aux fichiers hébergés dans le cloud.
+
+4. **Installation de Plex Debrid** : Le script installe et configure Plex Debrid, permettant de gérer et de télécharger des médias à partir de Real Debrid.
+
+5. **Intégration avec systemd** : Les services Rclone et Plex Debrid sont configurés en tant que services systemd, ce qui garantit qu'ils sont toujours en cours d'exécution, même après le redémarrage du système.
+
+---
+
+## Fonctionnement du script
+
+Le script fonctionne de la manière suivante :
+
+1. **Chargement des variables d'environnement** : Le script charge les variables d'environnement à partir d'un fichier `.env`, qui doit être situé dans le répertoire personnel de l'utilisateur. Si le fichier n'est pas trouvé, le script affiche un message d'erreur et s'arrête.
+
+2. **Vérification des droits d'administration** : Le script vérifie si l'utilisateur exécute le script en tant qu'administrateur (sudo). Si ce n'est pas le cas, il affiche un avertissement et s'arrête.
+
+3. **Vérification des dépendances** : Le script vérifie si Python 3, python3-venv, et pip3 sont installés. S'ils ne le sont pas, il les installe automatiquement.
+
+4. **Installation de Rclone** : Si Rclone n'est pas déjà installé, le script télécharge et installe la version de Rclone spécifiée. Il configure également le répertoire de configuration Rclone.
+
+5. **Création du répertoire Rclone** : Si le répertoire spécifié pour Rclone n'existe pas, le script le crée.
+
+6. **Changement de propriétaire et permissions** : Le script change le propriétaire du répertoire Rclone à l'utilisateur actuel et accorde les droits d'écriture.
+
+7. **Configuration des services systemd** : Le script configure les services systemd pour Rclone et Plex Debrid en créant les fichiers de service nécessaires.
+
+8. **Ajout de user_allow_other à fuse.conf** : Le script modifie le fichier `/etc/fuse.conf` pour autoriser l'utilisateur à monter le lecteur Rclone.
+
+9. **Redémarrage du service Rclone** : Le script redémarre le service Rclone pour prendre en compte les modifications.
+
+10. **Attente et vérification** : Le script attend quelques secondes, puis affiche le statut des services Rclone et Plex Debrid pour vérification.
+
+11. **Installation terminée** : Le script affiche un message de confirmation lorsque l'installation est terminée.
+
+---
+
+## Utilisation
+
+Pour utiliser le script d'installation, suivez ces étapes :
+
+1. Assurez-vous que vous exécutez le script en tant qu'administrateur (utilisez `sudo ./install.sh`).
+
+2. Assurez-vous que le fichier `.env` contenant les variables d'environnement appropriées est présent dans le répertoire personnel de l'utilisateur.
+
+4. Suivez les messages du script pour vérifier l'installation et la configuration des différents composants.
+
+5. Une fois le script terminé, vérifiez le statut des services Rclone et Plex Debrid en utilisant `sudo systemctl status rclone.service` et `sudo systemctl status plex_debrid.service`.
+
+---
+
+Ce script simplifie grandement la mise en place d'un environnement de téléchargement et de streaming basé sur Real Debrid, Rclone et Plex Debrid. Suivez les étapes d'installation pour profiter rapidement de ces services sur votre système Linux.
 ---
