@@ -51,10 +51,10 @@ Avant d'installer Docker Setup, assurez-vous de disposer des éléments suivants
   ```
 - Vous devez ensuite vous déconnecter de root, afin de vous connecter avec le nouvel utilisateur
 
-- **Git et mise à jour** : Installez Git et mettre à jour :
+- **Git, fuse et mise à jour** : Installez Git et mettre à jour :
   
    ```bash
-   sudo apt-get update && sudo apt-get upgrade -y && sudo apt install git -y
+   sudo apt-get update && sudo apt-get upgrade -y && sudo apt install git -y && sudo apt install fuse -y
    ```
    
 ## Procédure d'Installation
@@ -82,11 +82,11 @@ Suivez ces étapes pour installer Docker Setup sur votre système :
    Ensuite, exécutez le script :
 
    ```bash
-   ./install.sh
+   sudo ./install.sh
    ```
    **en version rapide**
    ```bash
-   git clone https://github.com/kesurof/docker-setup.git && cd docker-setup && chmod +x install.sh && ./install.sh
+   git clone https://github.com/kesurof/docker-setup.git && cd docker-setup && chmod +x install.sh && sudo ./install.sh
    ```
 
 4. **Suivez les instructions du script** : Pendant l'exécution du script, il vous demandera peut-être des informations spécifiques ou des confirmations. Assurez-vous de suivre ces instructions et de fournir les informations requises.
