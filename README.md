@@ -82,11 +82,11 @@ Suivez ces étapes pour installer Docker Setup sur votre système :
    Ensuite, exécutez le script :
 
    ```bash
-   sudo ./install.sh
+   ./install.sh
    ```
    **en version rapide**
    ```bash
-   git clone https://github.com/kesurof/docker-setup.git && cd docker-setup && chmod +x install.sh && sudo ./install.sh
+   git clone https://github.com/kesurof/docker-setup.git && cd docker-setup && chmod +x install.sh && ./install.sh
    ```
 
 4. **Suivez les instructions du script** : Pendant l'exécution du script, il vous demandera peut-être des informations spécifiques ou des confirmations. Assurez-vous de suivre ces instructions et de fournir les informations requises.
@@ -115,6 +115,8 @@ Après l'installation de Docker Setup, le script créera une structure de dossie
 Chacun de ces dossiers contient les données et configurations spécifiques à chaque service Docker pour faciliter la gestion et la sauvegarde des données.
 
 ## Script d'installation - Installer Rclone-RD et Plex_Debrid
+
+**-> Le script ./install.sh doit êre lancé avec sudo uniquement pour ce choix.**
 
 Le script d'installation est conçu pour simplifier la configuration d'un environnement de téléchargement et de streaming utilisant les services Real Debrid, Rclone, et Plex Debrid sur un système Linux. Il automatise l'installation et la configuration de ces composants pour une utilisation plus facile et plus efficace.
 
