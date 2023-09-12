@@ -1,6 +1,3 @@
-Bien sûr, voici le script complet mis à jour en tenant compte de la demande précédente :
-
-```bash
 #!/bin/bash
 
 # Chemin par défaut pour le fichier .env
