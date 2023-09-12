@@ -135,7 +135,8 @@ Description=Plex Debrid Download Automation
 
 [Service]
 Type=simple
-ExecStart="$folder_plex_debrid/venv/bin/python3" "$folder_plex_debrid/main.py"
+WorkingDirectory=$FOLDER_APP_SETTINGS/plex_debrid  # Définissez le répertoire de travail
+ExecStart=$FOLDER_APP_SETTINGS/plex_debrid/venv/bin/python3 $FOLDER_APP_SETTINGS/plex_debrid/main.py
 Restart=always
 User=$(logname)
 
