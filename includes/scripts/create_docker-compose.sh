@@ -118,11 +118,14 @@ if [ -z "$rd_token_plex" ]; then
 fi
 rm -f /tmp/plex_sign_in
 
+# Utilisez curl pour récupérer l'adresse IP publique de l'utilisateur depuis httpbin.org
+ip_public=$(curl -s http://httpbin.org/ip | grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+')
+
 # URL Plex par défaut avec IP publique
 default_plex_address="http://$ip_public:32400"
 
 # Demander à l'utilisateur le nom de domaine ou l'adresse IP du serveur Plex
-ask_question "Veuillez entrer le nom de domaine ou l'adresse IP du serveur Plex (laissez vide pour utiliser l'URL par défaut : $default_plex_address) : "
+ask_question "Veuillez entrer l'adresse IP Public du serveur Plex (laissez vide pour utiliser l'URL par défaut : $default_plex_address) : "
 read public_plex_address
 
 # Utilisation de l'URL par défaut si l'utilisateur n'en spécifie pas
