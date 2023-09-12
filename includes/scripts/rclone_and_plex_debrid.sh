@@ -157,3 +157,5 @@ afficher_texte_jaune "Statut de plex_debrid.service :"
 sudo systemctl status plex_debrid.service
 
 afficher_texte_jaune "Installation terminée !"
+afficher_texte_jaune "Il faut maintenant relancer le container plex"
+echo docker restart plex
