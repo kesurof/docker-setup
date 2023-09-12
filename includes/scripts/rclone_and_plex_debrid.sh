@@ -151,6 +151,9 @@ fi
 echo 'user_allow_other' | sudo tee -a /etc/fuse.conf
 sudo systemctl restart rclone.service
 
+# changer le propriétaire du dossier plex_debrid :
+sudo chown -R $(logname):$(logname) "$folder_plex_debrid"
+
 # Attendre 10 secondes avec un décompte
 for i in {10..1}; do
     echo -e "Attente de $i secondes..."
