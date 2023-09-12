@@ -13,7 +13,7 @@ function create_directory() {
 }
 
 # Chemin par défaut pour le fichier .env
-env_file_path="/home/$USER"
+env_file_path="/home/$(logname)"
 env_file="$env_file_path/.env"
 
 # Si le fichier .env existe, afficher le contenu des variables et permettre la modification
@@ -34,25 +34,25 @@ else
   echo "Veuillez fournir les informations suivantes :"
 fi
 
-# Demander à l'utilisateur le chemin d'installation des volumes des containers (par défaut /home/$USER/seedbox/app_settings)
-ask_question "Veuillez entrer le chemin d'installation des volumes des containers : par défaut /home/$USER/seedbox/app_settings  "
+# Demander à l'utilisateur le chemin d'installation des volumes des containers (par défaut /home/$(logname)/seedbox/app_settings)
+ask_question "Veuillez entrer le chemin d'installation des volumes des containers : par défaut /home/$(logname)/seedbox/app_settings  "
 read folder_app_settings
 
 # Utiliser le chemin par défaut si l'utilisateur n'a rien saisi
 if [ -z "$folder_app_settings" ]; then
-  folder_app_settings="/home/$USER/seedbox/app_settings"
+  folder_app_settings="/home/$(logname)/seedbox/app_settings"
 fi
 
 # Créer le répertoire si nécessaire
 create_directory "$folder_app_settings"
 
-# Demander à l'utilisateur le Chemin du dossier rclone (par défaut /home/$USER/rclone)
-ask_question "Veuillez entrer le Chemin du dossier rclone : par défaut /home/$USER/rclone : "
+# Demander à l'utilisateur le Chemin du dossier rclone (par défaut /home/$(logname)/rclone)
+ask_question "Veuillez entrer le Chemin du dossier rclone : par défaut /home/$(logname)/rclone : "
 read folder_rclone
 
 # Utiliser le chemin par défaut si l'utilisateur n'a rien saisi
 if [ -z "$folder_rclone" ]; then
-  folder_rclone="/home/$USER/rclone"
+  folder_rclone="/home/$(logname)/rclone"
 fi
 
 # Créer le répertoire si nécessaire
@@ -61,6 +61,26 @@ create_directory "$folder_rclone"
 # Demander à l'utilisateur la clé API de RealDebrid
 ask_question "Veuillez entrer votre clé API RealDebrid : "
 read rd_api_key
+
+# Demander à l'utilisateur le chemin de rclone.config
+ask_question "Veuillez entrer le chemin de rclone.config ou laisser par default : par défault /home/$(logname)/.config/rclone "
+read rclone_config
+
+# Utiliser le chemin du fichier rclone.conf personnalisé s'il est défini, sinon utiliser le chemin par défaut
+rclone_config_file="/home/$(logname)/.config/rclone/rclone.conf"
+if [ ! -z "$rclone_config" ]; then
+  echo "$rclone_config" > "$rclone_config_file"
+else
+  # Créer le répertoire .config/rclone s'il n'existe pas
+  create_directory "/home/$(logname)/.config/rclone"
+  
+  # Écrire la configuration rclone dans le fichier rclone.conf en remplaçant {{RD_API_KEY}}
+  cat <<EOL > "$rclone_config_file"
+[realdebrid]
+type = realdebrid
+api_key = $rd_api_key
+EOL
+fi
 
 # Recuperation token Plex token pour Plex_debrid
 
@@ -98,9 +118,19 @@ if [ -z "$rd_token_plex" ]; then
 fi
 rm -f /tmp/plex_sign_in
 
+# URL Plex par défaut avec IP publique
+default_plex_address="http://$ip_public:32400"
+
 # Demander à l'utilisateur le nom de domaine ou l'adresse IP du serveur Plex
-ask_question "Veuillez entrer le nom de domaine ou l'adresse IP:32400 du serveur Plex : "
-read plex_address
+ask_question "Veuillez entrer le nom de domaine ou l'adresse IP du serveur Plex (laissez vide pour utiliser l'URL par défaut : $default_plex_address) : "
+read public_plex_address
+
+# Utilisation de l'URL par défaut si l'utilisateur n'en spécifie pas
+if [ -z "$public_plex_address" ]; then
+  plex_address="$default_plex_address"
+else
+  plex_address="$public_plex_address"
+fi
 
 # Demander à l'utilisateur le claim Plex (https://www.plex.tv/claim/)
 ask_question "Veuillez entrer votre claim Plex (https://www.plex.tv/claim/) : "
