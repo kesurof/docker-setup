@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Fonction pour afficher du texte en jaune
+function afficher_texte_jaune() {
+  echo -e "\e[93m$1\e[0m"
+}
+
 # Chemin par défaut pour le fichier .env
 env_file_path="/home/$(logname)"
 env_file="$env_file_path/.env"
