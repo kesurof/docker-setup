@@ -44,3 +44,5 @@ function start_docker_services() {
 # Exécuter Docker Compose pour installer et démarrer les services
 start_docker_services "$docker_compose_file"
 
+
+echo "Vous devez maintenant quitter l'installation puis lancer sudo ./install.sh choix 6 (Installer Rclone-RD et Plex_Debrid)."
