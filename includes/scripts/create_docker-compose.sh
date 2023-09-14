@@ -82,7 +82,7 @@ api_key = $rd_api_key
 EOL
 fi
 
-# Recuperation token Plex token pour Plex_debrid
+# Récupération du token Plex pour Plex_debrid
 
 if [ -z "$plex_user" ] || [ -z "$plex_passwd" ]; then
     plex_user=$1
@@ -90,16 +90,18 @@ if [ -z "$plex_user" ] || [ -z "$plex_passwd" ]; then
 fi
 
 while [ -z "$plex_user" ]; do
-    ask_question "Veuillez entrer votre nom d'utilisateur plex : "
+    ask_question "Veuillez entrer votre nom d'utilisateur Plex : "
     read plex_user
 done
+
 while [ -z "$plex_passwd" ]; do
-    ask_question "Veuillez entrer votre mot de passe plex : "
+    ask_question "Veuillez entrer votre mot de passe Plex : "
     read plex_passwd
 done
-    ask_question "Récupération du token Plex... "
 
-curl -qu "${plex_user}":"${plex_passwd}" 'https://plex.tv/users/sign_in.xml' \
+ask_question "Récupération du token Plex... "
+
+plex_sign_in_response=$(curl -qu "${plex_user}":"${plex_passwd}" 'https://plex.tv/users/sign_in.xml' \
     -X POST -H 'X-Plex-Device-Name: PlexMediaServer' \
     -H 'X-Plex-Provides: server' \
     -H 'X-Plex-Version: 0.9' \
@@ -107,25 +109,23 @@ curl -qu "${plex_user}":"${plex_passwd}" 'https://plex.tv/users/sign_in.xml' \
     -H 'X-Plex-Platform: xcid' \
     -H 'X-Plex-Product: Plex Media Server'\
     -H 'X-Plex-Device: Linux'\
-    -H 'X-Plex-Client-Identifier: XXXX' --compressed >/tmp/plex_sign_in
-rd_token_plex=$(sed -n 's/.*<authentication-token>\(.*\)<\/authentication-token>.*/\1/p' /tmp/plex_sign_in)
-if [ -z "$rd_token_plex" ]; then
-    #cat /tmp/plex_sign_in
-    rd_token_plex=$(cat /tmp/plex_sign_in)
-    rm -f /tmp/plex_sign_in
-    >&2 echo 'Failed to retrieve the X-Plex-Token.'
-    exit 0
-fi
-rm -f /tmp/plex_sign_in
+    -H 'X-Plex-Client-Identifier: XXXX' --compressed)
 
-# Utilisez curl pour récupérer l'adresse IP publique de l'utilisateur depuis httpbin.org
+rd_token_plex=$(echo "$plex_sign_in_response" | sed -n 's/.*<authentication-token>\(.*\)<\/authentication-token>.*/\1/p')
+
+if [ -z "$rd_token_plex" ]; then
+    >&2 echo 'Échec de la récupération du token X-Plex-Token.'
+    exit 1
+fi
+
+# Utilisation de curl pour récupérer l'adresse IP publique de l'utilisateur depuis httpbin.org
 ip_public=$(curl -s http://httpbin.org/ip | grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+')
 
 # URL Plex par défaut avec IP publique
 default_plex_address="http://$ip_public:32400"
 
 # Demander à l'utilisateur le nom de domaine ou l'adresse IP du serveur Plex
-ask_question "Veuillez entrer l'adresse IP Public du serveur Plex (laissez vide pour utiliser l'URL par défaut : $default_plex_address) : "
+ask_question "Veuillez entrer l'adresse IP publique du serveur Plex (laissez vide pour utiliser l'URL par défaut : $default_plex_address) : "
 read public_plex_address
 
 # Utilisation de l'URL par défaut si l'utilisateur n'en spécifie pas
@@ -139,7 +139,7 @@ fi
 ask_question "Veuillez entrer votre claim Plex (https://www.plex.tv/claim/) : "
 read plex_claim
 
-# Écrit les réponses dans le fichier .env
+# Écrire les réponses dans le fichier .env
 echo "FOLDER_APP_SETTINGS=$folder_app_settings" > "$env_file"
 echo "FOLDER_RCLONE=$folder_rclone" >> "$env_file"
 echo "RD_API_KEY=$rd_api_key" >> "$env_file"
