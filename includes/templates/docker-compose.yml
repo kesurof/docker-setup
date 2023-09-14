@@ -45,9 +45,7 @@ services:
       - {{FOLDER_APP_SETTINGS}}/plex/transcode:/transcode
       - {{FOLDER_RCLONE}}:/rclone
     restart: unless-stopped
-    networks:
-      mon-reseau:
-        ipv4_address: 172.18.0.4 # Adresse IP statique pour plex
+    network_mode: bridge
 
   overseerr:
     image: lscr.io/linuxserver/overseerr
