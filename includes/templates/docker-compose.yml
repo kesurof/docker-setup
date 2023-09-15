@@ -47,6 +47,23 @@ services:
     restart: unless-stopped
     network_mode: bridge
 
+  rdtclient:
+    container_name: rdtclient
+    volumes:
+      - {{FOLDER_APP_SETTINGS}}/local/:/data/downloads'
+      - '{{FOLDER_APP_SETTINGS}}/rdt-client/:/data/db'
+    image: rogerfar/rdtclient
+    restart: always
+    logging:
+      driver: json-file
+        options:
+          max-size: 10m
+    ports:
+      - '6500:6500'
+    networks:
+      mon-reseau:
+        ipv4_address: 172.18.0.4 # Adresse IP statique pour nginx-proxy-manager
+        
   overseerr:
     image: lscr.io/linuxserver/overseerr
     container_name: overseerr
