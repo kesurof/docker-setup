@@ -46,6 +46,18 @@ fi
 # Créer le répertoire si nécessaire
 create_directory "$folder_app_settings"
 
+# Demander à l'utilisateur le Chemin du dossier home/$(logname) (par défaut /home/$(logname))
+ask_question "Veuillez entrer le Chemin du dossier home/$(logname) : laisser vide pour utiliser /home/$(logname) : "
+read folder_home
+
+# Utiliser le chemin par défaut si l'utilisateur n'a rien saisi
+if [ -z "$folder_home" ]; then
+  folder_home="/home/$(logname)"
+fi
+
+# Créer le répertoire si nécessaire
+create_directory "$folder_home"
+
 # Demander à l'utilisateur le Chemin du dossier rclone (par défaut /home/$(logname)/rclone)
 ask_question "Veuillez entrer le Chemin du dossier rclone : laisser vide pour utiliser /home/$(logname)/rclone : "
 read folder_rclone
