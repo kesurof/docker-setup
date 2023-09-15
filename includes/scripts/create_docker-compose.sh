@@ -153,6 +153,7 @@ read plex_claim
 
 # Écrire les réponses dans le fichier .env
 echo "FOLDER_APP_SETTINGS=$folder_app_settings" > "$env_file"
+echo "FOLDER_HOME=$folder_home" >> "$env_file"
 echo "FOLDER_RCLONE=$folder_rclone" >> "$env_file"
 echo "RD_API_KEY=$rd_api_key" >> "$env_file"
 echo "RD_TOKEN_PLEX=$rd_token_plex" >> "$env_file"
