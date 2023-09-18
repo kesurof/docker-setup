@@ -169,7 +169,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=Etc/UTC
+      - TZ=Europe/Paris
     volumes:
       - {{FOLDER_APP_SETTINGS}}/sonarr/:/config
       - {{FOLDER_HOME}}:/{{FOLDER_HOME}}
@@ -186,7 +186,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=Etc/UTC
+      - TZ=Europe/Paris
     volumes:
       - {{FOLDER_APP_SETTINGS}}/radarr/:/config
       - {{FOLDER_HOME}}:/{{FOLDER_HOME}}
@@ -197,6 +197,23 @@ services:
       mon-reseau:
         ipv4_address: 172.18.0.12 # Adresse IP statique pour wireguard
 
+  filebot:
+    image: lscr.io/jlesage/filebot
+    container_name: filebot
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
+    volumes:
+      - {{FOLDER_APP_SETTINGS}}/filebot/:/config:rw
+      - {{FOLDER_HOME}}/seedbox:/storage:rw
+    ports:
+      - 7878:7878
+    restart: unless-stopped
+    networks:
+      mon-reseau:
+        ipv4_address: 172.18.0.13 # Adresse IP statique pour wireguard
+        
   watchtower:
     image: containrrr/watchtower
     container_name: watchtower
@@ -208,6 +225,9 @@ services:
       WATCHTOWER_CLEANUP: "true"
       WATCHTOWER_NO_STARTUP_MESSAGE: "true"
       WATCHTOWER_SCHEDULE: "0 0 4 * * *"
+    networks:
+      mon-reseau:
+        ipv4_address: 172.18.0.30 # Adresse IP statique pour wireguard
 
 networks:
   mon-reseau:
