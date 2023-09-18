@@ -197,6 +197,20 @@ services:
       mon-reseau:
         ipv4_address: 172.18.0.12 # Adresse IP statique pour wireguard
 
+  filebot-node:
+    container_name: filebot-node
+    image: rednoah/filebot:node
+    restart: unless-stopped
+    volumes:
+      - {{FOLDER_HOME}}/filebot/:/data:rw
+      - {{FOLDER_RCLONE}}:/volume1:rw
+      - {{FOLDER_MEDIAS}}:/volume1/output:rw
+    ports:
+      - 5452:5452
+    environment:
+      - PUID=1000
+      - PGID=1000
+
   filebot:
     image: lscr.io/jlesage/filebot
     container_name: filebot

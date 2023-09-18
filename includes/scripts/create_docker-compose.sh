@@ -10,6 +10,11 @@ function create_directory() {
   if [ ! -d "$1" ]; then
     mkdir -p "$1"
   fi
+  # Définir les permissions rwxr-xr-x pour le répertoire
+  chmod 755 "$1"
+
+  # Définir le propriétaire et le groupe du répertoire comme $logname:$logname
+  chown "$(logname):$(logname)" "$1"
 }
 
 # Chemin par défaut pour le fichier .env
@@ -34,65 +39,46 @@ else
   echo "Veuillez fournir les informations suivantes :"
 fi
 
-# Demander à l'utilisateur le chemin d'installation des volumes des containers (par défaut /home/$(logname)/seedbox/app_settings)
-ask_question "Veuillez entrer le chemin d'installation des volumes des containers : laisser vide pour utiliser  /home/$(logname)/seedbox/app_settings  "
-read folder_app_settings
+# Définir le chemin du répertoire de l'utilisateur
+user_home="/home/$(logname)"
 
-# Utiliser le chemin par défaut si l'utilisateur n'a rien saisi
-if [ -z "$folder_app_settings" ]; then
-  folder_app_settings="/home/$(logname)/seedbox/app_settings"
-fi
+# Définir le chemin des dossiers à créer
+local_dir="$user_home/seedbox/local"
+medias_dir="$user_home/seedbox/Medias"
+app_settings_dir="$user_home/seedbox/app_settings"
+rclone_dir="$user_home/rclone"
 
-# Créer le répertoire si nécessaire
-create_directory "$folder_app_settings"
+# Utiliser la fonction pour créer les dossiers avec les permissions
+create_directory "$local_dir"
+create_directory "$medias_dir"
+create_directory "$app_settings_dir"
+create_directory "$rclone_dir"
 
-# Demander à l'utilisateur le Chemin du dossier home/$(logname) (par défaut /home/$(logname))
-ask_question "Veuillez entrer le Chemin du dossier home/$(logname) : laisser vide pour utiliser /home/$(logname) : "
-read folder_home
-
-# Utiliser le chemin par défaut si l'utilisateur n'a rien saisi
-if [ -z "$folder_home" ]; then
-  folder_home="/home/$(logname)"
-fi
-
-# Créer le répertoire si nécessaire
-create_directory "$folder_home"
-
-# Demander à l'utilisateur le Chemin du dossier rclone (par défaut /home/$(logname)/rclone)
-ask_question "Veuillez entrer le Chemin du dossier rclone : laisser vide pour utiliser /home/$(logname)/rclone : "
-read folder_rclone
-
-# Utiliser le chemin par défaut si l'utilisateur n'a rien saisi
-if [ -z "$folder_rclone" ]; then
-  folder_rclone="/home/$(logname)/rclone"
-fi
-
-# Créer le répertoire si nécessaire
-create_directory "$folder_rclone"
+# Afficher un message de confirmation
+echo "Les dossiers ont été créés avec les permissions suivantes :"
+echo " - $local_dir : $(stat -c '%a %n' "$local_dir")"
+echo " - $medias_dir : $(stat -c '%a %n' "$medias_dir")"
+echo " - $app_settings_dir : $(stat -c '%a %n' "$app_settings_dir")"
+echo " - $rclone_dir : $(stat -c '%a %n' "$rclone_dir")"
 
 # Demander à l'utilisateur la clé API de RealDebrid
 ask_question "Veuillez entrer votre clé API RealDebrid : "
 read rd_api_key
 
-# Demander à l'utilisateur le chemin de rclone.config
-ask_question "Veuillez entrer le chemin de rclone.config : laisser vide pour utiliser /home/$(logname)/.config/rclone "
-read rclone_config
-
-# Utiliser le chemin du fichier rclone.conf personnalisé s'il est défini, sinon utiliser le chemin par défaut
+# Chemin du fichier rclone.conf
 rclone_config_file="/home/$(logname)/.config/rclone/rclone.conf"
-if [ ! -z "$rclone_config" ]; then
-  echo "$rclone_config" > "$rclone_config_file"
-else
-  # Créer le répertoire .config/rclone s'il n'existe pas
-  create_directory "/home/$(logname)/.config/rclone"
-  
-  # Écrire la configuration rclone dans le fichier rclone.conf en remplaçant {{RD_API_KEY}}
-  cat <<EOL > "$rclone_config_file"
+
+# Utilisez la fonction create_directory pour créer le répertoire .config/rclone s'il n'existe pas
+create_directory "/home/$(logname)/.config/rclone"
+
+# Écrire la configuration rclone dans le fichier rclone.conf en remplaçant {{RD_API_KEY}}
+cat <<EOL > "$rclone_config_file"
 [realdebrid]
 type = realdebrid
 api_key = $rd_api_key
 EOL
-fi
+
+echo "Le fichier rclone.conf a été créé dans $rclone_config_file"
 
 # Récupération du token Plex pour Plex_debrid
 
@@ -134,27 +120,19 @@ fi
 ip_public=$(curl -s http://httpbin.org/ip | grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+')
 
 # URL Plex par défaut avec IP publique
-default_plex_address="http://$ip_public:32400"
-
-# Demander à l'utilisateur le nom de domaine ou l'adresse IP du serveur Plex
-ask_question "Veuillez entrer l'adresse IP publique du serveur Plex (laissez vide pour utiliser l'URL par défaut : $default_plex_address) : "
-read public_plex_address
-
-# Utilisation de l'URL par défaut si l'utilisateur n'en spécifie pas
-if [ -z "$public_plex_address" ]; then
-  plex_address="$default_plex_address"
-else
-  plex_address="$public_plex_address"
-fi
+plex_address="http://$ip_public:32400"
 
 # Demander à l'utilisateur le claim Plex (https://www.plex.tv/claim/)
 ask_question "Veuillez entrer votre claim Plex (https://www.plex.tv/claim/) : "
 read plex_claim
 
 # Écrire les réponses dans le fichier .env
-echo "FOLDER_APP_SETTINGS=$folder_app_settings" > "$env_file"
-echo "FOLDER_HOME=$folder_home" >> "$env_file"
-echo "FOLDER_RCLONE=$folder_rclone" >> "$env_file"
+echo "USER_HOME=$user_home" > "$env_file"
+echo "LOCAL_DIR=$local_dir" > "$env_file"
+echo "MEDIAS_DIR=$medias_dir" > "$env_file"
+echo "APP_SETTINGS_DIR=$app_settings_dir" > "$env_file"
+echo "RCLONE_DIR=$rclone_dir" >> "$env_file"
+echo "RCLONE_CONFIG_FILE=$rclone_config_file" >> "$env_file"
 echo "RD_API_KEY=$rd_api_key" >> "$env_file"
 echo "RD_TOKEN_PLEX=$rd_token_plex" >> "$env_file"
 echo "PLEX_ADDRESS=$plex_address" >> "$env_file"
@@ -164,16 +142,16 @@ echo "PLEX_CLAIM=$plex_claim" >> "$env_file"
 
 echo -e "\e[32mConfiguration terminée. Les informations ont été écrites dans le fichier $env_file.\e[0m"
 
-# Copier le contenu du fichier includes/templates/docker-compose.yml vers $folder_app_settings
-cp includes/templates/docker-compose.yml "$folder_app_settings"
+# Copier le contenu du fichier includes/templates/docker-compose.yml vers $app_settings_dir
+cp includes/templates/docker-compose.yml "$app_settings_dir"
 
 # Remplacer les variables dans docker-compose.yml en utilisant les valeurs du .env
-env_vars=$(grep -oE '\{\{[A-Za-z_][A-Za-z_0-9]*\}\}' "$folder_app_settings/docker-compose.yml")
+env_vars=$(grep -oE '\{\{[A-Za-z_][A-Za-z_0-9]*\}\}' "$app_settings_dir/docker-compose.yml")
 
 for var in $env_vars; do
   var_name=$(echo "$var" | sed 's/[{}]//g')
   var_value=$(grep "^$var_name=" "$env_file" | cut -d'=' -f2)
-  sed -i "s|{{${var_name}}}|${var_value}|g" "$folder_app_settings/docker-compose.yml"
+  sed -i "s|{{${var_name}}}|${var_value}|g" "$app_settings_dir/docker-compose.yml"
 done
 
 # Afficher un message
