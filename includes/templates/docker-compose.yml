@@ -10,8 +10,8 @@ services:
       - 81:81
       - 443:443
     volumes:
-      - {{FOLDER_APP_SETTINGS}}/nginx-proxy-manager/data:/data
-      - {{FOLDER_APP_SETTINGS}}/nginx-proxy-manager/letsencrypt:/etc/letsencrypt
+      - {{APP_SETTINGS_DIR}}/nginx-proxy-manager/data:/data
+      - {{APP_SETTINGS_DIR}}/nginx-proxy-manager/letsencrypt:/etc/letsencrypt
     networks:
       mon-reseau:
         ipv4_address: 172.18.0.2 # Adresse IP statique pour nginx-proxy-manager
@@ -22,7 +22,7 @@ services:
     restart: unless-stopped
     volumes: 
       - /var/run/docker.sock:/var/run/docker.sock
-      - {{FOLDER_APP_SETTINGS}}/portainer:/data
+      - {{APP_SETTINGS_DIR}}/portainer:/data
     ports:
       - 9000:9000
     networks:
@@ -41,17 +41,17 @@ services:
     ports:
       - 32400:32400
     volumes:
-      - {{FOLDER_APP_SETTINGS}}/plex/config:/config
-      - {{FOLDER_APP_SETTINGS}}/plex/transcode:/transcode
-      - {{FOLDER_RCLONE}}:/rclone
+      - {{APP_SETTINGS_DIR}}/plex/config:/config
+      - {{APP_SETTINGS_DIR}}/plex/transcode:/transcode
+      - {{RCLONE_DIR}}:/rclone
     restart: unless-stopped
     network_mode: bridge
 
   rdtclient:
     container_name: rdtclient
     volumes:
-      - '{{FOLDER_APP_SETTINGS}}/local/:/data/downloads'
-      - '{{FOLDER_APP_SETTINGS}}/rdt-client/:/data/db'
+      - '{{APP_SETTINGS_DIR}}/local/:/data/downloads'
+      - '{{APP_SETTINGS_DIR}}/rdt-client/:/data/db'
     image: rogerfar/rdtclient
     restart: always
     logging:
@@ -73,7 +73,7 @@ services:
       - TZ=Europe/Paris
       - VERSION=latest
     volumes:
-      - {{FOLDER_APP_SETTINGS}}/overseerr/config:/config
+      - {{APP_SETTINGS_DIR}}/overseerr/config:/config
     ports:
       - 5055:5055
     restart: unless-stopped
@@ -89,7 +89,7 @@ services:
       - PGID=1000
       - TZ=Europe/Paris
     volumes:
-      - {{FOLDER_APP_SETTINGS}}/tautulli/config:/config
+      - {{APP_SETTINGS_DIR}}/tautulli/config:/config
     ports:
       - 8181:8181
     restart: unless-stopped
@@ -105,8 +105,8 @@ services:
       - PGID=1000
       - TZ=Europe/Paris        
     volumes:
-      - {{FOLDER_APP_SETTINGS}}/jackett/config:/config
-      - {{FOLDER_APP_SETTINGS}}/jackett/blackhole/:/downloads   
+      - {{APP_SETTINGS_DIR}}/jackett/config:/config
+      - {{APP_SETTINGS_DIR}}/jackett/blackhole/:/downloads   
     ports:
       - 9117:9117      
     restart: unless-stopped
@@ -122,7 +122,7 @@ services:
       - PGID=1000
       - TZ=Europe/Paris 
     volumes:
-      - {{FOLDER_APP_SETTINGS}}/prowlarr/config:/config
+      - {{APP_SETTINGS_DIR}}/prowlarr/config:/config
     ports:
       - 9696:9696
     restart: unless-stopped
@@ -154,7 +154,7 @@ services:
     environment:
       - TZ=Europe/Paris
     volumes:
-      - {{FOLDER_APP_SETTINGS}}/wireguard/config:/config
+      - {{APP_SETTINGS_DIR}}/wireguard/config:/config
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
     #ports:
@@ -171,8 +171,8 @@ services:
       - PGID=1000
       - TZ=Europe/Paris
     volumes:
-      - {{FOLDER_APP_SETTINGS}}/sonarr/:/config
-      - {{FOLDER_HOME}}:/{{FOLDER_HOME}}
+      - {{APP_SETTINGS_DIR}}/sonarr/:/config
+      - {{USER_HOME}}:/{{USER_HOME}}
     ports:
       - 8989:8989
     restart: unless-stopped
@@ -188,8 +188,8 @@ services:
       - PGID=1000
       - TZ=Europe/Paris
     volumes:
-      - {{FOLDER_APP_SETTINGS}}/radarr/:/config
-      - {{FOLDER_HOME}}:/{{FOLDER_HOME}}
+      - {{APP_SETTINGS_DIR}}/radarr/:/config
+      - {{USER_HOME}}:/{{USER_HOME}}
     ports:
       - 7878:7878
     restart: unless-stopped
@@ -202,28 +202,14 @@ services:
     image: rednoah/filebot:node
     restart: unless-stopped
     volumes:
-      - {{FOLDER_HOME}}/filebot/:/data:rw
-      - {{FOLDER_RCLONE}}:/volume1:rw
-      - {{FOLDER_MEDIAS}}:/volume1/output:rw
+      - {{USER_HOME}}/filebot/:/data:rw
+      - {{RCLONE_DIR}}:/volume1:rw
+      - {{MEDIAS_DIR}}:/volume1/output:rw
     ports:
       - 5452:5452
     environment:
       - PUID=1000
       - PGID=1000
-
-  filebot:
-    image: lscr.io/jlesage/filebot
-    container_name: filebot
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Paris
-    volumes:
-      - {{FOLDER_APP_SETTINGS}}/filebot/:/config:rw
-      - {{FOLDER_HOME}}/seedbox:/storage:rw
-    ports:
-      - 7878:7878
-    restart: unless-stopped
     networks:
       mon-reseau:
         ipv4_address: 172.18.0.13 # Adresse IP statique pour wireguard
