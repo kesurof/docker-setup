@@ -178,7 +178,7 @@ services:
     restart: unless-stopped
     networks:
       mon-reseau:
-        ipv4_address: 172.18.0.11 # Adresse IP statique pour wireguard
+        ipv4_address: 172.18.0.11 # Adresse IP statique pour sonarr
 
   radarr:
     image: lscr.io/linuxserver/radarr:latest
@@ -195,7 +195,7 @@ services:
     restart: unless-stopped
     networks:
       mon-reseau:
-        ipv4_address: 172.18.0.12 # Adresse IP statique pour wireguard
+        ipv4_address: 172.18.0.12 # Adresse IP statique pour radarr
 
   filebot-node:
     container_name: filebot-node
@@ -212,7 +212,7 @@ services:
       - PGID=1000
     networks:
       mon-reseau:
-        ipv4_address: 172.18.0.13 # Adresse IP statique pour wireguard
+        ipv4_address: 172.18.0.13 # Adresse IP statique pour filebot-node
         
   watchtower:
     image: containrrr/watchtower
@@ -227,7 +227,7 @@ services:
       WATCHTOWER_SCHEDULE: "0 0 4 * * *"
     networks:
       mon-reseau:
-        ipv4_address: 172.18.0.30 # Adresse IP statique pour wireguard
+        ipv4_address: 172.18.0.30 # Adresse IP statique pour watchtower
 
 networks:
   mon-reseau:

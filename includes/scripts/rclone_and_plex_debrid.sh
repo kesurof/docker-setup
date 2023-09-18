@@ -26,7 +26,7 @@ load_env_variables "$env_file"
 # À partir de ce point, toutes les variables du fichier .env sont disponibles, y compris $FOLDER_APP_SETTINGS
 
 # Chemin du répertoire de torrents
-folder_rclone="$FOLDER_RCLONE"
+rclone_dir="$RCLONE_DIR"
 
 # Demander à l'utilisateur le chemin d'installation des volumes des containers
 read -p "Veuillez entrer le chemin d'installation de plex_debrid (laisser vide pour utiliser /home/$(logname)/seedbox/app_settings) : "

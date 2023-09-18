@@ -15,9 +15,9 @@ function check_sudo_rights() {
 
 # Fonction pour vérifier si l'utilisateur appartient au groupe Docker
 function check_docker_group_membership() {
-  if ! groups "$USER" | grep &>/dev/null '\bdocker\b'; then
+  if ! groups "$(logname)" | grep &>/dev/null '\bdocker\b'; then
     echo "L'utilisateur n'appartient pas au groupe Docker. Ajout de l'utilisateur au groupe Docker..."
-    sudo usermod -aG docker "$USER"
+    sudo usermod -aG docker "$(logname)"
     if [ $? -eq 0 ]; then
       echo "L'utilisateur a été ajouté au groupe Docker avec succès. Veuillez vous déconnecter/reconnecter et relancer le script pour continuer."
       exit 1

@@ -5,6 +5,38 @@ function ask_question() {
   echo -e "\033[33m$1\033[0m"
 }
 
+# Fonction pour créer un répertoire s'il n'existe pas
+function create_directory() {
+  if [ ! -d "$1" ]; then
+    mkdir -p "$1"
+  fi
+  # Définir les permissions rwxr-xr-x pour le répertoire
+  chmod 755 "$1"
+
+  # Définir le propriétaire et le groupe du répertoire comme $logname:$logname
+  chown "$(logname):$(logname)" "$1"
+}
+
+# Chemin par défaut pour le fichier .env
+env_file_path="/home/$(logname)"
+env_file="$env_file_path/.env"
+
+# Fonction pour charger toutes les variables depuis le fichier .env
+function load_env_variables() {
+  local env_file="$1"
+  if [ -f "$env_file" ]; then
+    source "$env_file"
+  else
+    echo "Le fichier .env n'a pas été trouvé à $env_file. Assurez-vous qu'il existe avant de continuer."
+    exit 1
+  fi
+}
+
+# Charger toutes les variables depuis le fichier .env
+load_env_variables "$env_file"
+
+# À partir de ce point, toutes les variables du fichier .env sont disponibles, y compris $APP_SETTINGS_DIR
+
 # Fonction pour demander à l'utilisateur de continuer ou d'annuler
 function ask_to_continue() {
   ask_question "Voulez-vous continuer la configuration de wireguard ? (Oui/Non) "
@@ -15,11 +47,8 @@ function ask_to_continue() {
   fi
 }
 
-echo "Veuillez fournir les informations suivantes :"
-
 # Chemin complet pour enregistrer le fichier wg0.conf
-folder_app_settings="/home/$USER/seedbox/app_settings"  # Définissez le chemin ici
-wg0_config_path="$folder_app_settings/wireguard/config/wg0.conf"
+wg0_config_path="$app_settings_dir/wireguard/config/wg0.conf"
 
 # Vérifier si le fichier wg0.conf existe
 if [ -e "$wg0_config_path" ]; then
@@ -36,21 +65,20 @@ if [ -e "$wg0_config_path" ]; then
 fi
 
 # Vérifier et créer le répertoire si nécessaire
-if [ ! -d "$folder_app_settings/wireguard/config" ]; then
-  echo "Le répertoire $folder_app_settings/wireguard/config n'existe pas. Voulez-vous le créer ? (Oui/Non) "
+if [ ! -d "$app_settings_dir/wireguard/config" ]; then
+  echo "Le répertoire $app_settings_dir/wireguard/config n'existe pas. Voulez-vous le créer ? (Oui/Non) "
   read create_dir_choice
   if [ "$create_dir_choice" = "oui" ] || [ "$create_dir_choice" = "Oui" ] || [ "$create_dir_choice" = "o" ] || [ "$create_dir_choice" = "O" ]; then
-    mkdir -p "$folder_app_settings/wireguard/config"
-    chmod 755 "$folder_app_settings/wireguard/config"  # Appliquer les permissions rwxr-xr-x
-    echo "Le répertoire $folder_app_settings/wireguard/config a été créé et les permissions ont été définies."
+    create_directory "$app_settings_dir/wireguard/config"
+    echo "Le répertoire $app_settings_dir/wireguard/config a été créé et les permissions ont été définies."
   else
-    echo "Le répertoire $folder_app_settings/wireguard/config n'a pas été créé. Le fichier WireGuard ne sera pas enregistré."
+    echo "Le répertoire $app_settings_dir/wireguard/config n'a pas été créé. Le fichier WireGuard ne sera pas enregistré."
     exit 1
   fi
 fi
 
 # Assurer les autorisations pour l'utilisateur actuel
-sudo chown -R "$USER:$USER" "$folder_app_settings/wireguard"
+create_directory "$app_settings_dir/wireguard"
 
 # Enregistrer le code de configuration WireGuard
 echo "Veuillez coller le code de configuration WireGuard ci-dessous (appuyez sur Entrée puis Ctrl+D pour terminer) : "

@@ -6,7 +6,7 @@ function ask_question() {
 }
 
 # Chemin par défaut pour le fichier .env
-env_file_path="/home/$USER"
+env_file_path="/home/$(logname)"
 env_file="$env_file_path/.env"
 
 # Fonction pour charger toutes les variables depuis le fichier .env
@@ -23,10 +23,10 @@ function load_env_variables() {
 # Charger toutes les variables depuis le fichier .env
 load_env_variables "$env_file"
 
-# À partir de ce point, toutes les variables du fichier .env sont disponibles, y compris $FOLDER_APP_SETTINGS
+# À partir de ce point, toutes les variables du fichier .env sont disponibles, y compris $APP_SETTINGS_DIR
 
 # Chemin vers le fichier docker-compose.yml
-docker_compose_file="$FOLDER_APP_SETTINGS/docker-compose.yml"
+docker_compose_file="$APP_SETTINGS_DIR/docker-compose.yml"
 
 # Fonction pour exécuter Docker Compose
 function start_docker_services() {
@@ -44,5 +44,5 @@ function start_docker_services() {
 # Exécuter Docker Compose pour installer et démarrer les services
 start_docker_services "$docker_compose_file"
 
+echo -e "\e[32mContainers installés avec succès.\e[0m"
 
-ask_question "Vous devez maintenant quitter l'installation puis lancer sudo ./install.sh choix 6 (Installer Rclone-RD et Plex_Debrid)."

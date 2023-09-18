@@ -4,10 +4,10 @@
 scripts_dir="$(dirname "$0")/includes/scripts"
 
 # Liste des noms de scripts à exécuter dans l'ordre spécifié
-scripts=("install_full.sh" "install_docker.sh" "create_docker-compose.sh" "conf_wireguard.sh" "install_container.sh" "rclone_and_plex_debrid.sh")
+scripts=("install_full.sh" "install_docker.sh" "create_docker-compose.sh" "conf_wireguard.sh" "install_container.sh" "install_rclone.sh")
 
 # Noms personnalisés pour les scripts
-script_names=("Installation complète" "Installation de docker" "Personnaliser docker-compose.yml" "Créer .conf de Wireguard" "Installation des containers" "Installer Rclone-RD et Plex_Debrid" )
+script_names=("Installation complète" "Installation de docker" "Personnaliser docker-compose.yml" "Créer .conf de Wireguard" "Installation des containers" "Installation de Rclone-RD" )
 
 # Chemin complet vers les scripts
 script_paths=()
