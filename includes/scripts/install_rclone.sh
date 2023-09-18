@@ -26,7 +26,7 @@ load_env_variables "$env_file"
 # À partir de ce point, toutes les variables du fichier .env sont disponibles, y compris $FOLDER_APP_SETTINGS
 
 # Chemin du répertoire de torrents
-rclone_dir="$RCLONE_DIR"
+#rclone_dir="$RCLONE_DIR"
 
 # Vérifier si Python 3 est installé
 if ! command -v python3 &> /dev/null; then

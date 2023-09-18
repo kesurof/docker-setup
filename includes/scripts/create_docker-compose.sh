@@ -1,20 +1,23 @@
 #!/bin/bash
 
-# Fonction pour afficher une question en jaune
-function ask_question() {
-  echo -e "\033[33m$1\033[0m"
+# Fonction pour afficher du texte en jaune
+function afficher_texte_jaune() {
+  echo -e "\e[93m$1\e[0m"
 }
 
 # Fonction pour créer un répertoire s'il n'existe pas
 function create_directory() {
   if [ ! -d "$1" ]; then
     mkdir -p "$1"
+    chmod 755 "$1"
+    chown "$(logname):$(logname)" "$1"
   fi
-  # Définir les permissions rwxr-xr-x pour le répertoire
-  chmod 755 "$1"
+}
 
-  # Définir le propriétaire et le groupe du répertoire comme $logname:$logname
-  chown "$(logname):$(logname)" "$1"
+# Fonction pour poser une question et lire la réponse
+function ask_question() {
+  read -p "$1" response
+  echo "$response"
 }
 
 # Chemin par défaut pour le fichier .env
@@ -28,42 +31,39 @@ if [ -f "$env_file" ]; then
   ask_question "Souhaitez-vous modifier les variables ? (O/N) "
   read modify_choice
 
-  if [ "$modify_choice" == "O" ] || [ "$modify_choice" == "o" ]; then
-    echo "Veuillez fournir les informations suivantes :"
-  else
+  if [[ "$modify_choice" != "O" && "$modify_choice" != "o" ]]; then
     echo "La configuration existante sera conservée. Sortie du script."
     exit 0
   fi
 else
   echo "Fichier .env sera enregistré à : $env_file"
-  echo "Veuillez fournir les informations suivantes :"
 fi
 
 # Définir le chemin du répertoire de l'utilisateur
 user_home="/home/$(logname)"
 
 # Définir le chemin des dossiers à créer
-local_dir="$user_home/seedbox/local"
-medias_dir="$user_home/seedbox/Medias"
-app_settings_dir="$user_home/seedbox/app_settings"
-rclone_dir="$user_home/rclone"
+folders=("$user_home/seedbox/local" "$user_home/seedbox/Medias" "$user_home/seedbox/app_settings" "$user_home/rclone")
 
-# Utiliser la fonction pour créer les dossiers avec les permissions
-create_directory "$local_dir"
-create_directory "$medias_dir"
-create_directory "$app_settings_dir"
-create_directory "$rclone_dir"
+# Initialiser une variable pour suivre si les dossiers ont été créés
+folders_created=false
 
-# Afficher un message de confirmation
-echo "Les dossiers ont été créés avec les permissions suivantes :"
-echo " - $local_dir : $(stat -c '%a %n' "$local_dir")"
-echo " - $medias_dir : $(stat -c '%a %n' "$medias_dir")"
-echo " - $app_settings_dir : $(stat -c '%a %n' "$app_settings_dir")"
-echo " - $rclone_dir : $(stat -c '%a %n' "$rclone_dir")"
+for folder in "${folders[@]}"; do
+  if [ ! -d "$folder" ]; then
+    create_directory "$folder"
+    folders_created=true
+  fi
+done
+
+# Afficher un message de confirmation si les dossiers ont été créés
+if [ "$folders_created" = true ]; then
+  for folder in "${folders[@]}"; do
+    echo " - $folder : $(stat -c '%a %n' "$folder")"
+  done
+fi
 
 # Demander à l'utilisateur la clé API de RealDebrid
-ask_question "Veuillez entrer votre clé API RealDebrid : "
-read rd_api_key
+rd_api_key=$(ask_question "Veuillez entrer votre clé API RealDebrid : ")
 
 # Chemin du fichier rclone.conf
 rclone_config_file="/home/$(logname)/.config/rclone/rclone.conf"
@@ -81,21 +81,13 @@ EOL
 echo "Le fichier rclone.conf a été créé dans $rclone_config_file"
 
 # Récupération du token Plex pour Plex_debrid
+plex_user=""
+plex_passwd=""
 
 if [ -z "$plex_user" ] || [ -z "$plex_passwd" ]; then
-    plex_user=$1
-    plex_passwd=$2
+    plex_user=$(ask_question "Veuillez entrer votre nom d'utilisateur Plex : ")
+    plex_passwd=$(ask_question "Veuillez entrer votre mot de passe Plex : ")
 fi
-
-while [ -z "$plex_user" ]; do
-    ask_question "Veuillez entrer votre nom d'utilisateur Plex : "
-    read plex_user
-done
-
-while [ -z "$plex_passwd" ]; do
-    ask_question "Veuillez entrer votre mot de passe Plex : "
-    read plex_passwd
-done
 
 ask_question "Récupération du token Plex... "
 
@@ -123,22 +115,23 @@ ip_public=$(curl -s http://httpbin.org/ip | grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0
 plex_address="http://$ip_public:32400"
 
 # Demander à l'utilisateur le claim Plex (https://www.plex.tv/claim/)
-ask_question "Veuillez entrer votre claim Plex (https://www.plex.tv/claim/) : "
-read plex_claim
+plex_claim=$(ask_question "Veuillez entrer votre claim Plex (https://www.plex.tv/claim/) : ")
 
 # Écrire les réponses dans le fichier .env
-echo "USER_HOME=$user_home" > "$env_file"
-echo "LOCAL_DIR=$local_dir" > "$env_file"
-echo "MEDIAS_DIR=$medias_dir" > "$env_file"
-echo "APP_SETTINGS_DIR=$app_settings_dir" > "$env_file"
-echo "RCLONE_DIR=$rclone_dir" >> "$env_file"
-echo "RCLONE_CONFIG_FILE=$rclone_config_file" >> "$env_file"
-echo "RD_API_KEY=$rd_api_key" >> "$env_file"
-echo "RD_TOKEN_PLEX=$rd_token_plex" >> "$env_file"
-echo "PLEX_ADDRESS=$plex_address" >> "$env_file"
-echo "PLEX_USER=$plex_user" >> "$env_file"
-echo "PLEX_PASSWD=$plex_passwd" >> "$env_file"
-echo "PLEX_CLAIM=$plex_claim" >> "$env_file"
+{
+  echo "USER_HOME=$user_home"
+  echo "LOCAL_DIR=$folders[0]"
+  echo "MEDIAS_DIR=$folders[1]"
+  echo "APP_SETTINGS_DIR=$folders[2]"
+  echo "RCLONE_DIR=$folders[3]"
+  echo "RCLONE_CONFIG_FILE=$rclone_config_file"
+  echo "RD_API_KEY=$rd_api_key"
+  echo "RD_TOKEN_PLEX=$rd_token_plex"
+  echo "PLEX_ADDRESS=$plex_address"
+  echo "PLEX_USER=$plex_user"
+  echo "PLEX_PASSWD=$plex_passwd"
+  echo "PLEX_CLAIM=$plex_claim"
+} > "$env_file"
 
 echo -e "\e[32mConfiguration terminée. Les informations ont été écrites dans le fichier $env_file.\e[0m"
 
