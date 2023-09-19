@@ -26,7 +26,7 @@ function ask_question() {
 env_file_path="/home/$(logname)"
 env_file="$env_file_path/.env"
 
-# Si le fichier .env existe, afficher le contenu des variables et permettre la modification
+# Vérifier si le fichier .env existe
 if [ -f "$env_file" ]; then
   echo "Le fichier .env existe déjà. Voici son contenu :"
   cat "$env_file"
