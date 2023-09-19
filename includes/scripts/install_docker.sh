@@ -23,12 +23,6 @@ if ! groups "$(logname)" | grep &>/dev/null '\bdocker\b'; then
   fi
 fi
 
-# Demander à l'utilisateur de continuer ou d'annuler
-if [ "$continue_choice" != "oui" ] && [ "$continue_choice" != "Oui" ] && [ "$continue_choice" != "o" ] && [ "$continue_choice" != "O" ]; then
-  echo "Installation annulée."
-  exit 1
-fi
-
 # Installer Docker et Docker Compose
 distro=$(lsb_release -si)
 version=$(lsb_release -sr)
