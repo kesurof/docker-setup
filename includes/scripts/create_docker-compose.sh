@@ -93,16 +93,16 @@ if [ -z "$plex_user" ] || [ -z "$plex_passwd" ]; then
 fi
 
 while [ -z "$plex_user" ]; do
-    >&2 echo -n 'Veuillez entrer votre nom d'utilisateur Plex (e-mail or username): '
+    >&2 echo -n "Veuillez entrer votre nom d'utilisateur Plex (e-mail or username):"
     read plex_user
 done
 
 while [ -z "$plex_passwd" ]; do
-    >&2 echo -n 'Veuillez entrer votre mot de passe Plex :'
+    >&2 echo -n "Veuillez entrer votre mot de passe Plex :"
     read plex_passwd
 done
 
->&2 echo 'Retrieving a X-Plex-Token using Plex login/password...'
+>&2 echo "Récupération d'un X-Plex-Token à l'aide du login/mot de passe Plex..."
 
 curl -qu "${plex_user}":"${plex_passwd}" 'https://plex.tv/users/sign_in.xml' \
     -X POST -H 'X-Plex-Device-Name: PlexMediaServer' \
