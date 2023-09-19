@@ -16,11 +16,4 @@ echo "Exécution de install_container.sh :"
 echo "Exécution de install_rclone.sh :"
 ./install_rclone.sh
 
-# Vérifiez si l'installation de rclone est terminée
-if [ $? -ne 0 ]; then
-    echo "Installation de rclone terminée."
-else
-    echo "Installation de rclone a échoué."
-fi
-
 # Vous pouvez ajouter d'autres scripts ici, dans l'ordre souhaité.
