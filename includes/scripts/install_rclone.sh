@@ -47,6 +47,15 @@ if ! command -v rclone &> /dev/null; then
     export RCLONE_CONFIG_FILE=/home/$(logname)/.config/rclone/rclone.conf
 fi
 
+# Supprimer le service rclone.service s'il existe déjà
+if [ -f "/etc/systemd/system/rclone.service" ]; then
+    afficher_texte_jaune "Suppression du service rclone.service existant"
+    sudo systemctl stop rclone.service
+    sudo systemctl disable rclone.service
+    sudo rm -f /etc/systemd/system/rclone.service
+    sudo systemctl daemon-reload
+fi
+
 # Vérifier si le dossier "$rclone_dir" existe
 if [ ! -d "$rclone_dir" ]; then
     afficher_texte_jaune "6) Création du dossier $rclone_dir"
@@ -61,10 +70,9 @@ sudo chown -R $(logname):$(logname) "$rclone_dir"
 afficher_texte_jaune "8) Donner des droits d'écriture au propriétaire du point de montage"
 chmod 755 "$rclone_dir"
 
-# Vérifier si le service systemd pour rclone est configuré
-if [ ! -f "/etc/systemd/system/rclone.service" ]; then
-    afficher_texte_jaune "9) Configuration du service systemd pour rclone"
-    cat <<EOF | sudo tee /etc/systemd/system/rclone.service
+# Configuration du service systemd pour rclone
+afficher_texte_jaune "9) Configuration du service systemd pour rclone"
+cat <<EOF | sudo tee /etc/systemd/system/rclone.service
 [Unit]
 Description=rclone mount service for realdebrid
 
@@ -77,11 +85,11 @@ User=$(logname)
 [Install]
 WantedBy=default.target
 EOF
-    sudo systemctl daemon-reload
-    sudo systemctl enable rclone.service
-    sudo systemctl start rclone.service
-fi
 
+# Redémarrer le service rclone
+sudo systemctl daemon-reload
+sudo systemctl enable rclone.service
+sudo systemctl start rclone.service
 
 # Afficher le contenu de sudo systemctl status rclone.service
 afficher_texte_jaune "Statut de rclone.service :"
@@ -93,4 +101,4 @@ afficher_texte_jaune "Installation terminée !"
 echo "Le container Plex va maintenant être relancé"
 docker restart plex
 
-afficher_texte_jaune "Installation de rclone terminé"
+afficher_texte_jaune "Installation de rclone terminée"
