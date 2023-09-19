@@ -14,14 +14,6 @@ function create_directory() {
   fi
 }
 
-# Fonction pour poser une question et lire la réponse
-function ask_question() {
-  local question="$1"
-  local response
-  read -r -p "$question" response
-  echo "$response"
-}
-
 # Chemin par défaut pour le fichier .env
 env_file_path="/home/$(logname)"
 env_file="$env_file_path/.env"
@@ -32,7 +24,9 @@ if [ -f "$env_file" ]; then
     echo "Le fichier .env existe déjà. Voici son contenu :"
     cat "$env_file"
   
-    if ask_question "Souhaitez-vous modifier les variables ? (O/N) " != "O"; then
+    read -r -p "Souhaitez-vous modifier les variables ? (O/N) " modify_choice
+    
+    if [ "$modify_choice" != "O" ] && [ "$modify_choice" != "o" ]; then
       echo "La configuration existante sera conservée. Sortie du script."
       exit 0  # Quitter le script proprement
     fi
@@ -63,7 +57,7 @@ if [ -f "$env_file" ]; then
     echo -e "\e[32mTous les dossiers ont été créés avec succès.\e[0m"
 
     # Demander à l'utilisateur la clé API de RealDebrid
-    rd_api_key=$(ask_question "Veuillez entrer votre clé API RealDebrid : ")
+    rd_api_key=$(read -r -p "Veuillez entrer votre clé API RealDebrid : " rd_api_key)
 
     # Chemin du fichier rclone.conf
     rclone_config_file="/home/$(logname)/.config/rclone/rclone.conf"
@@ -127,7 +121,7 @@ EOL
     plex_address="http://$ip_public:32400"
 
     # Demander à l'utilisateur le claim Plex (https://www.plex.tv/claim/)
-    plex_claim=$(ask_question "Veuillez entrer votre claim Plex (https://www.plex.tv/claim/) : ")
+    plex_claim=$(read -r -p "Veuillez entrer votre claim Plex (https://www.plex.tv/claim/) : " plex_claim)
 
     # Écrire les réponses dans le fichier .env
     {
@@ -164,7 +158,7 @@ EOL
     echo -e "\033[32mLes informations ont été ajoutées au fichier docker-compose.yml.\033[0m"
 
     # Demander à l'utilisateur s'il souhaite refaire la configuration
-    if ask_question "Souhaitez-vous refaire la configuration ? (O/N) " != "O"; then
+    if read -r -p "Souhaitez-vous refaire la configuration ? (O/N) " redo_choice && [ "$redo_choice" != "O" ] && [ "$redo_choice" != "o" ]; then
       echo "Sortie du script."
       exit 0  # Quitter le script proprement
     fi
