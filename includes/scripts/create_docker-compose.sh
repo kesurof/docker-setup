@@ -65,7 +65,7 @@ fi
 echo -e "\e[32mTous les dossiers ont été créés avec succès.\e[0m"
 
 # Demander à l'utilisateur la clé API de RealDebrid
-rd_api_key=$(ask_question "Veuillez entrer votre clé API RealDebrid : ")
+afficher_texte_jaune rd_api_key=$(ask_question "Veuillez entrer votre clé API RealDebrid : ")
 
 # Chemin du fichier rclone.conf
 rclone_config_file="/home/$(logname)/.config/rclone/rclone.conf"
@@ -80,15 +80,15 @@ type = realdebrid
 api_key = $rd_api_key
 EOL
 
-echo "Le fichier rclone.conf a été créé dans $rclone_config_file"
+echo -e "\e[32mLe fichier rclone.conf a été créé dans $rclone_config_file \e[0m"
 
 # Récupération du token Plex pour Plex_debrid
 plex_user=""
 plex_passwd=""
 
 if [ -z "$plex_user" ] || [ -z "$plex_passwd" ]; then
-    plex_user=$(ask_question "Veuillez entrer votre nom d'utilisateur Plex : ")
-    plex_passwd=$(ask_question "Veuillez entrer votre mot de passe Plex : ")
+    afficher_texte_jaune plex_user=$(ask_question "Veuillez entrer votre nom d'utilisateur Plex : ")
+    afficher_texte_jaune plex_passwd=$(ask_question "Veuillez entrer votre mot de passe Plex : ")
 fi
 
 ask_question "Récupération du token Plex... "
@@ -117,7 +117,7 @@ ip_public=$(curl -s http://httpbin.org/ip | grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0
 plex_address="http://$ip_public:32400"
 
 # Demander à l'utilisateur le claim Plex (https://www.plex.tv/claim/)
-plex_claim=$(ask_question "Veuillez entrer votre claim Plex (https://www.plex.tv/claim/) : ")
+afficher_texte_jaune plex_claim=$(ask_question "Veuillez entrer votre claim Plex (https://www.plex.tv/claim/) : ")
 
 # Écrire les réponses dans le fichier .env
 {
@@ -150,4 +150,4 @@ for var in $env_vars; do
 done
 
 # Afficher un message
-echo -e "\033[32mLes informations ont été ajoutées au fichier docker-compose.yml.\033[0m"
+echo -e "\e[32mLes informations ont été ajoutées au fichier docker-compose.yml.\e[0m"
