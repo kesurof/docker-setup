@@ -99,7 +99,7 @@ fi
 
 ask_question "Récupération du token Plex... "
 
-plex_sign_in_response=$(curl -qu "${PLEX_USER}":"${PLEX_PASSWD}" 'https://plex.tv/users/sign_in.xml' \
+curl -qu "${PLEX_USER}":"${PLEX_PASSWD}" 'https://plex.tv/users/sign_in.xml' \
     -X POST -H 'X-Plex-Device-Name: PlexMediaServer' \
     -H 'X-Plex-Provides: server' \
     -H 'X-Plex-Version: 0.9' \
@@ -107,14 +107,19 @@ plex_sign_in_response=$(curl -qu "${PLEX_USER}":"${PLEX_PASSWD}" 'https://plex.t
     -H 'X-Plex-Platform: xcid' \
     -H 'X-Plex-Product: Plex Media Server'\
     -H 'X-Plex-Device: Linux'\
-    -H 'X-Plex-Client-Identifier: XXXX' --compressed)
-
-PLEX_TOKEN=$(echo "$plex_sign_in_response" | sed -n 's/.*<authentication-token>\(.*\)<\/authentication-token>.*/\1/p')
-
+    -H 'X-Plex-Client-Identifier: XXXX' --compressed >/tmp/plex_sign_in
+RD_TOKEN_PLEX=$(sed -n 's/.*<authentication-token>\(.*\)<\/authentication-token>.*/\1/p' /tmp/plex_sign_in)
 if [ -z "$RD_TOKEN_PLEX" ]; then
-    >&2 echo 'Échec de la récupération du token X-Plex-Token.'
+    cat /tmp/plex_sign_in
+    rm -f /tmp/plex_sign_in
+    >&2 echo 'Failed to retrieve the X-Plex-Token.'
     exit 1
 fi
+rm -f /tmp/plex_sign_in
+
+>&2 echo "Token Plex RD_TOKEN_PLEX:"
+
+echo $RD_TOKEN_PLEX
 
 
 # Utilisation de curl pour récupérer l'adresse IP publique de l'utilisateur depuis httpbin.org
