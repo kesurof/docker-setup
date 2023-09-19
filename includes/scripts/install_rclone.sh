@@ -30,14 +30,14 @@ rclone_dir="$RCLONE_DIR"
 
 # Vérifier si Python 3 est installé
 if ! command -v python3 &> /dev/null; then
-    afficher_texte_jaune "2) Installation de Python 3"
+    afficher_texte_jaune "Installation de Python 3"
     sudo apt update
     sudo apt install -y python3
 fi
 
 # Vérifier si rclone est déjà installé
 if ! command -v rclone &> /dev/null; then
-    afficher_texte_jaune "5) Installation de rclone"
+    afficher_texte_jaune "Installation de rclone"
     wget https://github.com/itsToggle/rclone_RD/releases/download/v1.58.1-rd.2.2/rclone-linux
     chmod +x rclone-linux
     sudo mv rclone-linux /usr/local/bin/rclone
@@ -58,20 +58,20 @@ fi
 
 # Vérifier si le dossier "$rclone_dir" existe
 if [ ! -d "$rclone_dir" ]; then
-    afficher_texte_jaune "6) Création du dossier $rclone_dir"
+    afficher_texte_jaune "Création du dossier $rclone_dir"
     sudo mkdir -p "$rclone_dir"
 fi
 
 # Changer le propriétaire du point de montage à votre utilisateur
-afficher_texte_jaune "7) Changer le propriétaire du point de montage"
+afficher_texte_jaune "Changer le propriétaire du point de montage"
 sudo chown -R $(logname):$(logname) "$rclone_dir"
 
 # Donner des droits d'écriture au propriétaire du point de montage
-afficher_texte_jaune "8) Donner des droits d'écriture au propriétaire du point de montage"
+afficher_texte_jaune "Donner des droits d'écriture au propriétaire du point de montage"
 chmod 755 "$rclone_dir"
 
 # Configuration du service systemd pour rclone
-afficher_texte_jaune "9) Configuration du service systemd pour rclone"
+afficher_texte_jaune "Configuration du service systemd pour rclone"
 cat <<EOF | sudo tee /etc/systemd/system/rclone.service
 [Unit]
 Description=rclone mount service for realdebrid
@@ -86,13 +86,19 @@ User=$(logname)
 WantedBy=default.target
 EOF
 
-# Modifier le fichier /etc/fuse.conf pour autoriser --allow-other
-afficher_texte_jaune "10) Modification de /etc/fuse.conf pour autoriser --allow-other"
+# Afficher le contenu actuel de /etc/fuse.conf
+afficher_texte_jaune "Voir le fichier /etc/fuse.conf actuel"
+cat "/etc/fuse.conf"
+
+# Vérifier si 'user_allow_other' est déjà configuré dans /etc/fuse.conf
 if grep -q "user_allow_other" "/etc/fuse.conf"; then
     echo "'user_allow_other' est déjà configuré dans /etc/fuse.conf."
 else
-    echo "user_allow_other" | sudo tee -a "/etc/fuse.conf" >/dev/null
+    # Ajouter 'user_allow_other' s'il n'est pas déjà configuré
+    echo "Ajout de 'user_allow_other' à /etc/fuse.conf"
+    sudo sed -i '/^#user_allow_other/s/^#//' "/etc/fuse.conf"
 fi
+
 
 # Redémarrer le service rclone
 sudo systemctl daemon-reload
