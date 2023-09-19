@@ -30,10 +30,8 @@ env_file="$env_file_path/.env"
 if [ -f "$env_file" ]; then
   echo "Le fichier .env existe déjà. Voici son contenu :"
   cat "$env_file"
-  ask_question "Souhaitez-vous modifier les variables ? (O/N) "
-  read modify_choice
-
-  if [[ "$modify_choice" != "O" && "$modify_choice" != "o" ]]; then
+  
+  if ask_question "Souhaitez-vous modifier les variables ? (O/N) " != "O"; then
     echo "La configuration existante sera conservée. Sortie du script."
     exit 0  # Quitter le script proprement
   fi
