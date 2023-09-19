@@ -90,12 +90,15 @@ echo -e "\e[32mLe fichier rclone.conf a été créé dans $rclone_config_file.\e
 # Récupération du nom d'utilisateur Plex
 ask_question "Veuillez entrer votre nom d'utilisateur Plex : "
 read plex_user
+echo "Nom d'utilisateur Plex saisi : $plex_user" # Message de débogage
 
 # Récupération du mot de passe Plex
 ask_question "Veuillez entrer votre mot de passe Plex : "
 read plex_passwd
+echo "Mot de passe Plex saisi : $plex_passwd" # Message de débogage
 
 ask_question "Récupération du token Plex... "
+echo "Début de la récupération du token Plex" # Message de débogage
 
 plex_sign_in_response=$(curl -qu "${plex_user}":"${plex_passwd}" 'https://plex.tv/users/sign_in.xml' \
     -X POST -H 'X-Plex-Device-Name: PlexMediaServer' \
@@ -106,6 +109,8 @@ plex_sign_in_response=$(curl -qu "${plex_user}":"${plex_passwd}" 'https://plex.t
     -H 'X-Plex-Product: Plex Media Server'\
     -H 'X-Plex-Device: Linux'\
     -H 'X-Plex-Client-Identifier: XXXX' --compressed)
+
+echo "Fin de la récupération du token Plex" # Message de débogage
 
 rd_token_plex=$(echo "$plex_sign_in_response" | sed -n 's/.*<authentication-token>\(.*\)<\/authentication-token>.*/\1/p')
 
