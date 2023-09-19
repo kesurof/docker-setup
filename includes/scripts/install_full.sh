@@ -18,6 +18,11 @@ for script_path in "${script_paths[@]}"; do
         chmod +x "$script_path" # Assurez-vous que le script soit exécutable
         echo "Exécution de $script_path :"
         "$script_path"
+
+        # Vérifie si le dernier script a renvoyé "Installation de rclone terminée"
+        if [ "$script" == "install_rclone.sh" ] && grep -q "Installation de rclone terminée" "$script_path"; then
+            exit 0 # Quitte le script si la condition est remplie
+        fi
     else
         echo "Le script $script_path n'existe pas dans ce répertoire."
     fi
