@@ -203,7 +203,7 @@ services:
     restart: unless-stopped
     volumes:
       - {{USER_HOME}}/filebot/:/data:rw
-      - {{RCLONE_DIR}}:/volume1:rw
+      - {{RCLONE_DIR}}:/volume1/rclone:rw
       - {{MEDIAS_DIR}}:/volume1/output:rw
     ports:
       - 5452:5452
