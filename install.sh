@@ -7,7 +7,7 @@ scripts_dir="$(dirname "$0")/includes/scripts"
 scripts=("install_full.sh" "install_docker.sh" "create_docker-compose.sh" "conf_wireguard.sh" "install_container.sh" "install_rclone.sh")
 
 # Noms personnalisés pour les scripts
-script_names=("Installation complète" "Installation de docker" "Personnaliser docker-compose.yml" "Créer .conf de Wireguard" "Installation des containers" "Installation de Rclone-RD")
+script_names=("Installation complète" "Installation de docker" "Personnaliser docker-compose.yml" "Créer .conf de Wireguard" "Installation des containers" "Installation de Rclone-RD" )
 
 # Chemin complet vers les scripts
 script_paths=()
@@ -41,10 +41,21 @@ for script_path in "${script_paths[@]}"; do
 done
 
 # Boucle principale du menu
-for ((i=0; i<${#script_names[@]}; i++)); do
+while true; do
     afficher_menu
-    index="$i"
-    executer_script "${script_paths[index]}"
-done
 
-echo -e "\e[31mInstallation terminée.\e[0m"
+    read -p "Sélectionnez une option (1-${#script_names[@]}, Q pour quitter) : " choix
+
+    if [ "$choix" == "Q" ] || [ "$choix" == "q" ]; then
+        echo -e "\e[31mAu revoir !\e[0m"
+        exit 0
+    fi
+
+    if [[ "$choix" =~ ^[0-9]+$ ]] && [ "$choix" -ge 1 ] && [ "$choix" -le ${#script_names[@]} ]; then
+        index=$((choix - 1))
+        executer_script "${script_paths[index]}"
+    else
+        echo -e "\e[31mOption invalide. Veuillez sélectionner une option valide.\e[0m"
+        read -p "Appuyez sur Entrée pour continuer..."
+    fi
+done
