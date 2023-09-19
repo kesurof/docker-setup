@@ -18,6 +18,29 @@ function create_directory() {
 env_file_path="/home/$(logname)"
 env_file="$env_file_path/.env"
 
+# Vérifier si le fichier .env existe, sinon le créer
+if [ ! -f "$env_file" ]; then
+  echo "Le fichier .env n'existe pas. Création du fichier..."
+  
+  # Définir le contenu initial du fichier .env
+  cat <<EOL > "$env_file"
+USER_HOME=
+LOCAL_DIR=
+MEDIAS_DIR=
+APP_SETTINGS_DIR=
+RCLONE_DIR=
+RCLONE_CONFIG_FILE=
+RD_API_KEY=
+RD_TOKEN_PLEX=
+PLEX_ADDRESS=
+PLEX_USER=
+PLEX_PASSWD=
+PLEX_CLAIM=
+EOL
+
+  echo "Le fichier .env a été créé avec des valeurs par défaut."
+fi
+
 # Si le fichier .env existe, afficher le contenu des variables et permettre la modification
 if [ -f "$env_file" ]; then
   while true; do

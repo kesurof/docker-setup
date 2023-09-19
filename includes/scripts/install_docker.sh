@@ -77,6 +77,3 @@ if [ "$choice" = "oui" ] || [ "$choice" = "Oui" ] || [ "$choice" = "o" ] || [ "$
 
   echo -e "\e[32mDocker et Docker Compose ont été installés avec succès.\e[0m"
 fi
-
-# Terminer le script
-exit 0
