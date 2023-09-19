@@ -8,17 +8,17 @@ function ask_question() {
 # Fonction pour créer un répertoire s'il n'existe pas
 function create_directory() {
   if [ ! -d "$1" ]; then
-    mkdir -p "$1"
+    sudo mkdir -p "$1"  # Utilisez "sudo" pour créer des répertoires avec les autorisations nécessaires
   fi
   # Définir les permissions rwxr-xr-x pour le répertoire
-  chmod 755 "$1"
+  sudo chmod 755 "$1"
 
-  # Définir le propriétaire et le groupe du répertoire comme $logname:$logname
-  chown "$(logname):$(logname)" "$1"
+  # Définir le propriétaire et le groupe du répertoire comme $USER:$USER
+  sudo chown "$USER:$USER" "$1"
 }
 
 # Chemin par défaut pour le fichier .env
-env_file_path="/home/$(logname)"
+env_file_path="/home/$USER"
 env_file="$env_file_path/.env"
 
 # Fonction pour charger toutes les variables depuis le fichier .env
@@ -39,7 +39,7 @@ load_env_variables "$env_file"
 
 # Fonction pour demander à l'utilisateur de continuer ou d'annuler
 function ask_to_continue() {
-  ask_question "Voulez-vous continuer la configuration de wireguard ? (Oui/Non) "
+  ask_question "Voulez-vous continuer la configuration de WireGuard ? (Oui/Non) "
   read continue_choice
   if [ "$continue_choice" != "oui" ] && [ "$continue_choice" != "Oui" ] && [ "$continue_choice" != "o" ] && [ "$continue_choice" != "O" ]; then
     echo "Installation annulée."
@@ -48,7 +48,7 @@ function ask_to_continue() {
 }
 
 # Chemin complet pour enregistrer le fichier wg0.conf
-wg0_config_path="$app_settings_dir/wireguard/config/wg0.conf"
+wg0_config_path="$APP_SETTINGS_DIR/wireguard/config/wg0.conf"
 
 # Vérifier si le fichier wg0.conf existe
 if [ -e "$wg0_config_path" ]; then
@@ -56,7 +56,7 @@ if [ -e "$wg0_config_path" ]; then
   echo -e "\033[33mVoulez-vous le supprimer ? (Oui/Non)\033[0m"
   read remove_file_choice
   if [ "$remove_file_choice" = "oui" ] || [ "$remove_file_choice" = "Oui" ] || [ "$remove_file_choice" = "o" ] || [ "$remove_file_choice" = "O" ]; then
-    rm -f "$wg0_config_path"
+    sudo rm -f "$wg0_config_path"  # Utilisez "sudo" pour supprimer le fichier avec les autorisations nécessaires
     echo "Le fichier $wg0_config_path a été supprimé."
   else
     echo "Le fichier $wg0_config_path ne sera pas supprimé. Le script est terminé."
@@ -65,20 +65,20 @@ if [ -e "$wg0_config_path" ]; then
 fi
 
 # Vérifier et créer le répertoire si nécessaire
-if [ ! -d "$app_settings_dir/wireguard/config" ]; then
-  echo "Le répertoire $app_settings_dir/wireguard/config n'existe pas. Voulez-vous le créer ? (Oui/Non) "
+if [ ! -d "$APP_SETTINGS_DIR/wireguard/config" ]; then
+  echo "Le répertoire $APP_SETTINGS_DIR/wireguard/config n'existe pas. Voulez-vous le créer ? (Oui/Non) "
   read create_dir_choice
   if [ "$create_dir_choice" = "oui" ] || [ "$create_dir_choice" = "Oui" ] || [ "$create_dir_choice" = "o" ] || [ "$create_dir_choice" = "O" ]; then
-    create_directory "$app_settings_dir/wireguard/config"
-    echo "Le répertoire $app_settings_dir/wireguard/config a été créé et les permissions ont été définies."
+    create_directory "$APP_SETTINGS_DIR/wireguard/config"
+    echo "Le répertoire $APP_SETTINGS_DIR/wireguard/config a été créé et les permissions ont été définies."
   else
-    echo "Le répertoire $app_settings_dir/wireguard/config n'a pas été créé. Le fichier WireGuard ne sera pas enregistré."
+    echo "Le répertoire $APP_SETTINGS_DIR/wireguard/config n'a pas été créé. Le fichier WireGuard ne sera pas enregistré."
     exit 1
   fi
 fi
 
 # Assurer les autorisations pour l'utilisateur actuel
-create_directory "$app_settings_dir/wireguard"
+create_directory "$APP_SETTINGS_DIR/wireguard"
 
 # Enregistrer le code de configuration WireGuard
 echo "Veuillez coller le code de configuration WireGuard ci-dessous (appuyez sur Entrée puis Ctrl+D pour terminer) : "
@@ -88,7 +88,6 @@ while IFS= read -r line; do
 done
 
 # Enregistrez le code de configuration WireGuard dans le fichier
-echo -e "$wireguard_config" > "$wg0_config_path"
-chmod 755 "$wg0_config_path"  # Appliquer les permissions rwxr-xr-x au fichier
+echo -e "$wireguard_config" | sudo tee "$wg0_config_path" >/dev/null
+sudo chmod 755 "$wg0_config_path"  # Appliquer les permissions rwxr-xr-x au fichier
 echo -e "Le code de configuration WireGuard a été enregistré dans $wg0_config_path avec les permissions rwxr-xr-x."
-
