@@ -80,7 +80,7 @@ if [ -f "$env_file" ]; then
     echo -e "\e[32mTous les dossiers ont été créés avec succès.\e[0m"
 
     # Demander à l'utilisateur la clé API de RealDebrid
-    rd_api_key=$(read -r -p "Veuillez entrer votre clé API RealDebrid : " rd_api_key)
+    read -r -p "Veuillez entrer votre clé API RealDebrid : " rd_api_key
 
     # Chemin du fichier rclone.conf
     rclone_config_file="/home/$(logname)/.config/rclone/rclone.conf"
@@ -144,7 +144,8 @@ EOL
     plex_address="http://$ip_public:32400"
 
     # Demander à l'utilisateur le claim Plex (https://www.plex.tv/claim/)
-    plex_claim=$(read -r -p "Veuillez entrer votre claim Plex (https://www.plex.tv/claim/) : " plex_claim)
+    read -r -p "Veuillez entrer votre claim Plex (https://www.plex.tv/claim/) : " plex_claim
+
 
     # Écrire les réponses dans le fichier .env
     {
