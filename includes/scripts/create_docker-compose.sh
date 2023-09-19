@@ -16,8 +16,8 @@ function create_directory() {
 
 # Fonction pour poser une question en jaune et lire la réponse
 function ask_question() {
-  question="\e[93m$1\e[0m"  # Mettre la question en jaune
-  read -p "$question" response
+  echo -e "\e[93m$1\e[0m"  # Afficher la question en jaune
+  read response
   echo "$response"
 }
 
