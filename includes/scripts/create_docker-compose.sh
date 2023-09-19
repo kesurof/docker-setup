@@ -93,12 +93,12 @@ if [ -z "$plex_user" ] || [ -z "$plex_passwd" ]; then
 fi
 
 while [ -z "$plex_user" ]; do
-    >&2 echo -n 'Your Plex login (e-mail or username): '
+    >&2 echo -n 'Veuillez entrer votre nom d'utilisateur Plex (e-mail or username): '
     read plex_user
 done
 
 while [ -z "$plex_passwd" ]; do
-    >&2 echo -n 'Your Plex password: '
+    >&2 echo -n 'Veuillez entrer votre mot de passe Plex :'
     read plex_passwd
 done
 
@@ -117,12 +117,12 @@ rd_token_plex=$(sed -n 's/.*<authentication-token>\(.*\)<\/authentication-token>
 if [ -z "$rd_token_plex" ]; then
     cat /tmp/plex_sign_in
     rm -f /tmp/plex_sign_in
-    >&2 echo 'Failed to retrieve the X-Plex-Token.'
+    >&2 echo 'Échec de la récupération du Token'
     exit 1
 fi
 rm -f /tmp/plex_sign_in
 
->&2 echo "Your rd_token_plex:"
+>&2 echo "Your Token Plex :"
 
 echo $rd_token_plex
 
