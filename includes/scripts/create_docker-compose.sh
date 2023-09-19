@@ -87,19 +87,24 @@ echo -e "\e[32mLe fichier rclone.conf a été créé dans $rclone_config_file.\e
 
 # Récupération du token Plex pour Plex_debrid
 
-# Récupération du nom d'utilisateur Plex
-if [ -z "$PLEX_USER" ]; then
-    PLEX_USER=$(ask_question "Veuillez entrer votre nom d'utilisateur Plex : ")
+if [ -z "$plex_user" ] || [ -z "$plex_passwd" ]; then
+    plex_user=$1
+    plex_passwd=$2
 fi
 
-# Récupération du mot de passe Plex
-if [ -z "$PLEX_PASSWD" ]; then
-    PLEX_PASSWD=$(ask_question "Veuillez entrer votre mot de passe Plex : ")
-fi
+while [ -z "$plex_user" ]; do
+    >&2 echo -n 'Your Plex login (e-mail or username): '
+    read plex_user
+done
 
-ask_question "Récupération du token Plex... "
+while [ -z "$plex_passwd" ]; do
+    >&2 echo -n 'Your Plex password: '
+    read plex_passwd
+done
 
-curl -qu "${PLEX_USER}":"${PLEX_PASSWD}" 'https://plex.tv/users/sign_in.xml' \
+>&2 echo 'Retrieving a X-Plex-Token using Plex login/password...'
+
+curl -qu "${plex_user}":"${plex_passwd}" 'https://plex.tv/users/sign_in.xml' \
     -X POST -H 'X-Plex-Device-Name: PlexMediaServer' \
     -H 'X-Plex-Provides: server' \
     -H 'X-Plex-Version: 0.9' \
@@ -108,8 +113,8 @@ curl -qu "${PLEX_USER}":"${PLEX_PASSWD}" 'https://plex.tv/users/sign_in.xml' \
     -H 'X-Plex-Product: Plex Media Server'\
     -H 'X-Plex-Device: Linux'\
     -H 'X-Plex-Client-Identifier: XXXX' --compressed >/tmp/plex_sign_in
-RD_TOKEN_PLEX=$(sed -n 's/.*<authentication-token>\(.*\)<\/authentication-token>.*/\1/p' /tmp/plex_sign_in)
-if [ -z "$RD_TOKEN_PLEX" ]; then
+rd_token_plex=$(sed -n 's/.*<authentication-token>\(.*\)<\/authentication-token>.*/\1/p' /tmp/plex_sign_in)
+if [ -z "$rd_token_plex" ]; then
     cat /tmp/plex_sign_in
     rm -f /tmp/plex_sign_in
     >&2 echo 'Failed to retrieve the X-Plex-Token.'
@@ -117,9 +122,9 @@ if [ -z "$RD_TOKEN_PLEX" ]; then
 fi
 rm -f /tmp/plex_sign_in
 
->&2 echo "Token Plex RD_TOKEN_PLEX:"
+>&2 echo "Your rd_token_plex:"
 
-echo $RD_TOKEN_PLEX
+echo $rd_token_plex
 
 
 # Utilisation de curl pour récupérer l'adresse IP publique de l'utilisateur depuis httpbin.org
