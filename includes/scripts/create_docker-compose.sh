@@ -16,13 +16,16 @@ function create_directory() {
 
 # Fonction pour poser une question et lire la réponse
 function ask_question() {
-  read -p "$1" response
+  local question="$1"
+  local response
+  read -r -p "$question" response
   echo "$response"
 }
 
 # Chemin par défaut pour le fichier .env
 env_file_path="/home/$(logname)"
 env_file="$env_file_path/.env"
+
 
 # Si le fichier .env existe, afficher le contenu des variables et permettre la modification
 if [ -f "$env_file" ]; then
