@@ -14,9 +14,10 @@ function create_directory() {
   fi
 }
 
-# Fonction pour poser une question et lire la réponse
+# Fonction pour poser une question en jaune et lire la réponse
 function ask_question() {
-  read -p "$1" response
+  question="\e[93m$1\e[0m"  # Mettre la question en jaune
+  read -p "$question" response
   echo "$response"
 }
 
@@ -65,7 +66,7 @@ fi
 echo -e "\e[32mTous les dossiers ont été créés avec succès.\e[0m"
 
 # Demander à l'utilisateur la clé API de RealDebrid
-afficher_texte_jaune rd_api_key=$(ask_question "Veuillez entrer votre clé API RealDebrid : ")
+rd_api_key=$(ask_question "Veuillez entrer votre clé API RealDebrid : ")
 
 # Chemin du fichier rclone.conf
 rclone_config_file="/home/$(logname)/.config/rclone/rclone.conf"
@@ -87,8 +88,8 @@ plex_user=""
 plex_passwd=""
 
 if [ -z "$plex_user" ] || [ -z "$plex_passwd" ]; then
-    afficher_texte_jaune plex_user=$(ask_question "Veuillez entrer votre nom d'utilisateur Plex : ")
-    afficher_texte_jaune plex_passwd=$(ask_question "Veuillez entrer votre mot de passe Plex : ")
+    plex_user=$(ask_question "Veuillez entrer votre nom d'utilisateur Plex : ")
+    plex_passwd=$(ask_question "Veuillez entrer votre mot de passe Plex : ")
 fi
 
 ask_question "Récupération du token Plex... "
@@ -117,7 +118,7 @@ ip_public=$(curl -s http://httpbin.org/ip | grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0
 plex_address="http://$ip_public:32400"
 
 # Demander à l'utilisateur le claim Plex (https://www.plex.tv/claim/)
-afficher_texte_jaune plex_claim=$(ask_question "Veuillez entrer votre claim Plex (https://www.plex.tv/claim/) : ")
+plex_claim=$(ask_question "Veuillez entrer votre claim Plex (https://www.plex.tv/claim/) : ")
 
 # Écrire les réponses dans le fichier .env
 {
