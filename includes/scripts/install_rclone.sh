@@ -78,7 +78,7 @@ Description=rclone mount service for realdebrid
 
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/rclone mount realdebrid: "$rclone_dir" --dir-cache-time 10s --allow-other --allow-non-empty
+ExecStart=/usr/local/bin/rclone mount realdebrid: "$rclone_dir" --dir-cache-time 10s --allow-other --allow-non-empty --vfs-cache-mode full
 Restart=always
 User=$(logname)
 
