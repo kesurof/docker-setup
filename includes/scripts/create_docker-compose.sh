@@ -62,6 +62,8 @@ if [ "$folders_created" = true ]; then
   done
 fi
 
+echo -e "\e[32mTous les dossiers ont été créés avec succès.\e[0m"
+
 # Demander à l'utilisateur la clé API de RealDebrid
 rd_api_key=$(ask_question "Veuillez entrer votre clé API RealDebrid : ")
 
