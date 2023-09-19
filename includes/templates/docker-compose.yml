@@ -50,7 +50,7 @@ services:
   rdtclient:
     container_name: rdtclient
     volumes:
-      - '{{APP_SETTINGS_DIR}}/local/:/data/downloads'
+      - '{{USER_HOME}}/local/:/data/downloads'
       - '{{APP_SETTINGS_DIR}}/rdt-client/:/data/db'
     image: rogerfar/rdtclient
     restart: always
@@ -203,8 +203,8 @@ services:
     restart: unless-stopped
     volumes:
       - {{USER_HOME}}/filebot/:/data:rw
-      - {{RCLONE_DIR}}:/volume1/rclone:rw
-      - {{MEDIAS_DIR}}:/volume1/output:rw
+      - {{RCLONE_DIR}}:/volume1/rclone/:rw
+      - {{MEDIAS_DIR}}:/volume1/output/:rw
     ports:
       - 5452:5452
     environment:
