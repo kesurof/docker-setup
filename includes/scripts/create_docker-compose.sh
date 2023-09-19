@@ -85,19 +85,12 @@ echo "Le fichier rclone.conf a été créé dans $rclone_config_file"
 # Récupération du token Plex pour Plex_debrid
 
 if [ -z "$plex_user" ] || [ -z "$plex_passwd" ]; then
-    plex_user=$1
-    plex_passwd=$2
-fi
-
-while [ -z "$plex_user" ]; do
     ask_question "Veuillez entrer votre nom d'utilisateur Plex : "
     read plex_user
-done
 
-while [ -z "$plex_passwd" ]; do
     ask_question "Veuillez entrer votre mot de passe Plex : "
     read plex_passwd
-done
+fi
 
 ask_question "Récupération du token Plex... "
 
