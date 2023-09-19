@@ -1,19 +1,33 @@
 #!/bin/bash
 
-# Exécutez les scripts dans l'ordre spécifié
-echo "Exécution de install_docker.sh :"
-./install_docker.sh
+# Répertoire complet où se trouvent les scripts
+scripts_dir="$(dirname "$0")"
 
-echo "Exécution de create_docker-compose.sh :"
-./create_docker-compose.sh
+# Liste des noms de scripts à exécuter dans l'ordre spécifié
+scripts=("install_docker.sh" "create_docker-compose.sh" "conf_wireguard.sh" "install_container.sh" "install_rclone.sh")
 
-echo "Exécution de conf_wireguard.sh :"
-./conf_wireguard.sh
+# Chemin complet vers les scripts
+script_paths=()
+for script in "${scripts[@]}"; do
+    script_paths+=("$scripts_dir/$script")
+done
 
-echo "Exécution de install_container.sh :"
-./install_container.sh
+# Exécute les scripts existants dans le répertoire
+for script_path in "${script_paths[@]}"; do
+    if [ -f "$script_path" ]; then
+        chmod +x "$script_path" # Assurez-vous que le script soit exécutable
+        echo "Exécution de $script_path :"
+        "$script_path"
+    else
+        echo "Le script $script_path n'existe pas dans ce répertoire."
+    fi
+done
 
-echo "Exécution de install_rclone.sh :"
-./install_rclone.sh
-
-# Vous pouvez ajouter d'autres scripts ici, dans l'ordre souhaité.
+# Exécute tous les scripts après avoir appliqué chmod +x, sauf le script actuel
+for script_path in "${script_paths[@]}"; do
+    if [ -x "$script_path" ] && [ "$script_path" != "$0" ]; then
+        script_name=$(basename "$script_path")
+        echo "Exécution de $script_name :"
+        "$script_path"
+    fi
+done
