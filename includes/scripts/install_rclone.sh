@@ -35,6 +35,13 @@ if ! command -v python3 &> /dev/null; then
     sudo apt install -y python3
 fi
 
+# Vérifier si FUSE est déjà installé
+if ! dpkg -l | grep -q "fuse"; then
+    afficher_texte_jaune "Installation de FUSE"
+    sudo apt update
+    sudo apt install -y fuse
+fi
+
 # Vérifier si rclone est déjà installé
 if ! command -v rclone &> /dev/null; then
     afficher_texte_jaune "Installation de rclone"
