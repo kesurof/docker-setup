@@ -1,9 +1,5 @@
 #!/bin/bash
 
-# Afficher une question en jaune
-echo -e "\033[33mVoulez-vous continuer l'installation ? (Oui/Non) \033[0m"
-read continue_choice
-
 # Vérifier les droits sudo
 if [ "$(id -u)" -eq 0 ]; then
   echo "Ce script ne doit pas être exécuté en tant que superutilisateur (root). Utilisez un utilisateur avec les droits sudo."
