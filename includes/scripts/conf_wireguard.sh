@@ -91,3 +91,6 @@ done
 echo -e "$wireguard_config" | sudo tee "$wg0_config_path" >/dev/null
 sudo chmod 755 "$wg0_config_path"  # Appliquer les permissions rwxr-xr-x au fichier
 echo -e "Le code de configuration WireGuard a été enregistré dans $wg0_config_path avec les permissions rwxr-xr-x."
+
+# Terminer le script
+exit 0

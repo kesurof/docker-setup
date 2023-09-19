@@ -166,3 +166,6 @@ EOL
 else
   echo "Fichier .env sera enregistré à : $env_file"
 fi
+
+# Terminer le script
+exit 0

@@ -94,3 +94,6 @@ echo "Le container Plex va maintenant être relancé"
 docker restart plex
 
 afficher_texte_jaune "Installation de rclone terminé"
+
+# Terminer le script
+exit 0
