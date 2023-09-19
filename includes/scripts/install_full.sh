@@ -23,9 +23,9 @@ for script_path in "${script_paths[@]}"; do
     fi
 done
 
-# Exécute les scripts après avoir appliqué chmod +x
+# Exécute tous les scripts après avoir appliqué chmod +x, sauf le script actuel
 for script_path in "${script_paths[@]}"; do
-    if [ -x "$script_path" ]; then
+    if [ -x "$script_path" ] && [ "$script_path" != "$0" ]; then
         script_name=$(basename "$script_path")
         echo "Exécution de $script_name :"
         "$script_path"
