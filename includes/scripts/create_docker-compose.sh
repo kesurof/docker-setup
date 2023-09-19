@@ -14,10 +14,9 @@ function create_directory() {
   fi
 }
 
-# Fonction pour poser une question en jaune et lire la réponse
+# Fonction pour poser une question et lire la réponse
 function ask_question() {
-  echo -e "\e[93m$1\e[0m"  # Afficher la question en jaune
-  read response
+  read -p "$1" response
   echo "$response"
 }
 
@@ -81,7 +80,7 @@ type = realdebrid
 api_key = $rd_api_key
 EOL
 
-echo -e "\e[32mLe fichier rclone.conf a été créé dans $rclone_config_file \e[0m"
+echo "Le fichier rclone.conf a été créé dans $rclone_config_file"
 
 # Récupération du token Plex pour Plex_debrid
 plex_user=""
@@ -151,4 +150,4 @@ for var in $env_vars; do
 done
 
 # Afficher un message
-echo -e "\e[32mLes informations ont été ajoutées au fichier docker-compose.yml.\e[0m"
+echo -e "\033[32mLes informations ont été ajoutées au fichier docker-compose.yml.\033[0m"
