@@ -86,6 +86,14 @@ User=$(logname)
 WantedBy=default.target
 EOF
 
+# Modifier le fichier /etc/fuse.conf pour autoriser --allow-other
+afficher_texte_jaune "10) Modification de /etc/fuse.conf pour autoriser --allow-other"
+if grep -q "user_allow_other" "/etc/fuse.conf"; then
+    echo "'user_allow_other' est déjà configuré dans /etc/fuse.conf."
+else
+    echo "user_allow_other" | sudo tee -a "/etc/fuse.conf" >/dev/null
+fi
+
 # Redémarrer le service rclone
 sudo systemctl daemon-reload
 sudo systemctl enable rclone.service
