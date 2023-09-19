@@ -35,6 +35,7 @@ if [ -f "$env_file" ]; then
 
   if [[ "$modify_choice" != "O" && "$modify_choice" != "o" ]]; then
     echo "La configuration existante sera conservée. Sortie du script."
+    exit 0  # Quitter le script proprement
   fi
 else
   echo "Fichier .env sera enregistré à : $env_file"
