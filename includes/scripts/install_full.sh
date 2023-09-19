@@ -31,3 +31,9 @@ for script_path in "${script_paths[@]}"; do
         "$script_path"
     fi
 done
+
+# Message de fin d'installation
+echo "Installation terminée."
+
+# Terminer le script
+exit 0
