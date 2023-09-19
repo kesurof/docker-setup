@@ -87,18 +87,17 @@ WantedBy=default.target
 EOF
 
 # Afficher le contenu actuel de /etc/fuse.conf
-afficher_texte_jaune "Voir le fichier /etc/fuse.conf actuel"
+afficher_texte_jaune "10) Voir le fichier /etc/fuse.conf actuel"
 cat "/etc/fuse.conf"
 
 # Vérifier si 'user_allow_other' est déjà configuré dans /etc/fuse.conf
-if grep -q "user_allow_other" "/etc/fuse.conf"; then
+if grep -q "^user_allow_other" "/etc/fuse.conf"; then
     echo "'user_allow_other' est déjà configuré dans /etc/fuse.conf."
 else
     # Ajouter 'user_allow_other' s'il n'est pas déjà configuré
     echo "Ajout de 'user_allow_other' à /etc/fuse.conf"
     sudo sed -i '/^#user_allow_other/s/^#//' "/etc/fuse.conf"
 fi
-
 
 # Redémarrer le service rclone
 sudo systemctl daemon-reload
