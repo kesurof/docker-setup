@@ -31,6 +31,10 @@ if [ -f "$env_file" ]; then
       exit 0  # Quitter le script proprement
     fi
 
+    # Récupérer le nom d'utilisateur et le mot de passe Plex
+    read -r -p "Veuillez entrer votre nom d'utilisateur Plex (e-mail ou nom d'utilisateur) : " plex_user
+    read -r -s -p "Veuillez entrer votre mot de passe Plex : " plex_passwd
+
     # Définir le chemin du répertoire de l'utilisateur
     user_home="/home/$(logname)"
 
@@ -75,22 +79,6 @@ EOL
     echo -e "\e[32mLe fichier rclone.conf a été créé dans $rclone_config_file.\e[0m"
 
     # Récupération du token Plex pour Plex_debrid
-
-    plex_user=$1
-    plex_passwd=$2
-
-    if [ -z "$plex_user" ] || [ -z "$plex_passwd" ]; then
-        while [ -z "$plex_user" ]; do
-            >&2 echo -n "Veuillez entrer votre nom d'utilisateur Plex (e-mail ou nom d'utilisateur) : "
-            read plex_user
-        done
-
-        while [ -z "$plex_passwd" ]; do
-            >&2 echo -n "Veuillez entrer votre mot de passe Plex : "
-            read -s plex_passwd
-        done
-    fi
-
     >&2 echo "Récupération d'un X-Plex-Token à l'aide du login/mot de passe Plex..."
 
     curl -qu "${plex_user}:${plex_passwd}" 'https://plex.tv/users/sign_in.xml' \
