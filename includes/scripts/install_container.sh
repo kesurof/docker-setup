@@ -1,18 +1,5 @@
 #!/bin/bash
 
-# Vérifier les droits sudo
-if [ "$(id -u)" -eq 0 ]; then
-  echo "Ce script ne doit pas être exécuté en tant que superutilisateur (root). Utilisez un utilisateur avec les droits sudo."
-  exit 1
-fi
-
-# Vérifier et installer dialog si nécessaire
-if ! command -v dialog &>/dev/null; then
-  echo "dialog n'est pas installé. Installation en cours..."
-  sudo apt update
-  sudo apt install dialog
-fi
-
 # Fonction pour afficher une question en jaune
 ask_question() {
   echo -e "\033[33m$1\033[0m"
@@ -38,20 +25,8 @@ load_env_variables "$env_file"
 
 # À partir de ce point, toutes les variables du fichier .env sont disponibles, y compris $APP_SETTINGS_DIR
 
-# Vérifier que docker-compose est disponible
-if ! command -v docker-compose &>/dev/null; then
-  echo "Erreur : docker-compose n'est pas installé. Veuillez l'installer avant de continuer."
-  exit 1
-fi
-
 # Chemin vers le fichier docker-compose.yml
 docker_compose_file="$APP_SETTINGS_DIR/docker-compose.yml"
-
-# Analyser le fichier docker-compose.yml pour extraire les noms des containers
-container_names=($(awk '/container_name:/ {print $NF}' "$docker_compose_file"))
-
-# Utiliser dialog pour sélectionner les applications à installer
-selected_containers=$(dialog --checklist "Sélection des applications à installer" 15 60 6 "${container_names[@]}" 3>&1 1>&2 2>&3)
 
 # Chemin du répertoire où sera copié le fichier docker-compose.yml
 app_settings_dir="/home/$(logname)/seedbox/app_settings"
@@ -68,8 +43,8 @@ for var in $env_vars; do
   sed -i "s|{{${var_name}}}|${var_value}|g" "$app_settings_dir/docker-compose.yml"
 done
 
-# Afficher un message en utilisant echo
-echo "Les informations ont été ajoutées au fichier docker-compose.yml."
+# Afficher un message
+echo -e "\033[32mLes informations ont été ajoutées au fichier docker-compose.yml.\033[0m"
 
 # Fonction pour exécuter Docker Compose
 start_docker_services() {
@@ -77,7 +52,7 @@ start_docker_services() {
   ask_question "Voulez-vous installer et démarrer les services Docker maintenant ? (Oui/Non) "
   read -r start_services_choice
   if [ "$start_services_choice" = "oui" ] || [ "$start_services_choice" = "Oui" ] || [ "$start_services_choice" = "o" ] || [ "$start_services_choice" = "O" ]; then
-    docker-compose -f "$docker_compose_file" up -d ${selected_containers[@]}
+    docker-compose -f "$docker_compose_file" up -d
     echo "Les services Docker ont été installés et démarrés avec succès."
   else
     echo "L'installation des services Docker a été annulée. Vous pouvez les installer ultérieurement en exécutant 'docker-compose -f $docker_compose_file up -d' dans le répertoire du fichier docker-compose.yml."
@@ -87,4 +62,4 @@ start_docker_services() {
 # Exécuter Docker Compose pour installer et démarrer les services
 start_docker_services "$docker_compose_file"
 
-echo "Containers installés avec succès."
+echo -e "\e[32mContainers installés avec succès.\e[0m"
