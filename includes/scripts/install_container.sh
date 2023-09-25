@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Vérifier que le script est exécuté en tant qu'administrateur
+if [[ $EUID -ne 0 ]]; then
+  echo "Ce script doit être exécuté en tant qu'administrateur (root)."
+  exit 1
+fi
+
 # Vérifier et installer whiptail si nécessaire
 if ! command -v whiptail &>/dev/null; then
   echo "whiptail n'est pas installé. Installation en cours..."
@@ -31,6 +37,18 @@ load_env_variables() {
 load_env_variables "$env_file"
 
 # À partir de ce point, toutes les variables du fichier .env sont disponibles, y compris $APP_SETTINGS_DIR
+
+# Vérifier que whiptail est disponible
+if ! command -v whiptail &>/dev/null; then
+  echo "Erreur : whiptail n'est pas installé. Veuillez l'installer avant de continuer."
+  exit 1
+fi
+
+# Vérifier que docker-compose est disponible
+if ! command -v docker-compose &>/dev/null; then
+  echo "Erreur : docker-compose n'est pas installé. Veuillez l'installer avant de continuer."
+  exit 1
+fi
 
 # Chemin vers le fichier docker-compose.yml
 docker_compose_file="$APP_SETTINGS_DIR/docker-compose.yml"
