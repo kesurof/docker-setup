@@ -4,13 +4,16 @@ import os
 import yaml
 import docker
 from dotenv import load_dotenv
+import subprocess  # Importez le module subprocess
 
 def main():
     # Vérifier si pip est installé
-    if not os.system("pip --version"):
+    try:
+        import pip
+    except ImportError:
         print("pip n'est pas installé. Installation de pip...")
-        os.system("sudo apt-get update")
-        os.system("sudo apt-get install -y python3-pip")
+        subprocess.call(["sudo", "apt-get", "update"])
+        subprocess.call(["sudo", "apt-get", "install", "-y", "python3-pip"])
 
     # Définir le chemin absolu du répertoire où vous souhaitez créer l'environnement virtuel
     user_home = os.path.expanduser("~")
@@ -19,14 +22,23 @@ def main():
     # Créer un environnement virtuel s'il n'existe pas
     if not os.path.exists(venv_dir):
         print(f"Création de l'environnement virtuel dans {venv_dir}...")
-        os.system(f"python3 -m venv {venv_dir}")
+        subprocess.call(["python3", "-m", "venv", venv_dir])
 
     # Activer l'environnement virtuel
     activate_script = os.path.join(venv_dir, "bin", "activate")
-    os.system(f"source {activate_script}")
+    if os.name == 'posix':
+        activate_script = "source " + activate_script
+    elif os.name == 'nt':
+        activate_script = os.path.join(venv_dir, "Scripts", "activate.bat")
+
+    os.system(activate_script)
 
     # Installer le module Docker dans l'environnement virtuel
-    os.system("pip install docker")
+    try:
+        import docker
+    except ImportError:
+        print("Installation du module Docker dans l'environnement virtuel...")
+        subprocess.call(["pip", "install", "docker"])
 
     # Charger les variables d'environnement depuis le fichier .env
     env_file_path = user_home
