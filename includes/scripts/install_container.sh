@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# Vérifier que le script est exécuté en tant qu'administrateur
-if [[ $EUID -ne 0 ]]; then
-  echo "Ce script doit être exécuté en tant qu'administrateur (root)."
+# Vérifier les droits sudo
+if [ "$(id -u)" -eq 0 ]; then
+  echo "Ce script ne doit pas être exécuté en tant que superutilisateur (root). Utilisez un utilisateur avec les droits sudo."
   exit 1
 fi
 
