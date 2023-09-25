@@ -25,6 +25,9 @@ def main():
     activate_script = os.path.join(venv_dir, "bin", "activate")
     os.system(f"source {activate_script}")
 
+    # Installer le module Docker dans l'environnement virtuel
+    os.system("pip install docker")
+
     # Charger les variables d'environnement depuis le fichier .env
     env_file_path = user_home
     env_file = os.path.join(env_file_path, ".env")
