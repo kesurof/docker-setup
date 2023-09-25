@@ -1,7 +1,22 @@
 #!/bin/bash
 
-# Emplacement du fichier .env
-env_file="./.env"
+# Chemin par défaut pour le fichier .env
+env_file_path="/home/$(logname)"
+env_file="$env_file_path/.env"
+
+# Fonction pour charger toutes les variables depuis le fichier .env
+function load_env_variables() {
+  local env_file="$1"
+  if [ -f "$env_file" ]; then
+    source "$env_file"
+  else
+    echo "Le fichier .env n'a pas été trouvé à $env_file. Assurez-vous qu'il existe avant de continuer."
+    exit 1
+  fi
+}
+
+# Charger toutes les variables depuis le fichier .env
+load_env_variables "$env_file"
 
 # Vérifier si le fichier .env existe
 if [ ! -f "$env_file" ]; then
