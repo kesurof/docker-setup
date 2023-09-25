@@ -3,12 +3,12 @@
 import os
 import yaml
 import subprocess
-from dotenv import load_dotenv
+import sys
 
 def create_virtual_environment(venv_dir):
     if not os.path.exists(venv_dir):
         print(f"Création de l'environnement virtuel dans {venv_dir}...")
-        subprocess.call(["python3", "-m", "venv", venv_dir])
+        subprocess.call([sys.executable, "-m", "venv", venv_dir])
 
 def activate_virtual_environment(venv_dir):
     activate_script = os.path.join(venv_dir, "bin", "activate")
@@ -34,6 +34,13 @@ def install_docker_module(venv_dir):
         print("Installation du module Docker dans l'environnement virtuel...")
         subprocess.call([os.path.join(venv_dir, "bin", "pip"), "install", "docker"])
 
+def install_dotenv_module(venv_dir):
+    try:
+        import dotenv
+    except ImportError:
+        print("Installation du module python-dotenv dans l'environnement virtuel...")
+        subprocess.call([os.path.join(venv_dir, "bin", "pip"), "install", "python-dotenv"])
+
 def main():
     # Définir le chemin absolu du répertoire où vous souhaitez créer l'environnement virtuel
     user_home = os.path.expanduser("~")
@@ -49,10 +56,18 @@ def main():
     # Installer le module Docker dans l'environnement virtuel
     install_docker_module(venv_dir)
 
+    # Installer le module python-dotenv dans l'environnement virtuel
+    install_dotenv_module(venv_dir)
+
     # Charger les variables d'environnement depuis le fichier .env
-    env_file_path = user_home
-    env_file = os.path.join(env_file_path, ".env")
-    load_dotenv(env_file)
+    try:
+        from dotenv import load_dotenv
+        env_file_path = user_home
+        env_file = os.path.join(env_file_path, ".env")
+        load_dotenv(env_file)
+    except ImportError:
+        print("Le module python-dotenv n'a pas été installé correctement dans l'environnement virtuel.")
+
 
     # Charger le modèle YAML
     app_settings_dir = os.getenv("APP_SETTINGS_DIR")
