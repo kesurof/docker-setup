@@ -12,6 +12,7 @@ services:
     volumes:
       - {{APP_SETTINGS_DIR}}/nginx-proxy-manager/data:/data
       - {{APP_SETTINGS_DIR}}/nginx-proxy-manager/letsencrypt:/etc/letsencrypt
+      - {{USER_HOME}}:/{{USER_HOME}}
     networks:
       mon-reseau:
         ipv4_address: 172.18.0.2 # Adresse IP statique pour nginx-proxy-manager
@@ -23,6 +24,7 @@ services:
     volumes: 
       - /var/run/docker.sock:/var/run/docker.sock
       - {{APP_SETTINGS_DIR}}/portainer:/data
+      - {{USER_HOME}}:/{{USER_HOME}}
     ports:
       - 9000:9000
     networks:
@@ -44,14 +46,16 @@ services:
       - {{APP_SETTINGS_DIR}}/plex/config:/config
       - {{APP_SETTINGS_DIR}}/plex/transcode:/transcode
       - {{RCLONE_DIR}}:/rclone
+      - {{USER_HOME}}:/{{USER_HOME}}
     restart: unless-stopped
     network_mode: bridge
 
   rdtclient:
     container_name: rdtclient
     volumes:
-      - '{{USER_HOME}}/local/:/data/downloads'
-      - '{{APP_SETTINGS_DIR}}/rdt-client/:/data/db'
+      - {{USER_HOME}}/local/:/data/downloads
+      - {{APP_SETTINGS_DIR}}/rdt-client/:/data/db
+      - {{USER_HOME}}:/{{USER_HOME}}
     image: rogerfar/rdtclient
     restart: always
     logging:
@@ -74,6 +78,7 @@ services:
       - VERSION=latest
     volumes:
       - {{APP_SETTINGS_DIR}}/overseerr/config:/config
+      - {{USER_HOME}}:/{{USER_HOME}}
     ports:
       - 5055:5055
     restart: unless-stopped
@@ -90,6 +95,7 @@ services:
       - TZ=Europe/Paris
     volumes:
       - {{APP_SETTINGS_DIR}}/tautulli/config:/config
+      - {{USER_HOME}}:/{{USER_HOME}}
     ports:
       - 8181:8181
     restart: unless-stopped
@@ -106,7 +112,8 @@ services:
       - TZ=Europe/Paris        
     volumes:
       - {{APP_SETTINGS_DIR}}/jackett/config:/config
-      - {{APP_SETTINGS_DIR}}/jackett/blackhole/:/downloads   
+      - {{APP_SETTINGS_DIR}}/jackett/blackhole/:/downloads  
+      - {{USER_HOME}}:/{{USER_HOME}}
     ports:
       - 9117:9117      
     restart: unless-stopped
@@ -123,6 +130,7 @@ services:
       - TZ=Europe/Paris 
     volumes:
       - {{APP_SETTINGS_DIR}}/prowlarr/config:/config
+      - {{USER_HOME}}:/{{USER_HOME}}
     ports:
       - 9696:9696
     restart: unless-stopped
@@ -155,6 +163,7 @@ services:
       - TZ=Europe/Paris
     volumes:
       - {{APP_SETTINGS_DIR}}/wireguard/config:/config
+      - {{USER_HOME}}:/{{USER_HOME}}
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
     #ports:
@@ -205,6 +214,7 @@ services:
       - {{USER_HOME}}/filebot/:/data:rw
       - {{RCLONE_DIR}}:/volume1/rclone/:rw
       - {{MEDIAS_DIR}}:/volume1/output/:rw
+      - {{USER_HOME}}:/{{USER_HOME}}
     ports:
       - 5452:5452
     environment:
@@ -220,6 +230,7 @@ services:
     restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - {{USER_HOME}}:/{{USER_HOME}}
     environment:
       TZ: "Europe/Paris"
       WATCHTOWER_CLEANUP: "true"
