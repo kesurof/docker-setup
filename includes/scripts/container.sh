@@ -25,8 +25,9 @@ def fill_yaml_template(template_file, env_vars):
 
 # Récupérer la liste des applications à partir du fichier docker-compose.yml
 def get_application_list(yaml_data):
-    services = list(yaml_data["services"].keys())
-    return services
+    services = yaml_data.get("services", {})
+    application_list = [service.get("container_name") for service in services.values() if service.get("container_name")]
+    return application_list
 
 # Installer les applications sélectionnées
 def install_applications(applications_to_install):
