@@ -1,12 +1,5 @@
 #!/bin/bash
 
-# Vérifier et installer whiptail si nécessaire
-if ! command -v whiptail &>/dev/null; then
-  echo "whiptail n'est pas installé. Installation en cours..."
-  sudo apt update
-  sudo apt install whiptail
-fi
-
 # Fonction pour afficher une question en jaune
 ask_question() {
   echo -e "\033[33m$1\033[0m"
@@ -35,13 +28,6 @@ load_env_variables "$env_file"
 # Chemin vers le fichier docker-compose.yml
 docker_compose_file="$APP_SETTINGS_DIR/docker-compose.yml"
 
-# Analyser le fichier docker-compose.yml pour extraire les noms des containers
-container_names=($(awk '/container_name:/ {print $NF}' "$docker_compose_file"))
-
-# Utiliser whiptail pour sélectionner les applications à installer
-selected_containers=$(whiptail --title "Sélection des applications à installer" --checklist \
-"Cochez les applications que vous souhaitez installer :" 15 60 6 "${container_names[@]}" 3>&1 1>&2 2>&3)
-
 # Chemin du répertoire où sera copié le fichier docker-compose.yml
 app_settings_dir="/home/$(logname)/seedbox/app_settings"
 
@@ -66,7 +52,7 @@ start_docker_services() {
   ask_question "Voulez-vous installer et démarrer les services Docker maintenant ? (Oui/Non) "
   read -r start_services_choice
   if [ "$start_services_choice" = "oui" ] || [ "$start_services_choice" = "Oui" ] || [ "$start_services_choice" = "o" ] || [ "$start_services_choice" = "O" ]; then
-    docker-compose -f "$docker_compose_file" up -d $selected_containers
+    docker-compose -f "$docker_compose_file" up -d
     echo "Les services Docker ont été installés et démarrés avec succès."
   else
     echo "L'installation des services Docker a été annulée. Vous pouvez les installer ultérieurement en exécutant 'docker-compose -f $docker_compose_file up -d' dans le répertoire du fichier docker-compose.yml."
