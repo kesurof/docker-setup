@@ -6,11 +6,11 @@ if [ "$(id -u)" -eq 0 ]; then
   exit 1
 fi
 
-# Vérifier et installer whiptail si nécessaire
-if ! command -v whiptail &>/dev/null; then
-  echo "whiptail n'est pas installé. Installation en cours..."
+# Vérifier et installer dialog si nécessaire
+if ! command -v dialog &>/dev/null; then
+  echo "dialog n'est pas installé. Installation en cours..."
   sudo apt update
-  sudo apt install whiptail
+  sudo apt install dialog
 fi
 
 # Fonction pour afficher une question en jaune
@@ -50,9 +50,8 @@ docker_compose_file="$APP_SETTINGS_DIR/docker-compose.yml"
 # Analyser le fichier docker-compose.yml pour extraire les noms des containers
 container_names=($(awk '/container_name:/ {print $NF}' "$docker_compose_file"))
 
-# Utiliser whiptail pour sélectionner les applications à installer
-selected_containers=$(whiptail --title "Sélection des applications à installer" --checklist \
-"Cochez les applications que vous souhaitez installer :" 15 60 6 "${container_names[@]}" 3>&1 1>&2 2>&3)
+# Utiliser dialog pour sélectionner les applications à installer
+selected_containers=$(dialog --checklist "Sélection des applications à installer" 15 60 6 "${container_names[@]}" 3>&1 1>&2 2>&3)
 
 # Chemin du répertoire où sera copié le fichier docker-compose.yml
 app_settings_dir="/home/$(logname)/seedbox/app_settings"
@@ -75,7 +74,7 @@ echo "Les informations ont été ajoutées au fichier docker-compose.yml."
 # Fonction pour exécuter Docker Compose
 start_docker_services() {
   local docker_compose_file="$1"
-  echo "Voulez-vous installer et démarrer les services Docker maintenant ? (Oui/Non)"
+  ask_question "Voulez-vous installer et démarrer les services Docker maintenant ? (Oui/Non) "
   read -r start_services_choice
   if [ "$start_services_choice" = "oui" ] || [ "$start_services_choice" = "Oui" ] || [ "$start_services_choice" = "o" ] || [ "$start_services_choice" = "O" ]; then
     docker-compose -f "$docker_compose_file" up -d ${selected_containers[@]}
