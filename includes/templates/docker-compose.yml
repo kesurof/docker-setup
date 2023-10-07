@@ -36,8 +36,8 @@ services:
     container_name: plex
     environment:
       - VERSION=docker
-      - PUID=1000
-      - PGID=1000
+      - PUID={{PUID}}
+      - PGID={{PGID}}
       - PLEX_CLAIM={{PLEX_CLAIM}}
       - TZ=Europe/Paris
     ports:
@@ -49,31 +49,13 @@ services:
       - {{USER_HOME}}:{{USER_HOME}}
     restart: unless-stopped
     network_mode: bridge
-
-  rdtclient:
-    container_name: rdtclient
-    volumes:
-      - {{USER_HOME}}/local/:/data/downloads
-      - {{APP_SETTINGS_DIR}}/rdt-client/:/data/db
-      - {{USER_HOME}}:{{USER_HOME}}
-    image: rogerfar/rdtclient
-    restart: always
-    logging:
-      driver: json-file
-      options:
-        max-size: 10m
-    ports:
-      - '6500:6500'
-    networks:
-      mon-reseau:
-        ipv4_address: 172.18.0.4 # Adresse IP statique pour nginx-proxy-manager
         
   overseerr:
     image: lscr.io/linuxserver/overseerr
     container_name: overseerr
     environment:
-      - PUID=1000
-      - PGID=1000
+      - PUID={{PUID}}
+      - PGID={{PGID}}
       - TZ=Europe/Paris
       - VERSION=latest
     volumes:
@@ -90,8 +72,8 @@ services:
     image: lscr.io/linuxserver/tautulli
     container_name: tautulli
     environment:
-      - PUID=1000
-      - PGID=1000
+      - PUID={{PUID}}
+      - PGID={{PGID}}
       - TZ=Europe/Paris
     volumes:
       - {{APP_SETTINGS_DIR}}/tautulli/config:/config
@@ -103,30 +85,12 @@ services:
       mon-reseau:
         ipv4_address: 172.18.0.6 # Adresse IP statique pour tautulli
 
-  jackett:
-    image: lscr.io/linuxserver/jackett:latest
-    container_name: jackett
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Paris        
-    volumes:
-      - {{APP_SETTINGS_DIR}}/jackett/config:/config
-      - {{APP_SETTINGS_DIR}}/jackett/blackhole/:/downloads  
-      - {{USER_HOME}}:{{USER_HOME}}
-    ports:
-      - 9117:9117      
-    restart: unless-stopped
-    networks:
-      mon-reseau:
-        ipv4_address: 172.18.0.7 # Adresse IP statique pour jackett
-
   prowlarr:
     image: lscr.io/linuxserver/prowlarr:latest
     container_name: prowlarr
     environment:
-      - PUID=1000
-      - PGID=1000
+      - PUID={{PUID}}
+      - PGID={{PGID}}
       - TZ=Europe/Paris 
     volumes:
       - {{APP_SETTINGS_DIR}}/prowlarr/config:/config
@@ -172,12 +136,13 @@ services:
     networks:
       mon-reseau:
         ipv4_address: 172.18.0.10 # Adresse IP statique pour wireguard
+
   sonarr:
     image: lscr.io/linuxserver/sonarr:latest
     container_name: sonarr
     environment:
-      - PUID=1000
-      - PGID=1000
+      - PUID={{PUID}}
+      - PGID={{PGID}}
       - TZ=Europe/Paris
     volumes:
       - {{APP_SETTINGS_DIR}}/sonarr/:/config
@@ -193,8 +158,8 @@ services:
     image: lscr.io/linuxserver/radarr:latest
     container_name: radarr
     environment:
-      - PUID=1000
-      - PGID=1000
+      - PUID={{PUID}}
+      - PGID={{PGID}}
       - TZ=Europe/Paris
     volumes:
       - {{APP_SETTINGS_DIR}}/radarr/:/config
@@ -218,8 +183,8 @@ services:
     ports:
       - 5452:5452
     environment:
-      - PUID=1000
-      - PGID=1000
+      - PUID={{PUID}}
+      - PGID={{PGID}}
     networks:
       mon-reseau:
         ipv4_address: 172.18.0.13 # Adresse IP statique pour filebot-node

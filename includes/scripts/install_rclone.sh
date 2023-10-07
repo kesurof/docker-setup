@@ -35,18 +35,6 @@ if ! command -v python3 &> /dev/null; then
     sudo apt install -y python3
 fi
 
-# Vérifier si rclone est déjà installé
-if ! command -v rclone &> /dev/null; then
-    afficher_texte_jaune "Installation de rclone"
-    wget https://github.com/itsToggle/rclone_RD/releases/download/v1.58.1-rd.2.2/rclone-linux
-    chmod +x rclone-linux
-    sudo mv rclone-linux /usr/local/bin/rclone
-
-    # Définir le répertoire de configuration de rclone
-    mkdir -p /home/$(logname)/.config/rclone
-    export RCLONE_CONFIG_FILE=/home/$(logname)/.config/rclone/rclone.conf
-fi
-
 # Supprimer le service rclone.service s'il existe déjà
 if [ -f "/etc/systemd/system/rclone.service" ]; then
     afficher_texte_jaune "Suppression du service rclone.service existant"
@@ -62,14 +50,6 @@ if [ ! -d "$rclone_dir" ]; then
     sudo mkdir -p "$rclone_dir"
 fi
 
-# Changer le propriétaire du point de montage à votre utilisateur
-afficher_texte_jaune "Changer le propriétaire du point de montage"
-sudo chown -R $(logname):$(logname) "$rclone_dir"
-
-# Donner des droits d'écriture au propriétaire du point de montage
-afficher_texte_jaune "Donner des droits d'écriture au propriétaire du point de montage"
-chmod 755 "$rclone_dir"
-
 # Configuration du service systemd pour rclone
 afficher_texte_jaune "Configuration du service systemd pour rclone"
 cat <<EOF | sudo tee /etc/systemd/system/rclone.service
@@ -78,9 +58,10 @@ Description=rclone mount service for realdebrid
 
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/rclone mount realdebrid: "$rclone_dir" --dir-cache-time 10s --allow-other --allow-non-empty --vfs-cache-mode full
+ExecStart=/usr/bin/rclone mount -vv --config=/home/$USER/.config/rclone/rclone.conf --allow-other --gid $(id -u) --uid $(id -u) --vfs-cache-mode full --vfs-cache-max-size 150G --cache-dir=/home/$USER/.cache/rclone realdebrid: /home/$USER/rclone
+ExecStop=/bin/fusermount -uz /home/$USER/rclone
 Restart=always
-User=$(logname)
+RestartSec=5
 
 [Install]
 WantedBy=default.target
