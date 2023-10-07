@@ -14,6 +14,12 @@ function create_directory() {
   fi
 }
 
+# Vérifier si rclone est déjà installé
+if ! command -v rclone &> /dev/null; then
+    afficher_texte_jaune "Installation de rclone"
+    sudo -v ; curl https://rclone.org/install.sh | sudo bash
+fi
+
 # Chemin par défaut pour le fichier .env
 env_file_path="/home/$(logname)"
 env_file="$env_file_path/.env"
@@ -31,11 +37,14 @@ APP_SETTINGS_DIR=
 RCLONE_DIR=
 RCLONE_CONFIG_FILE=
 RD_API_KEY=
+WEBDAV_PASS=
 RD_TOKEN_PLEX=
 PLEX_ADDRESS=
 PLEX_USER=
 PLEX_PASSWD=
 PLEX_CLAIM=
+PUID=
+PGID=
 EOL
 
   echo "Le fichier .env a été créé avec des valeurs par défaut."
@@ -81,6 +90,9 @@ if [ -f "$env_file" ]; then
 
     # Demander à l'utilisateur la clé API de RealDebrid
     read -r -p "Veuillez entrer votre clé API RealDebrid : " rd_api_key
+    # Demander à l'utilisateur le mot de passe webdav
+    read -r -p "Veuillez entrer votre Mot de passe WebDAV : " pass
+    webdav_pass=$(echo $pass | rclone obscure -)
 
     # Chemin du fichier rclone.conf
     rclone_config_file="/home/$(logname)/.config/rclone/rclone.conf"
@@ -91,8 +103,10 @@ if [ -f "$env_file" ]; then
     # Écrire la configuration rclone dans le fichier rclone.conf en remplaçant {{RD_API_KEY}}
     cat <<EOL > "$rclone_config_file"
 [realdebrid]
-type = realdebrid
-api_key = $rd_api_key
+type = webdav
+url = https://dav.real-debrid.com
+vendor = other
+pass = $webdav_pass
 EOL
 
     echo -e "\e[32mLe fichier rclone.conf a été créé dans $rclone_config_file.\e[0m"
@@ -156,11 +170,15 @@ EOL
       echo "RCLONE_DIR=${folders[3]}"
       echo "RCLONE_CONFIG_FILE=$rclone_config_file"
       echo "RD_API_KEY=$rd_api_key"
+      echo "WEBDAV_PASS=$webdav_pass"
       echo "RD_TOKEN_PLEX=$rd_token_plex"
       echo "PLEX_ADDRESS=$plex_address"
       echo "PLEX_USER=$plex_user"
       echo "PLEX_PASSWD=$plex_passwd"
       echo "PLEX_CLAIM=$plex_claim"
+      echo "PUID=$(id -u)"
+      echo "PGID=$(id -u)"
+
     } > "$env_file"
 
     echo -e "\e[32mConfiguration terminée. Les informations ont été écrites dans le fichier $env_file.\e[0m"
