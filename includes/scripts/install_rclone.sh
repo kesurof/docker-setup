@@ -70,8 +70,7 @@ Description=rclone mount service for realdebrid
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/rclone mount -vv --config=/home/$USER/.config/rclone/rclone.conf --allow-other --gid $(id -u) --uid $(id -u) --vfs-cache-mode full --vfs-cache-max-size 150G --cache-dir=/home/$USER/.cache/rclone realdebrid: /home/$USER/rclone
-ExecStop=/bin/fusermount -uz /home/$USER/rclone
+ExecStart=/usr/bin/rclone mount -vv --config=/home/$USER/.config/rclone/rclone.conf --allow-other --gid $(id -u) --uid $(id -u) --vfs-read-ahead 512M --vfs-read-chunk-size 128M --vfs-read-chunk-size-limit 2G --vfs-fast-fingerprint --vfs-cache-mode writes --dir-cache-time 10s --buffer-size 256M --vfs-cache-max-size 150G --umask 002 --cache-dir=/home/$USER/.cache/rclone realdebrid: /home/$USER/rcloneExecStop=/bin/fusermount -uz /home/$USER/rclone
 Restart=always
 RestartSec=5
 
