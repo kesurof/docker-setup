@@ -9,13 +9,38 @@ services:
       - 80:80
       - 81:81
       - 443:443
+    environment:
+      - PUID={{PUID}}
+      - PGID={{PGID}}
+      - TZ=Europe/Paris
     volumes:
-      - {{APP_SETTINGS_DIR}}/nginx-proxy-manager/data:/data
+      - {{APP_SETTINGS_DIR}}/nginx-proxy-manager:/data
       - {{APP_SETTINGS_DIR}}/nginx-proxy-manager/letsencrypt:/etc/letsencrypt
       - {{USER_HOME}}:{{USER_HOME}}
     networks:
       mon-reseau:
         ipv4_address: 172.18.0.2 # Adresse IP statique pour nginx-proxy-manager
+
+  rdtclient:
+    container_name: rdtclient
+    volumes:
+      - '/data/downloads:/data/downloads'
+      - '{{APP_SETTINGS_DIR}}/rdt-client:/data/db'
+    image: rdtclient
+    environment:
+      - PUID={{PUID}}
+      - PGID={{PGID}}
+      - TZ=Europe/Paris
+    restart: always
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+    ports:
+      - '6500:6500'
+    networks:
+      mon-reseau:
+        ipv4_address: 172.18.0.15
 
   portainer:
     image: portainer/portainer-ce
@@ -27,6 +52,10 @@ services:
       - {{USER_HOME}}:{{USER_HOME}}
     ports:
       - 9000:9000
+    environment:
+      - PUID={{PUID}}
+      - PGID=101
+      - TZ=Europe/Paris
     networks:
       mon-reseau:
         ipv4_address: 172.18.0.3 # Adresse IP statique pour portainer-ce
@@ -43,7 +72,7 @@ services:
     ports:
       - 32400:32400
     volumes:
-      - {{APP_SETTINGS_DIR}}/plex/config:/config
+      - {{APP_SETTINGS_DIR}}/plex:/config
       - {{APP_SETTINGS_DIR}}/plex/transcode:/transcode
       - {{RCLONE_DIR}}:/rclone
       - {{USER_HOME}}:{{USER_HOME}}
@@ -59,7 +88,7 @@ services:
       - TZ=Europe/Paris
       - VERSION=latest
     volumes:
-      - {{APP_SETTINGS_DIR}}/overseerr/config:/config
+      - {{APP_SETTINGS_DIR}}/overseerr:/config
       - {{USER_HOME}}:{{USER_HOME}}
     ports:
       - 5055:5055
@@ -67,23 +96,6 @@ services:
     networks:
       mon-reseau:
         ipv4_address: 172.18.0.5 # Adresse IP statique pour overseerr
-
-  tautulli:
-    image: lscr.io/linuxserver/tautulli
-    container_name: tautulli
-    environment:
-      - PUID={{PUID}}
-      - PGID={{PGID}}
-      - TZ=Europe/Paris
-    volumes:
-      - {{APP_SETTINGS_DIR}}/tautulli/config:/config
-      - {{USER_HOME}}:{{USER_HOME}}
-    ports:
-      - 8181:8181
-    restart: unless-stopped
-    networks:
-      mon-reseau:
-        ipv4_address: 172.18.0.6 # Adresse IP statique pour tautulli
 
   prowlarr:
     image: lscr.io/linuxserver/prowlarr:latest
@@ -93,7 +105,7 @@ services:
       - PGID={{PGID}}
       - TZ=Europe/Paris 
     volumes:
-      - {{APP_SETTINGS_DIR}}/prowlarr/config:/config
+      - {{APP_SETTINGS_DIR}}/prowlarr:/config
       - {{USER_HOME}}:{{USER_HOME}}
     ports:
       - 9696:9696
@@ -124,9 +136,11 @@ services:
       - NET_ADMIN
       - SYS_MODULE
     environment:
+      - PUID={{PUID}}
+      - PGID={{PGID}}
       - TZ=Europe/Paris
     volumes:
-      - {{APP_SETTINGS_DIR}}/wireguard/config:/config
+      - {{APP_SETTINGS_DIR}}/wireguard:/config
       - {{USER_HOME}}:{{USER_HOME}}
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
@@ -145,7 +159,7 @@ services:
       - PGID={{PGID}}
       - TZ=Europe/Paris
     volumes:
-      - {{APP_SETTINGS_DIR}}/sonarr/:/config
+      - {{APP_SETTINGS_DIR}}/sonarr:/config
       - {{USER_HOME}}:{{USER_HOME}}
     ports:
       - 8989:8989
@@ -162,7 +176,7 @@ services:
       - PGID={{PGID}}
       - TZ=Europe/Paris
     volumes:
-      - {{APP_SETTINGS_DIR}}/radarr/:/config
+      - {{APP_SETTINGS_DIR}}/radarr:/config
       - {{USER_HOME}}:{{USER_HOME}}
     ports:
       - 7878:7878
@@ -176,7 +190,7 @@ services:
     image: rednoah/filebot:node
     restart: unless-stopped
     volumes:
-      - {{USER_HOME}}/filebot/:/data:rw
+      - {{USER_HOME}}:/data:rw
       - {{RCLONE_DIR}}:/volume1/rclone/:rw
       - {{MEDIAS_DIR}}:/volume1/output/:rw
       - {{USER_HOME}}:{{USER_HOME}}

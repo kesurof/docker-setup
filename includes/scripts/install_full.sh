@@ -37,9 +37,3 @@ for script_path in "${script_paths[@]}"; do
     fi
 done
 
-# Vérifier si rclone est déjà installé
-if ! command -v rclone &> /dev/null; then
-    afficher_texte_jaune "Installation de rclone"
-    sudo -v ; curl https://rclone.org/install.sh | sudo bash
-fi
-

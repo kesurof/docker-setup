@@ -35,6 +35,18 @@ if ! command -v python3 &> /dev/null; then
     sudo apt install -y python3
 fi
 
+# Vérifier si rclone est déjà installé
+if ! command -v rclone &> /dev/null; then
+    afficher_texte_jaune "Installation de rclone"
+    wget https://github.com/itsToggle/rclone_RD/releases/download/v1.58.1-rd.2.2/rclone-linux
+    chmod +x rclone-linux
+    sudo mv rclone-linux /usr/local/bin/rclone
+
+    # Définir le répertoire de configuration de rclone
+    mkdir -p /home/$(logname)/.config/rclone
+    export RCLONE_CONFIG_FILE=/home/$(logname)/.config/rclone/rclone.conf
+fi
+
 # Supprimer le service rclone.service s'il existe déjà
 if [ -f "/etc/systemd/system/rclone.service" ]; then
     afficher_texte_jaune "Suppression du service rclone.service existant"
