@@ -36,6 +36,8 @@ PLEX_ADDRESS=
 PLEX_USER=
 PLEX_PASSWD=
 PLEX_CLAIM=
+PUID=
+PGID=
 EOL
 
   echo "Le fichier .env a été créé avec des valeurs par défaut."
@@ -161,6 +163,9 @@ EOL
       echo "PLEX_USER=$plex_user"
       echo "PLEX_PASSWD=$plex_passwd"
       echo "PLEX_CLAIM=$plex_claim"
+      echo "PUID=$(id -u)"
+      echo "PGID=$(id -u)"
+
     } > "$env_file"
 
     echo -e "\e[32mConfiguration terminée. Les informations ont été écrites dans le fichier $env_file.\e[0m"

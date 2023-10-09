@@ -36,3 +36,4 @@ for script_path in "${script_paths[@]}"; do
         "$script_path"
     fi
 done
+

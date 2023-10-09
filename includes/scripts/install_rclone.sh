@@ -62,14 +62,6 @@ if [ ! -d "$rclone_dir" ]; then
     sudo mkdir -p "$rclone_dir"
 fi
 
-# Changer le propriétaire du point de montage à votre utilisateur
-afficher_texte_jaune "Changer le propriétaire du point de montage"
-sudo chown -R $(logname):$(logname) "$rclone_dir"
-
-# Donner des droits d'écriture au propriétaire du point de montage
-afficher_texte_jaune "Donner des droits d'écriture au propriétaire du point de montage"
-chmod 755 "$rclone_dir"
-
 # Configuration du service systemd pour rclone
 afficher_texte_jaune "Configuration du service systemd pour rclone"
 cat <<EOF | sudo tee /etc/systemd/system/rclone.service
@@ -78,9 +70,9 @@ Description=rclone mount service for realdebrid
 
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/rclone mount realdebrid: "$rclone_dir" --dir-cache-time 10s --allow-other --allow-non-empty --vfs-cache-mode full
+ExecStart=/usr/bin/rclone mount -vv --config=/home/$USER/.config/rclone/rclone.conf --allow-other --gid $(id -u) --uid $(id -u) --vfs-read-ahead 512M --vfs-read-chunk-size 128M --vfs-read-chunk-size-limit 2G --vfs-fast-fingerprint --vfs-cache-mode writes --dir-cache-time 10s --buffer-size 256M --vfs-cache-max-size 150G --umask 002 --cache-dir=/home/$USER/.cache/rclone realdebrid: /home/$USER/rcloneExecStop=/bin/fusermount -uz /home/$USER/rclone
 Restart=always
-User=$(logname)
+RestartSec=5
 
 [Install]
 WantedBy=default.target
