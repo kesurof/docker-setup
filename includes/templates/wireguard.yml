@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+
+  wireguard:
+    image: linuxserver/wireguard:latest
+    container_name: wireguard
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    environment:
+      - PUID={{PUID}}
+      - PGID={{PGID}}
+      - TZ=Europe/Paris
+    volumes:
+      - {{APP_SETTINGS_DIR}}/wireguard:/config
+      - {{USER_HOME}}:{{USER_HOME}}
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+    #ports:
+      #- 51820:51820/udp
+    restart: unless-stopped
+    networks:
+      mon-reseau:
+        ipv4_address: 172.18.0.8 # Adresse IP statique pour wireguard
+
+networks:
+  mon-reseau:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.18.0.0/16

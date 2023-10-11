@@ -26,7 +26,7 @@ services:
     volumes:
       - '/data/downloads:/data/downloads'
       - '{{APP_SETTINGS_DIR}}/rdt-client:/data/db'
-    image: rdtclient
+    image: gaisberg/rdtclient-symlink:latest
     environment:
       - PUID={{PUID}}
       - PGID={{PGID}}
@@ -40,7 +40,7 @@ services:
       - '6500:6500'
     networks:
       mon-reseau:
-        ipv4_address: 172.18.0.15
+        ipv4_address: 172.18.0.3
 
   portainer:
     image: portainer/portainer-ce
@@ -58,7 +58,7 @@ services:
       - TZ=Europe/Paris
     networks:
       mon-reseau:
-        ipv4_address: 172.18.0.3 # Adresse IP statique pour portainer-ce
+        ipv4_address: 172.18.0.4 # Adresse IP statique pour portainer-ce
 
   plex:
     image: lscr.io/linuxserver/plex:latest
@@ -112,7 +112,7 @@ services:
     restart: unless-stopped
     networks:
       mon-reseau:
-        ipv4_address: 172.18.0.8 # Adresse IP statique pour prowlarr
+        ipv4_address: 172.18.0.6 # Adresse IP statique pour prowlarr
 
   flaresolverr:
     image: ghcr.io/flaresolverr/flaresolverr:latest
@@ -127,7 +127,7 @@ services:
     restart: unless-stopped
     networks:
       mon-reseau:
-        ipv4_address: 172.18.0.9 # Adresse IP statique pour flaresolverr
+        ipv4_address: 172.18.0.7 # Adresse IP statique pour flaresolverr
 
   wireguard:
     image: linuxserver/wireguard:latest
@@ -149,7 +149,7 @@ services:
     restart: unless-stopped
     networks:
       mon-reseau:
-        ipv4_address: 172.18.0.10 # Adresse IP statique pour wireguard
+        ipv4_address: 172.18.0.8 # Adresse IP statique pour wireguard
 
   sonarr:
     image: lscr.io/linuxserver/sonarr:latest
@@ -166,7 +166,7 @@ services:
     restart: unless-stopped
     networks:
       mon-reseau:
-        ipv4_address: 172.18.0.11 # Adresse IP statique pour sonarr
+        ipv4_address: 172.18.0.9 # Adresse IP statique pour sonarr
 
   radarr:
     image: lscr.io/linuxserver/radarr:latest
@@ -183,7 +183,7 @@ services:
     restart: unless-stopped
     networks:
       mon-reseau:
-        ipv4_address: 172.18.0.12 # Adresse IP statique pour radarr
+        ipv4_address: 172.18.0.10 # Adresse IP statique pour radarr
 
   filebot-node:
     container_name: filebot-node
@@ -201,7 +201,7 @@ services:
       - PGID={{PGID}}
     networks:
       mon-reseau:
-        ipv4_address: 172.18.0.13 # Adresse IP statique pour filebot-node
+        ipv4_address: 172.18.0.11 # Adresse IP statique pour filebot-node
         
   watchtower:
     image: containrrr/watchtower
@@ -217,7 +217,7 @@ services:
       WATCHTOWER_SCHEDULE: "0 0 4 * * *"
     networks:
       mon-reseau:
-        ipv4_address: 172.18.0.30 # Adresse IP statique pour watchtower
+        ipv4_address: 172.18.0.12 # Adresse IP statique pour watchtower
 
 networks:
   mon-reseau:

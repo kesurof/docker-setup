@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+
+  flaresolverr:
+    image: ghcr.io/flaresolverr/flaresolverr:latest
+    container_name: flaresolverr
+    security_opt:
+      - no-new-privileges:true    
+    environment:
+      - TZ=Europe/Paris  
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - LOG_HTML=${LOG_HTML:-false}      
+      - CAPTCHA_SOLVER=${CAPTCHA_SOLVER:-none}       
+    restart: unless-stopped
+    networks:
+      mon-reseau:
+        ipv4_address: 172.18.0.7 # Adresse IP statique pour flaresolverr
+
+networks:
+  mon-reseau:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.18.0.0/16

@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+
+  filebot-node:
+    container_name: filebot-node
+    image: rednoah/filebot:node
+    restart: unless-stopped
+    volumes:
+      - {{USER_HOME}}:/data:rw
+      - {{RCLONE_DIR}}:/volume1/rclone/:rw
+      - {{MEDIAS_DIR}}:/volume1/output/:rw
+      - {{USER_HOME}}:{{USER_HOME}}
+    ports:
+      - 5452:5452
+    environment:
+      - PUID={{PUID}}
+      - PGID={{PGID}}
+    networks:
+      mon-reseau:
+        ipv4_address: 172.18.0.11 # Adresse IP statique pour filebot-node
+
+networks:
+  mon-reseau:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.18.0.0/16
