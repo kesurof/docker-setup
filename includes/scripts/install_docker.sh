@@ -19,6 +19,9 @@ if ! groups "$(logname)" | grep &>/dev/null '\bdocker\b'; then
   fi
 fi
 
+# mise à jour dépendance
+sudo apt install lsb-core figlet -y
+
 # Installer Docker et Docker Compose
 distro=$(lsb_release -si)
 version=$(lsb_release -sr)

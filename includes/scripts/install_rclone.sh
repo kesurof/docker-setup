@@ -18,7 +18,7 @@ function load_env_variables() {
     echo "Le fichier .env n'a pas été trouvé à $env_file. Assurez-vous qu'il existe avant de continuer."
     exit 1
   fi
-}
+}    
 
 # Charger toutes les variables depuis le fichier .env
 load_env_variables "$env_file"
@@ -40,7 +40,7 @@ if ! command -v rclone &> /dev/null; then
     afficher_texte_jaune "Installation de rclone"
     wget https://github.com/itsToggle/rclone_RD/releases/download/v1.58.1-rd.2.2/rclone-linux
     chmod +x rclone-linux
-    sudo mv rclone-linux /usr/local/bin/rclone
+    sudo mv rclone-linux /usr/bin/rclone
 
     # Définir le répertoire de configuration de rclone
     mkdir -p /home/$(logname)/.config/rclone
@@ -70,7 +70,8 @@ Description=rclone mount service for realdebrid
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/rclone mount -vv --config=/home/$USER/.config/rclone/rclone.conf --allow-other --gid $(id -u) --uid $(id -u) --vfs-read-ahead 512M --vfs-read-chunk-size 128M --vfs-read-chunk-size-limit 2G --vfs-fast-fingerprint --vfs-cache-mode writes --dir-cache-time 10s --buffer-size 256M --vfs-cache-max-size 150G --umask 002 --cache-dir=/home/$USER/.cache/rclone realdebrid: /home/$USER/rcloneExecStop=/bin/fusermount -uz /home/$USER/rclone
+ExecStart=/usr/bin/rclone mount -vv --config=/home/$USER/.config/rclone/rclone.conf --allow-other --gid $(id -u) --uid $(id -u) --vfs-read-ahead 512M --vfs-read-chunk-size 128M --vfs-read-chunk-size-limit 2G --vfs-fast-fingerprint --vfs-cache-mode writes --dir-cache-time 10s --buffer-size 256M --vfs-cache-max-size 150G --umask 002 --cache-dir=/home/$USER/.cache/rclone realdebrid: /home/$USER/rclone
+ExecStop=/bin/fusermount -uz /home/$USER/rclone
 Restart=always
 RestartSec=5
 

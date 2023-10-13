@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - {{USER_HOME}}:{{USER_HOME}}
+    environment:
+      TZ: "Europe/Paris"
+      WATCHTOWER_CLEANUP: "true"
+      WATCHTOWER_NO_STARTUP_MESSAGE: "true"
+      WATCHTOWER_SCHEDULE: "0 0 4 * * *"
+    networks:
+      mon-reseau:
+        ipv4_address: 172.18.0.12 # Adresse IP statique pour watchtower
+
+networks:
+  mon-reseau:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.18.0.0/16

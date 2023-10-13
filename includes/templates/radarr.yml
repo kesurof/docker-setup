@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    environment:
+      - PUID={{PUID}}
+      - PGID={{PGID}}
+      - TZ=Europe/Paris
+    volumes:
+      - {{APP_SETTINGS_DIR}}/radarr:/config
+      - {{USER_HOME}}:{{USER_HOME}}
+    ports:
+      - 7878:7878
+    restart: unless-stopped
+    networks:
+      mon-reseau:
+        ipv4_address: 172.18.0.10 # Adresse IP statique pour radarr
+
+networks:
+  mon-reseau:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.18.0.0/16

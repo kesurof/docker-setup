@@ -46,11 +46,6 @@ done
 # Afficher un message
 echo -e "\033[32mLes informations ont été ajoutées au fichier docker-compose.yml.\033[0m"
 
-# build RDTclient
-git clone -b symlink_downloader_concurrency https://github.com/Gaisberg/rdt-client.git
-cd rdt-client
-docker build --no-cache -t rdtclient . < Dockerfile
-
 # Fonction pour exécuter Docker Compose
 start_docker_services() {
   local docker_compose_file="$1"

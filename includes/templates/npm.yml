@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  npm:
+    image: 'jc21/nginx-proxy-manager:latest'
+    container_name: nginx-proxy-manager
+    restart: unless-stopped
+    ports:
+      - 80:80
+      - 81:81
+      - 443:443
+    environment:
+      - PUID={{PUID}}
+      - PGID={{PGID}}
+      - TZ=Europe/Paris
+    volumes:
+      - {{APP_SETTINGS_DIR}}/nginx-proxy-manager:/data
+      - {{APP_SETTINGS_DIR}}/nginx-proxy-manager/letsencrypt:/etc/letsencrypt
+      - {{USER_HOME}}:{{USER_HOME}}
+    networks:
+      mon-reseau:
+        ipv4_address: 172.18.0.2 # Adresse IP statique pour nginx-proxy-manager
+
+networks:
+  mon-reseau:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.18.0.0/16

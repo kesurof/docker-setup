@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+
+  rdtclient:
+    container_name: rdtclient
+    volumes:
+      - '{{LOCAL}}:/data/downloads'
+      - '{{APP_SETTINGS_DIR}}/rdt-client:/data/db'
+    image: gaisberg/rdtclient-symlink:latest
+    environment:
+      - PUID={{PUID}}
+      - PGID={{PGID}}
+      - TZ=Europe/Paris
+    restart: always
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+    ports:
+      - '6500:6500'
+    networks:
+      mon-reseau:
+        ipv4_address: 172.18.0.3
+
+networks:
+  mon-reseau:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.18.0.0/16

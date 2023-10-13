@@ -25,9 +25,6 @@ load_env_variables "$env_file"
 
 # À partir de ce point, toutes les variables du fichier .env sont disponibles, y compris $FOLDER_APP_SETTINGS
 
-# Chemin du répertoire de torrents
-rclone_dir="$RCLONE_DIR"
-
 # Demander à l'utilisateur le chemin d'installation des volumes des containers
 read -p "Veuillez entrer le chemin d'installation de plex_debrid (laisser vide pour utiliser /home/$(logname)/seedbox/app_settings) : "
 
@@ -64,55 +61,6 @@ if ! command -v pip3 &> /dev/null; then
     sudo apt install -y python3-pip
 fi
 
-# Vérifier si rclone est déjà installé
-if ! command -v rclone &> /dev/null; then
-    afficher_texte_jaune "5) Installation de rclone"
-    wget https://github.com/itsToggle/rclone_RD/releases/download/v1.58.1-rd.2.2/rclone-linux
-    chmod +x rclone-linux
-    sudo mv rclone-linux /usr/local/bin/rclone
-
-    # Définir le répertoire de configuration de rclone
-    mkdir -p /home/$(logname)/.config/rclone
-    export RCLONE_CONFIG=/home/$(logname)/.config/rclone/rclone.conf
-
-    rclone config
-fi
-
-# Vérifier si le dossier "$folder_rclone" existe
-if [ ! -d "$folder_rclone" ]; then
-    afficher_texte_jaune "6) Création du dossier $folder_rclone"
-    sudo mkdir -p "$folder_rclone"
-fi
-
-# Changer le propriétaire du point de montage à votre utilisateur
-afficher_texte_jaune "7) Changer le propriétaire du point de montage"
-sudo chown -R $(logname):$(logname) "$folder_rclone"
-
-# Donner des droits d'écriture au propriétaire du point de montage
-afficher_texte_jaune "8) Donner des droits d'écriture au propriétaire du point de montage"
-chmod +w "$folder_rclone"
-
-# Vérifier si le service systemd pour rclone est configuré
-if [ ! -f "/etc/systemd/system/rclone.service" ]; then
-    afficher_texte_jaune "9) Configuration du service systemd pour rclone"
-    cat <<EOF | sudo tee /etc/systemd/system/rclone.service
-[Unit]
-Description=rclone mount service for realdebrid
-
-[Service]
-Type=simple
-ExecStart=/usr/local/bin/rclone mount realdebrid: "$folder_rclone" --dir-cache-time 10s --allow-other --allow-non-empty
-Restart=always
-User=$(logname)
-
-[Install]
-WantedBy=default.target
-EOF
-    sudo systemctl daemon-reload
-    sudo systemctl enable rclone.service
-    sudo systemctl start rclone.service
-fi
-
 # Vérifier si plex_debrid est déjà installé dans le répertoire spécifié
 if [ ! -d "$folder_plex_debrid" ]; then
     afficher_texte_jaune "10) Installation de plex_debrid"
@@ -134,9 +82,11 @@ if [ ! -f "/etc/systemd/system/plex_debrid.service" ]; then
 Description=Plex Debrid Download Automation
 
 [Service]
+User=$(logname)
+Group=$(logname)
 Type=simple
-WorkingDirectory=$FOLDER_APP_SETTINGS/plex_debrid  # Définissez le répertoire de travail
-ExecStart=$FOLDER_APP_SETTINGS/plex_debrid/venv/bin/python3 $FOLDER_APP_SETTINGS/plex_debrid/main.py
+WorkingDirectory=$folder_app_settings/plex_debrid/
+ExecStart=$folder_app_settings/plex_debrid/venv/bin/python3 $folder_app_settings/plex_debrid/main.py
 Restart=always
 User=$(logname)
 
@@ -160,10 +110,6 @@ for i in {10..1}; do
     echo -e "Attente de $i secondes..."
     sleep 1
 done
-
-# Afficher le contenu de sudo systemctl status rclone.service et sudo systemctl status plex_debrid.service
-afficher_texte_jaune "Statut de rclone.service :"
-sudo systemctl status rclone.service
 
 afficher_texte_jaune "Statut de plex_debrid.service :"
 sudo systemctl status plex_debrid.service
