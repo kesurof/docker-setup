@@ -94,12 +94,6 @@ sudo systemctl start rclone.service
 afficher_texte_jaune "Statut de rclone.service :"
 sudo systemctl status rclone.service
 
-afficher_texte_jaune "Installation terminée !"
-
-# Afficher un message pour indiquer à l'utilisateur de relancer le container plex
-echo "Le container Plex va maintenant être relancé"
-docker restart plex
-
 afficher_texte_jaune "Installation de rclone terminée"
 
 exit 0

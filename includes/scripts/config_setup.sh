@@ -167,8 +167,7 @@ EOL
       echo "PGID=$(id -u)"
       echo SETTINGS_SOURCE="/home/$USER/docker-setup"
       echo SERVICESAVAILABLE="/home/$USER/docker-setup/services-available"
-      echo SERVICESUSER="/home/${USER}/services-"
-      echo SERVICESPERUSER="${SERVICESUSER}${USER}"
+      echo SERVICESPERUSER="/home/${USER}/services-${USER}"
     } > "$env_file"
 
     echo -e "\e[32mConfiguration terminée. Les informations ont été écrites dans le fichier $env_file.\e[0m"
