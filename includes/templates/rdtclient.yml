@@ -5,7 +5,7 @@ services:
   rdtclient:
     container_name: rdtclient
     volumes:
-      - '{{LOCAL}}:/data/downloads'
+      - '{{LOCAL_DIR}}:/data/downloads'
       - '{{APP_SETTINGS_DIR}}/rdt-client:/data/db'
     image: gaisberg/rdtclient-symlink:latest
     environment:
