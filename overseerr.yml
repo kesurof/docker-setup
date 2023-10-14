@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+
+  overseerr:
+    image: lscr.io/linuxserver/overseerr
+    container_name: overseerr
+    environment:
+      - PUID={{PUID}}
+      - PGID={{PGID}}
+      - TZ=Europe/Paris
+      - VERSION=latest
+    volumes:
+      - {{APP_SETTINGS_DIR}}/overseerr:/config
+      - {{USER_HOME}}:{{USER_HOME}}
+    ports:
+      - 5055:5055
+    restart: unless-stopped
+    networks:
+      mon-reseau:
+        ipv4_address: 172.18.0.5 # Adresse IP statique pour overseerr
+
+networks:
+  mon-reseau:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.18.0.0/16

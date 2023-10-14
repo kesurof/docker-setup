@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    environment:
+      - PUID={{PUID}}
+      - PGID={{PGID}}
+      - TZ=Europe/Paris 
+    volumes:
+      - {{APP_SETTINGS_DIR}}/prowlarr:/config
+      - {{USER_HOME}}:{{USER_HOME}}
+    ports:
+      - 9696:9696
+    restart: unless-stopped
+    networks:
+      mon-reseau:
+        ipv4_address: 172.18.0.6 # Adresse IP statique pour prowlarr
+
+networks:
+  mon-reseau:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.18.0.0/16
