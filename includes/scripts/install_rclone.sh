@@ -28,13 +28,6 @@ load_env_variables "$env_file"
 # Chemin du répertoire de torrents
 rclone_dir="$RCLONE_DIR"
 
-# Vérifier si Python 3 est installé
-if ! command -v python3 &> /dev/null; then
-    afficher_texte_jaune "Installation de Python 3"
-    sudo apt update
-    sudo apt install -y python3
-fi
-
 # Vérifier si rclone est déjà installé
 if ! command -v rclone &> /dev/null; then
     afficher_texte_jaune "Installation de rclone"

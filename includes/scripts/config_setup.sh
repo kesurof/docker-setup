@@ -165,10 +165,9 @@ EOL
       echo "PLEX_CLAIM=$plex_claim"
       echo "PUID=$(id -u)"
       echo "PGID=$(id -u)"
-      echo SETTINGS_SOURCE=$USER_HOME/docker-setup
-      echo SERVICESAVAILABLE="${SETTINGS_SOURCE}/services-available"
-      echo SERVICES="${SETTINGS_SOURCE}/includes/config/services"
-      echo SERVICESUSER="${USER_HOME}/services-"
+      echo SETTINGS_SOURCE="/home/$USER/docker-setup"
+      echo SERVICESAVAILABLE="/home/$USER/docker-setup/services-available"
+      echo SERVICESUSER="/home/${USER}/services-"
       echo SERVICESPERUSER="${SERVICESUSER}${USER}"
     } > "$env_file"
 
