@@ -20,7 +20,8 @@ load_env_variables "$env_file"
 
 
 function choose_services() {
-  echo -e "${BLUE}### SERVICES ###${NC}"
+  echo ""
+  echo -e "\e[1;32m### SERVICES ###\e[0m"
   echo "DEBUG ${SERVICESAVAILABLE}"
   echo -e " ${BWHITE}--> Services en cours d'installation : ${NC}"
   rm -Rf "${SERVICESPERUSER}" >/dev/null 2>&1
@@ -44,8 +45,8 @@ function choose_services() {
     rm /tmp/menuservices.txt
     touch $SERVICESPERUSER
     for APPDOCKER in $SERVICESTOINSTALL; do
-      echo -e "	${GREEN}* $(echo $APPDOCKER | tr -d '"')${NC}"
-      echo $(echo ${APPDOCKER,,} | tr -d '"') >>"${SERVICESPERUSER}"
+      echo -e "	\e[1;32m* $(echo $APPDOCKER | tr -d '"')\e[0m"
+      echo -e  $(echo ${APPDOCKER,,} | tr -d '"') >>"${SERVICESPERUSER}"
     done
   else
     return
@@ -75,13 +76,12 @@ function launch_service() {
   cd $app_settings_dir
   line=$1
   docker-compose -f --log-level ERROR "$line.yml" up -d
-  rm $line.yml
   cd $SETTINGS_SOURCE
 }
 
 choose_services
 install_service
-  echo -e "\nInstallation compose terminée, Appuyer sur [ENTREE] pour continuer..."
+  echo -e "\nInstallation compose terminée, Appuyer sur [ENTREE] pour retourner au menu..."
   read -r
 main_menu
 

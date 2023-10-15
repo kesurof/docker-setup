@@ -165,11 +165,9 @@ EOL
       echo "PLEX_CLAIM=$plex_claim"
       echo "PUID=$(id -u)"
       echo "PGID=$(id -u)"
-      echo SETTINGS_SOURCE=$USER_HOME/docker-setup
-      echo SERVICESAVAILABLE="${SETTINGS_SOURCE}/services-available"
-      echo SERVICES="${SETTINGS_SOURCE}/includes/config/services"
-      echo SERVICESUSER="${USER_HOME}/services-"
-      echo SERVICESPERUSER="${SERVICESUSER}${USER}"
+      echo SETTINGS_SOURCE="/home/$USER/docker-setup"
+      echo SERVICESAVAILABLE="/home/$USER/docker-setup/services-available"
+      echo SERVICESPERUSER="/home/${USER}/services-${USER}"
     } > "$env_file"
 
     echo -e "\e[32mConfiguration terminée. Les informations ont été écrites dans le fichier $env_file.\e[0m"
