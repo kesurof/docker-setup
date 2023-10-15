@@ -144,16 +144,20 @@ cd $scripts_dir
           ;;
         2)
           # Installation des applis
-          source install_applis.sh 
+          source install_applis.sh
+          main_menu 
           ;;
         3)
           # plex_debrid
           if [ ! -d "/home/$USER/seedbox/app_settings/plex_debrid" ];then
             source install_plex_debrid.sh
+            main_menu
           else
             source console_plex_debrid.sh 
           fi
-         ;;       
+         ;;
+        4)
+        exit 1       
         esac
   done
 }

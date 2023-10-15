@@ -13,7 +13,6 @@ export SETTINGS_SOURCE
 
 env="/home/$USER/.env"
 if [ -f "$env" ]; then
-
   # Chemin par défaut pour le fichier .env
   env_file_path="/home/$USER"
   env_file="$env_file_path/.env"
@@ -31,16 +30,9 @@ if [ -f "$env" ]; then
 
   # Charger toutes les variables depuis le fichier .env
   load_env_variables "$env_file"
-
-
-  # création d'un virtualenv
-   python3 -m venv ${SETTINGS_SOURCE}/venv
-
-  # activation du venv
-  source ${SETTINGS_SOURCE}/venv/bin/activate
-  source "${SETTINGS_SOURCE}/includes/scripts/functions.sh"
  
   #lancement menu
+  source "${SETTINGS_SOURCE}/includes/scripts/functions.sh"
   main_menu
 
 elif [ -e "/usr/bin/docker" ]; then
@@ -49,9 +41,7 @@ elif [ -e "/usr/bin/docker" ]; then
   main_menu
 
 else
-
   source "${SETTINGS_SOURCE}/includes/scripts/functions.sh"
   source "${SETTINGS_SOURCE}/includes/scripts/prerequis.sh"
-  echo -e  "\e[32mL'installation des prérequis est maintenant terminée, relancez ./install.sh "sans sudo"\e[0m"
-
+  echo -e  "\e[32mL'installation des prérequis est maintenant terminée, vous devez vous déconnecter/reconnecter puis relancer ./install.sh "sans sudo"\e[0m"
 fi

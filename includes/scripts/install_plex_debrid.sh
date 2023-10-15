@@ -20,6 +20,12 @@ function load_env_variables() {
   fi
 }
 
+# vérification rclone installé
+if [ ! -e "/usr/bin/rclone" ]; then
+    echo -e "\e[1;32mVeuillez au préalable installer rclone avant de continuer.\e[0m"
+    exit 1
+fi
+
 # Charger toutes les variables depuis le fichier .env
 load_env_variables "$env_file"
 
@@ -38,12 +44,13 @@ folder_plex_debrid="$folder_app_settings/plex_debrid"
 
 # Vérifier si plex_debrid est déjà installé dans le répertoire spécifié
 if [ ! -d "$folder_plex_debrid" ]; then
+    echo""
     afficher_texte_jaune "10) Installation de plex_debrid"
     sudo apt install -y git
     git clone https://github.com/itsToggle/plex_debrid "$folder_plex_debrid"
     cd "$folder_plex_debrid"
     python3 -m venv venv
-    source /home/$USER/docker-setup/venv/bin/activate
+    source venv/bin/activate
     pip3 install --use-pep517 -r requirements.txt
     deactivate
 fi
@@ -59,8 +66,8 @@ Description=Plex Debrid Download Automation
 User=$(logname)
 Group=$(logname)
 Type=simple
-WorkingDirectory=$folder_app_settings/plex_debrid/
-ExecStart=/home/$USER/docker-setup/venv/bin/python3 $folder_app_settings/plex_debrid/main.py
+WorkingDirectory=$folder_plex_debrid
+ExecStart=$folder_plex_debrid/venv/bin/python3 $folder_plex_debrid/main.py
 Restart=always
 User=$(logname)
 
@@ -72,15 +79,4 @@ EOF
     sudo systemctl start plex_debrid.service
 fi
 
-# Ajouter user_allow_other à /etc/fuse.conf
-echo 'user_allow_other' | sudo tee -a /etc/fuse.conf
-sudo systemctl restart rclone.service
-
-afficher_texte_jaune "Statut de plex_debrid.service :"
-sudo systemctl status plex_debrid.service
-
 afficher_texte_jaune "Installation terminée !"
-
-# Afficher un message pour indiquer à l'utilisateur de relancer le container plex
-echo "Il faut maintenant relancer le container plex"
-docker restart plex

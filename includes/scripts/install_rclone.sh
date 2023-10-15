@@ -30,6 +30,7 @@ rclone_dir="$RCLONE_DIR"
 
 # Vérifier si rclone est déjà installé
 if ! command -v rclone &> /dev/null; then
+    echo""
     afficher_texte_jaune "Installation de rclone"
     wget https://github.com/itsToggle/rclone_RD/releases/download/v1.58.1-rd.2.2/rclone-linux
     chmod +x rclone-linux
@@ -42,6 +43,7 @@ fi
 
 # Supprimer le service rclone.service s'il existe déjà
 if [ -f "/etc/systemd/system/rclone.service" ]; then
+    echo ""
     afficher_texte_jaune "Suppression du service rclone.service existant"
     sudo systemctl stop rclone.service
     sudo systemctl disable rclone.service
@@ -89,10 +91,6 @@ fi
 sudo systemctl daemon-reload
 sudo systemctl enable rclone.service
 sudo systemctl start rclone.service
-
-# Afficher le contenu de sudo systemctl status rclone.service
-afficher_texte_jaune "Statut de rclone.service :"
-sudo systemctl status rclone.service
 
 afficher_texte_jaune "Installation de rclone terminée"
 
