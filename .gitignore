@@ -64,3 +64,4 @@ node_modules/
 rebar.lock
 *.plt
 ebin/
+containers/docker-compose.yml
