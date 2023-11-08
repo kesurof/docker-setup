@@ -1,5 +1,6 @@
 Filebot-node-RenameMediasManagment
 Flaresolverr-ProxyManagment
+Jackett-indexermanager
 Npm-ProxyManagment
 Overseerr-PlexRequestAndUserManagementSystem
 Plex-PlexMediaServer
@@ -10,3 +11,4 @@ Rdtclient-AutomateDownloadTorrent
 Sonarr-TVShowsAutomation
 Watchover-ProxyManagment
 Wireguard-OpenSourceProtocolVpn
+Zurg-RcloneWebdav

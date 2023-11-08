@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source "${SETTINGS_SOURCE}/includes/scripts/functions.sh"
+
 # Fonction pour afficher du texte en jaune
 function afficher_texte_jaune() {
   echo -e "\e[93m$1\e[0m"
@@ -60,7 +62,7 @@ if [ -f "$env_file" ]; then
     user_home="/home/$(logname)"
 
     # Définir le chemin des dossiers à créer
-    folders=("$user_home/seedbox/local" "$user_home/Medias" "$user_home/seedbox/app_settings" "$user_home/rclone")
+    folders=("$user_home/seedbox/local" "$user_home/Medias" "$user_home/seedbox/app_settings" "$user_home/seedbox/app_settings/zurg" "/mnt/zurg")
 
     # Initialiser une variable pour suivre si les dossiers ont été créés
     folders_created=false
@@ -92,9 +94,11 @@ if [ -f "$env_file" ]; then
 
     # Écrire la configuration rclone dans le fichier rclone.conf en remplaçant {{RD_API_KEY}}
     cat <<EOL > "$rclone_config_file"
-[realdebrid]
-type = realdebrid
-api_key = $rd_api_key
+[zurg]
+type = http
+url = http://zurg:9999/http
+no_head = false
+no_slash = false
 EOL
 
     echo -e "\e[32mLe fichier rclone.conf a été créé dans $rclone_config_file.\e[0m"
@@ -148,7 +152,6 @@ EOL
     # Demander à l'utilisateur le claim Plex (https://www.plex.tv/claim/)
     read -r -p "Veuillez entrer votre claim Plex (https://www.plex.tv/claim/) : " plex_claim
 
-
     # Écrire les réponses dans le fichier .env
     {
       echo "USER_HOME=$user_home"
@@ -170,8 +173,24 @@ EOL
       echo SERVICESPERUSER="/home/${USER}/services-${USER}"
     } > "$env_file"
 
-    echo -e "\e[32mConfiguration terminée. Les informations ont été écrites dans le fichier $env_file.\e[0m"
+    # lancement Plex - délai validité claim
+    echo -e "\e[32mLancement container Plex\e[0m"
+    source /home/$USER/.env
+    echo plex >> $SERVICESPERUSER    
+    install_service
+    rm $SERVICESPERUSER
 
+    # Lancement zurg et rclone
+    echo -e "\e[32mLancement container zurg et rclone\e[0m"
+    cp /home/$USER/docker-setup/includes/templates/config.yml $user_home/seedbox/app_settings/zurg/config.yml
+    sed -i "/token: YOUR_RD_API_TOKEN/c\token: $rd_api_key" "$user_home/seedbox/app_settings/zurg/config.yml"
+    source /home/$USER/.env
+    echo zurg >> $SERVICESPERUSER
+    install_service
+    rm $SERVICESPERUSER
+
+
+    echo -e "\e[32mConfiguration terminée. Les informations ont été écrites dans le fichier $env_file.\e[0m"
     # Demander à l'utilisateur s'il souhaite refaire la configuration
     if read -r -p "Souhaitez-vous refaire la configuration ? (O/N) " redo_choice && [ "$redo_choice" != "O" ] && [ "$redo_choice" != "o" ]; then
       echo "Sortie du script."
@@ -181,3 +200,4 @@ EOL
 else
   echo "Fichier .env sera enregistré à : $env_file"
 fi
+

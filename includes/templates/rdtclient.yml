@@ -5,13 +5,13 @@ services:
   rdtclient:
     container_name: rdtclient
     volumes:
-      - '{{LOCAL_DIR}}:/data/downloads'
-      - '{{APP_SETTINGS_DIR}}/rdt-client:/data/db'
-      - '{{USER_HOME}}/rclone:/rclone'
+      - '/mnt/local:/data/downloads'
+      - '{{APP_SETTINGS_DIR}}/rdt-client:/data/db' 
+      - '/mnt/zurg:/mnt/zurg'
     image: gaisberg/rdtclient-symlink:latest
     environment:
-      - PUID={{PUID}}
-      - PGID={{PGID}}
+      - PUID=0
+      - PGID=0
       - TZ=Europe/Paris
     restart: always
     logging:
@@ -22,7 +22,7 @@ services:
       - '6500:6500'
     networks:
       mon-reseau:
-        ipv4_address: 172.18.0.3
+        ipv4_address: 172.18.0.3 # Adresse IP statique pour radarr
 
 networks:
   mon-reseau:
@@ -30,3 +30,4 @@ networks:
     ipam:
       config:
         - subnet: 172.18.0.0/16
+

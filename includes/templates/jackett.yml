@@ -2,25 +2,22 @@ version: '3'
 
 services:
 
-  radarr:
-    image: lscr.io/linuxserver/radarr:latest
-    container_name: radarr
+  jackett:
+    image: lscr.io/linuxserver/jackett:latest
+    container_name: jackett
     environment:
       - PUID={{PUID}}
       - PGID={{PGID}}
-      - TZ=Europe/Paris
+      - TZ=Europe/Paris 
     volumes:
-      - {{APP_SETTINGS_DIR}}/radarr:/config
+      - {{APP_SETTINGS_DIR}}/jackett:/config
       - {{USER_HOME}}:{{USER_HOME}}
-      - {{LOCAL_DIR}}:/data/downloads
-      - /mnt:/mnt
-
     ports:
-      - 7878:7878
+      - 9117:9117
     restart: unless-stopped
     networks:
       mon-reseau:
-        ipv4_address: 172.18.0.10 # Adresse IP statique pour radarr
+        ipv4_address: 172.18.0.13 # Adresse IP statique pour prowlarr
 
 networks:
   mon-reseau:

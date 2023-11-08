@@ -21,8 +21,9 @@ function load_env_variables() {
 }
 
 # vérification rclone installé
-if [ ! -e "/usr/bin/rclone" ]; then
-    echo -e "\e[1;32mVeuillez au préalable installer rclone avant de continuer.\e[0m"
+docker ps -qa -f name=rclone > /dev/null 2>&1
+if [ $? -ne 1 ]; then
+    echo -e "\e[1;32mVeuillez au préalable installer zurg avant de continuer.\e[0m"
     exit 1
 fi
 
