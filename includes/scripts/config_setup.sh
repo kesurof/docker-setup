@@ -180,8 +180,8 @@ EOL
     install_service
     rm $SERVICESPERUSER
 
-    # Lancement zurg et rclone
-    echo -e "\e[32mLancement container zurg et rclone\e[0m"
+    # Lancement zurg - rclone - rd_refresh 
+    echo -e "\e[32mLancement container zurg - rclone - rd_refresh\e[0m"
     cp /home/$USER/docker-setup/includes/templates/config.yml $user_home/seedbox/app_settings/zurg/config.yml
     sed -i "/token: YOUR_RD_API_TOKEN/c\token: $rd_api_key" "$user_home/seedbox/app_settings/zurg/config.yml"
     source /home/$USER/.env

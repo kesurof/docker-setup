@@ -10,6 +10,9 @@ services:
     volumes:
       - {{APP_SETTINGS_DIR}}/zurg/config.yml:/app/config.yml
       - {{APP_SETTINGS_DIR}}/zurg/zurgdata:/app/data
+    networks:
+      mon-reseau:
+        ipv4_address: 172.18.0.14
 
   rclone:
     image: rclone/rclone:latest
@@ -31,3 +34,23 @@ services:
     depends_on:
       - zurg
     command: "mount zurg: /data --allow-non-empty --allow-other --uid=1000 --gid=1000 --dir-cache-time 10s --read-only"
+    networks:
+      mon-reseau:
+        ipv4_address: 172.18.0.15
+
+  rd_refresh:
+    container_name: rd_refresh
+    image: ghcr.io/s-krilla/rd_refresh:latest
+    environment:
+      - RD_APITOKEN={{RD_API_KEY}}
+    restart: unless-stopped
+    networks:
+      mon-reseau:
+        ipv4_address: 172.18.0.16
+
+networks:
+  mon-reseau:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.18.0.0/16

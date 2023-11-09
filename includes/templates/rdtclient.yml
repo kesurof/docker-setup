@@ -5,13 +5,13 @@ services:
   rdtclient:
     container_name: rdtclient
     volumes:
-      - '/mnt/local:/data/downloads'
+      - '{{USER_HOME}}/seedbox/local:/data/downloads'
       - '{{APP_SETTINGS_DIR}}/rdt-client:/data/db' 
       - '/mnt/zurg:/mnt/zurg'
-    image: gaisberg/rdtclient-symlink:latest
+    image: laster13/rdtclient:latest
     environment:
-      - PUID=0
-      - PGID=0
+      - PUID={{PUID}}
+      - PGID={{PGID}}
       - TZ=Europe/Paris
     restart: always
     logging:
