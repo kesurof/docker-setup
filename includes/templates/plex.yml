@@ -16,7 +16,7 @@ services:
     volumes:
       - {{APP_SETTINGS_DIR}}/plex:/config
       - {{APP_SETTINGS_DIR}}/plex/transcode:/transcode
-      - {{RCLONE_DIR}}:/rclone
+      - /mnt:/mnt
       - {{USER_HOME}}:{{USER_HOME}}
     restart: unless-stopped
     network_mode: bridge

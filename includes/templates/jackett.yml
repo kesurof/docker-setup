@@ -2,23 +2,22 @@ version: '3'
 
 services:
 
-  sonarr:
-    image: lscr.io/linuxserver/sonarr:latest
-    container_name: sonarr
+  jackett:
+    image: lscr.io/linuxserver/jackett:latest
+    container_name: jackett
     environment:
       - PUID={{PUID}}
       - PGID={{PGID}}
-      - TZ=Europe/Paris
+      - TZ=Europe/Paris 
     volumes:
-      - {{APP_SETTINGS_DIR}}/sonarr:/config
+      - {{APP_SETTINGS_DIR}}/jackett:/config
       - {{USER_HOME}}:{{USER_HOME}}
-      - {{LOCAL_DIR}}:/data/downloads
     ports:
-      - 8989:8989
+      - 9117:9117
     restart: unless-stopped
     networks:
       mon-reseau:
-        ipv4_address: 172.18.0.9 # Adresse IP statique pour sonarr
+        ipv4_address: 172.18.0.13 # Adresse IP statique pour prowlarr
 
 networks:
   mon-reseau:

@@ -12,6 +12,7 @@ services:
     volumes:
       - {{APP_SETTINGS_DIR}}/radarr:/config
       - {{USER_HOME}}:{{USER_HOME}}
+      - {{LOCAL_DIR}}:/data/downloads
     ports:
       - 7878:7878
     restart: unless-stopped
