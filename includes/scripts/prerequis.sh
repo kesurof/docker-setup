@@ -18,8 +18,7 @@ export DEBIAN_FRONTEND=noninteractive
 apt update & apt upgrade -y
 apt install -y --reinstall \
   lsb-release \
-  sudo \
-  lsb-core
+  sudo
 
 ## Add apt repos
 osname=$(lsb_release -si)

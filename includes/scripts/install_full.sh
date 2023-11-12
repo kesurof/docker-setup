@@ -20,7 +20,7 @@ for script_path in "${script_paths[@]}"; do
         "$script_path"
 
         # Vérifie si le dernier script a renvoyé "Installation de rclone terminée"
-        if [ "$script" == "install_rclone.sh" ] && grep -q "Installation de terminée terminée" "$script_path"; then
+        if [ "$script" == "conf_wireguard.sh" ] && grep -q "Le code de configuration WireGuard a été enregistré" "$script_path"; then
             exit 0 # Quitte le script si la condition est remplie
         fi
     else

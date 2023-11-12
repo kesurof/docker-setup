@@ -10,6 +10,12 @@ services:
     volumes:
       - {{APP_SETTINGS_DIR}}/zurg/config.yml:/app/config.yml
       - {{APP_SETTINGS_DIR}}/zurg/zurgdata:/app/data
+    cap_add:
+      - SYS_ADMIN
+    security_opt:
+      - apparmor:unconfined
+    devices:
+      - /dev/fuse:/dev/fuse:rwm
     networks:
       mon-reseau:
         ipv4_address: 172.18.0.14

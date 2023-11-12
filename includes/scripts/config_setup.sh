@@ -62,7 +62,7 @@ if [ -f "$env_file" ]; then
     user_home="/home/$(logname)"
 
     # Définir le chemin des dossiers à créer
-    folders=("$user_home/seedbox/local" "$user_home/Medias" "$user_home/seedbox/app_settings" "$user_home/seedbox/app_settings/zurg" "/mnt/zurg")
+    folders=("$user_home/seedbox/local" "$user_home/Medias" "$user_home/seedbox/app_settings" "$user_home/seedbox/app_settings/zurg/zurgdata")
 
     # Initialiser une variable pour suivre si les dossiers ont été créés
     folders_created=false
@@ -182,7 +182,7 @@ EOL
 
     # Lancement zurg - rclone - rd_refresh 
     echo -e "\e[32mLancement container zurg - rclone - rd_refresh\e[0m"
-    cp /home/$USER/docker-setup/includes/templates/config.yml $user_home/seedbox/app_settings/zurg/config.yml
+    cp /home/$USER/docker-setup/includes/templates/config.yml $user_home/seedbox/app_settings/zurg/
     sed -i "/token: YOUR_RD_API_TOKEN/c\token: $rd_api_key" "$user_home/seedbox/app_settings/zurg/config.yml"
     source /home/$USER/.env
     echo zurg >> $SERVICESPERUSER
