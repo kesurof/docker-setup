@@ -62,7 +62,7 @@ elif [ "$distro" == "Debian" ]; then
     exit 1
   fi
 fi
-  for pkg in docker.io docker-ce docker-ce-cli containerd.io; do sudo apt remove --purge -y $pkg; done
+  for pkg in docker.io docker-ce docker-ce-cli; do sudo apt remove --purge -y $pkg; done
   apt-get update
   apt-get install -y ca-certificates curl gnupg
   install -m 0755 -d /etc/apt/keyrings
