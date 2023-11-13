@@ -142,11 +142,13 @@ cd $scripts_dir
             fi
           done
           ;;
+
         2)
-          # Installation des applis
-          source install_applis.sh
+          # gestion des applis
+          manage_apps
           main_menu 
           ;;
+
         3)
           # plex_debrid
           if [ ! -d "/home/$USER/seedbox/app_settings/plex_debrid" ];then
@@ -167,7 +169,7 @@ function choose_services() {
   echo -e "\e[1;32m### SERVICES ###\e[0m"
   echo "DEBUG ${SERVICESAVAILABLE}"
   echo -e " ${BWHITE}--> Services en cours d'installation : ${NC}"
-  rm -Rf "${SERVICESPERUSER}" >/dev/null 2>&1
+  rm -rf "${SERVICESPERUSER}" >/dev/null 2>&1
   menuservices="/tmp/menuservices.txt"
   if [[ -e "${menuservices}" ]]; then
     rm "${menuservices}"
@@ -198,25 +200,97 @@ function choose_services() {
 
 function install_service() {
   for line in $(cat $SERVICESPERUSER); do
-    app_settings_dir="/home/$(logname)/seedbox/app_settings"
-    cp $SETTINGS_SOURCE/includes/templates/${line}.yml "$app_settings_dir"
+    app_yml_dir="/home/$(logname)/seedbox/yml"
+    cp $SETTINGS_SOURCE/includes/templates/${line}.yml "$app_yml_dir"
     # Remplacer les variables dans docker-compose.yml en utilisant les valeurs du .env
-    env_vars=$(grep -oE '\{\{[A-Za-z_][A-Za-z_0-9]*\}\}' "$app_settings_dir/${line}.yml")
+    env_vars=$(grep -oE '\{\{[A-Za-z_][A-Za-z_0-9]*\}\}' "$app_yml_dir/${line}.yml")
 
       for var in $env_vars; do
         var_name=$(echo "$var" | sed 's/[{}]//g')
         var_value=$(grep "^$var_name=" "$env_file" | cut -d'=' -f2)
-        sed -i "s|{{${var_name}}}|${var_value}|g" "$app_settings_dir/${line}.yml"
+        sed -i "s|{{${var_name}}}|${var_value}|g" "$app_yml_dir/${line}.yml"
       done
 
    launch_service "${line}"
-
+   
   done
+  rm $SERVICESPERUSER
 }
 
 function launch_service() {
-  cd $app_settings_dir
+  cd $app_yml_dir
   line=$1
   docker-compose -f --log-level ERROR "$line.yml" up -d
   cd $SETTINGS_SOURCE
+}
+
+function manage_apps() {
+  echo -e "${BLUE}##########################################${NC}"
+  echo -e "${BLUE}###          GESTION DES APPLIS        ###${NC}"
+  echo -e "${BLUE}##########################################${NC}"
+
+  echo -e "${GREEN}### Gestion des Applis ###${NC}"
+  ## CHOOSE AN ACTION FOR APPS
+  ACTIONONAPP=$(whiptail --title "App Manager" --menu \
+        "Selectionner une action :" 12 50 4 \
+        "1" "Ajout Applications"  \
+        "2" "Suppression Applications"  \
+	"3" "Réinitialisation Container" 3>&1 1>&2 2>&3)
+	[[ "$?" = 1 ]]
+	case $ACTIONONAPP in
+
+	1) ## Ajout APP
+        choose_services
+        install_service
+        echo -e "\nInstallation compose terminée, Appuyer sur [ENTREE] pour retourner au menu..."
+        read -r
+        main_menu
+        ;;
+
+	2) ## Suppression APP
+	echo -e " ${BWHITE}* Application en cours de suppression${NC}"
+	TABSERVICES=()
+	for SERVICEACTIVATED in $(docker ps --format "{{.Names}}" | cut -d'-' -f2 | sort -u)
+	do
+          SERVICE=$(echo $SERVICEACTIVATED | cut -d\. -f1)
+          TABSERVICES+=( ${SERVICE//\"} " " )
+	done
+	APPSELECTED=$(whiptail --title "App Manager" --menu \
+        "Sélectionner l'Appli à supprimer" 19 45 11 \
+        "${TABSERVICES[@]}"  3>&1 1>&2 2>&3)
+	[[ "$?" = 1 ]]
+	echo -e " ${GREEN}   * $APPSELECTED${NC}"
+	docker rm -f "$APPSELECTED" > /dev/null 2>&1
+	sudo rm -rf /home/$USER/seedbox/app_settings/"$APPSELECTED"
+	rm /home/$USER/seedbox/yml/$APPSELECTED.yml > /dev/null 2>&1
+	docker system prune -af > /dev/null 2>&1
+        echo -e "\n$APPSELECTED a été supprimé, Appuyer sur [ENTREE] pour retourner au menu..."
+        read -r
+        main_menu
+	;;
+
+	3) ## Réinitialisation container
+	echo -e " ${BWHITE}* Les fichiers de configuration ne seront pas effacés${NC}"
+	TABSERVICES=()
+	for SERVICEACTIVATED in $(docker ps --format "{{.Names}}")
+	do
+          SERVICE=$(echo $SERVICEACTIVATED | cut -d\. -f1)
+          TABSERVICES+=( ${SERVICE//\"} " " )
+	done
+	line=$(whiptail --title "App Manager" --menu \
+        "Sélectionner le container à réinitialiser" 19 45 11 \
+        "${TABSERVICES[@]}"  3>&1 1>&2 2>&3)
+	[[ "$?" = 1 ]]
+	echo -e " ${GREEN}   * $line${NC}"
+	docker rm -f "$line" > /dev/null 2>&1
+	docker system prune -af > /dev/null 2>&1
+	docker volume rm $(docker volume ls -qf "dangling=true") > /dev/null 2>&1
+	echo ""
+	echo $line >> $SERVICESPERUSER
+	install_service
+	echo -e "${BLUE}### Le Container $line a été Réinitialisé ###${NC}"
+        echo -e "\nLe Container $line a été Réinitialisé, Appuyer sur [ENTREE] pour retourner au menu..."
+        read -r
+        main_menu
+        esac
 }

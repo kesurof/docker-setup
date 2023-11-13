@@ -62,7 +62,7 @@ if [ -f "$env_file" ]; then
     user_home="/home/$(logname)"
 
     # Définir le chemin des dossiers à créer
-    folders=("$user_home/seedbox/local" "$user_home/Medias" "$user_home/seedbox/app_settings" "$user_home/seedbox/app_settings/zurg/zurgdata")
+    folders=("$user_home/seedbox/local" "$user_home/Medias" "$user_home/seedbox/app_settings" "$user_home/seedbox/app_settings/zurg/zurgdata" "$user_home/seedbox/yml")
 
     # Initialiser une variable pour suivre si les dossiers ont été créés
     folders_created=false
