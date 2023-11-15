@@ -1,5 +1,4 @@
 #!/bin/bash
-sleep 30s  
 echo -e "\e[32mEcrire les noms de dossiers à créer dans Medias ex: Films Series\e[0m \e[36m(touche Entrée après chaque saisie)\e[0m .. \e[32mpuis stop une fois terminé\e[0m"   				
 while :
 do		
