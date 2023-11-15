@@ -201,18 +201,19 @@ function choose_services() {
 function install_service() {
   for line in $(cat $SERVICESPERUSER); do
     app_yml_dir="/home/$(logname)/seedbox/yml"
-    cp $SETTINGS_SOURCE/includes/templates/${line}.yml "$app_yml_dir"
-    # Remplacer les variables dans docker-compose.yml en utilisant les valeurs du .env
-    env_vars=$(grep -oE '\{\{[A-Za-z_][A-Za-z_0-9]*\}\}' "$app_yml_dir/${line}.yml")
-
+    if [[ -e "$app_yml_dir/${line}.yml" ]]; then
+      launch_service "${line}"
+    else
+      cp $SETTINGS_SOURCE/includes/templates/${line}.yml "$app_yml_dir"
+      # Remplacer les variables dans docker-compose.yml en utilisant les valeurs du .env
+      env_vars=$(grep -oE '\{\{[A-Za-z_][A-Za-z_0-9]*\}\}' "$app_yml_dir/${line}.yml")
       for var in $env_vars; do
         var_name=$(echo "$var" | sed 's/[{}]//g')
         var_value=$(grep "^$var_name=" "$env_file" | cut -d'=' -f2)
         sed -i "s|{{${var_name}}}|${var_value}|g" "$app_yml_dir/${line}.yml"
       done
-
-   launch_service "${line}"
-   
+      launch_service "${line}"
+    fi
   done
   rm $SERVICESPERUSER
 }
@@ -225,11 +226,11 @@ function launch_service() {
 }
 
 function manage_apps() {
-  echo -e "${BLUE}##########################################${NC}"
-  echo -e "${BLUE}###          GESTION DES APPLIS        ###${NC}"
-  echo -e "${BLUE}##########################################${NC}"
-
-  echo -e "${GREEN}### Gestion des Applis ###${NC}"
+  clear
+  echo -e "\e[32m##########################################\e[0m"
+  echo -e "\e[32m###          GESTION DES APPLIS        ###\e[0m"
+  echo -e "\e[32m##########################################\e[0m"
+  echo ""
   ## CHOOSE AN ACTION FOR APPS
   ACTIONONAPP=$(whiptail --title "App Manager" --menu \
         "Selectionner une action :" 12 50 4 \
@@ -270,7 +271,6 @@ function manage_apps() {
 	;;
 
 	3) ## Réinitialisation container
-	echo -e " ${BWHITE}* Les fichiers de configuration ne seront pas effacés${NC}"
 	TABSERVICES=()
 	for SERVICEACTIVATED in $(docker ps --format "{{.Names}}")
 	do
@@ -281,16 +281,42 @@ function manage_apps() {
         "Sélectionner le container à réinitialiser" 19 45 11 \
         "${TABSERVICES[@]}"  3>&1 1>&2 2>&3)
 	[[ "$?" = 1 ]]
-	echo -e " ${GREEN}   * $line${NC}"
-	docker rm -f "$line" > /dev/null 2>&1
+	echo -e "### Les fichiers de configuration de \e[32m$line\e[0m ne seront pas effacés ###"
+	echo ""
+        if [ $line = "zurg" ]; then
+          docker stop zurg rclone rd_refresh > /dev/null 2>&1
+          docker rm -f zurg rclone rd_refresh > /dev/null 2>&1
+          echo -e "\e[32mLancement container zurg - rclone - rd_refresh\e[0m"
+          source /home/$USER/.env
+          echo $line >> $SERVICESPERUSER
+          install_service
+        else
+          docker rm -f "$line" > /dev/null 2>&1
+	  echo $line >> $SERVICESPERUSER
+	  install_service
+        fi
 	docker system prune -af > /dev/null 2>&1
 	docker volume rm $(docker volume ls -qf "dangling=true") > /dev/null 2>&1
-	echo ""
-	echo $line >> $SERVICESPERUSER
-	install_service
-	echo -e "${BLUE}### Le Container $line a été Réinitialisé ###${NC}"
-        echo -e "\nLe Container $line a été Réinitialisé, Appuyer sur [ENTREE] pour retourner au menu..."
+        echo ""       
+	echo -e "### Le Container \e[32m$line\e[0m a été Réinitialisé ###"
+        echo ""
+        echo -e "\e[32mAppuyer sur [ENTREE] pour retourner au menu...\e[0m"
         read -r
         main_menu
         esac
 }
+
+function create_folder() {
+echo -e "\e[32mEcrire les noms de dossiers à créer dans Medias ex: Films Series\e[0m \e[36m(touche Entrée après chaque saisie)\e[0m .. \e[32mpuis stop une fois terminé\e[0m"   				
+while :
+do		
+  read -p "" EXCLUDEPATH
+  mkdir -p /home/$USER/Medias/$EXCLUDEPATH
+  chown -R $USER:$USER /home/$USER/Medias/$EXCLUDEPATH
+  if [[ "$EXCLUDEPATH" = "STOP" ]] || [[ "$EXCLUDEPATH" = "stop" ]]; then
+    rm -rf /home/$USER/Medias/$EXCLUDEPATH
+    break
+  fi
+done
+}
+

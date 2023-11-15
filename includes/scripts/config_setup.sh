@@ -63,6 +63,7 @@ if [ -f "$env_file" ]; then
 
     # Définir le chemin des dossiers à créer
     folders=("$user_home/seedbox/local" "$user_home/Medias" "$user_home/seedbox/app_settings" "$user_home/seedbox/app_settings/zurg/zurgdata" "$user_home/seedbox/yml")
+    mkdir -p $user_home/seedbox/local/{radarr,sonarr}
 
     # Initialiser une variable pour suivre si les dossiers ont été créés
     folders_created=false
@@ -178,7 +179,6 @@ EOL
     source /home/$USER/.env
     echo plex >> $SERVICESPERUSER    
     install_service
-    rm $SERVICESPERUSER
 
     # Lancement zurg - rclone - rd_refresh 
     echo -e "\e[32mLancement container zurg - rclone - rd_refresh\e[0m"
@@ -187,8 +187,6 @@ EOL
     source /home/$USER/.env
     echo zurg >> $SERVICESPERUSER
     install_service
-    rm $SERVICESPERUSER
-
 
     echo -e "\e[32mConfiguration terminée. Les informations ont été écrites dans le fichier $env_file.\e[0m"
     # Demander à l'utilisateur s'il souhaite refaire la configuration
