@@ -78,7 +78,9 @@ if [ ! -d "$APP_SETTINGS_DIR/wireguard/config" ]; then
     echo -e "\e[33mLe répertoire $APP_SETTINGS_DIR/wireguard/config a été créé et les permissions ont été définies.\e[0m"
   else
     echo -e "\e[33mLe répertoire $APP_SETTINGS_DIR/wireguard/config n'a pas été créé. Le fichier WireGuard ne sera pas enregistré.\e[0m"
-    exit 1
+    echo -e "\e[32mAppuyez sur Entrée pour revenir au menu principal.\e[0m"
+    read -r
+    main_menu
   fi
 fi
 

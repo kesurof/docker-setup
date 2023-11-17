@@ -62,8 +62,20 @@ if [ -f "$env_file" ]; then
     # Définir le chemin du répertoire de l'utilisateur
     user_home="/home/$(logname)"
 
+    # Demander à l'utilisateur le chemin d'installation des volumes des containers (par défaut /home/$USER/seedbox/app_settings)
+    echo -e "\e[33mVeuillez entrer le chemin d'installation des volumes des containers : par défaut /home/$USER/seedbox/app_settings:  \e[0m"
+    read folder_app_settings
+
+    # Utiliser le chemin par défaut si l'utilisateur n'a rien saisi
+    if [ -z "$folder_app_settings" ]; then
+    folder_app_settings="/home/$USER/seedbox/app_settings"
+    fi
+
+    # Créer le répertoire si nécessaire
+    create_directory "$folder_app_settings"
+
     # Définir le chemin des dossiers à créer
-    folders=("$user_home/seedbox/local" "$user_home/Medias" "$user_home/seedbox/app_settings" "$user_home/seedbox/app_settings/zurg/zurgdata" "$user_home/seedbox/yml")
+    folders=("$user_home/seedbox/local" "$user_home/Medias" "$folder_app_settings" "$folder_app_settings/zurg/zurgdata" "$user_home/seedbox/yml")
     mkdir -p $user_home/seedbox/local/{radarr,sonarr}
 
     # Initialiser une variable pour suivre si les dossiers ont été créés
@@ -79,7 +91,7 @@ if [ -f "$env_file" ]; then
     # Afficher un message de confirmation si les dossiers ont été créés
     if [ "$folders_created" = true ]; then
       for folder in "${folders[@]}"; do
-        echo " - $folder : $(stat -c '%a %n' "$folder")"
+        echo -e "\e[32m - $folder : $(stat -c '%a %n' "$folder")\e[0m"
       done
     fi
 
