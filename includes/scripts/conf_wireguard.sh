@@ -1,5 +1,8 @@
 #!/bin/bash
 
+source "${SETTINGS_SOURCE}/includes/scripts/functions.sh"
+
+
 # Fonction pour afficher une question en jaune
 function ask_question() {
   echo -e "\033[33m$1\033[0m"
@@ -52,27 +55,29 @@ wg0_config_path="$APP_SETTINGS_DIR/wireguard/config/wg0.conf"
 
 # Vérifier si le fichier wg0.conf existe
 if [ -e "$wg0_config_path" ]; then
-  echo -e "\033[33mLe fichier $wg0_config_path existe déjà.\033[0m"
-  echo -e "\033[33mVoulez-vous le supprimer ? (Oui/Non)\033[0m"
+  echo -e "\e[33mLe fichier $wg0_config_path existe déjà.\e[0m"
+  echo -e "\e[32mVoulez-vous le supprimer ? (Oui/Non)\e[0m"
   read remove_file_choice
   if [ "$remove_file_choice" = "oui" ] || [ "$remove_file_choice" = "Oui" ] || [ "$remove_file_choice" = "o" ] || [ "$remove_file_choice" = "O" ]; then
     sudo rm -f "$wg0_config_path"  # Utilisez "sudo" pour supprimer le fichier avec les autorisations nécessaires
-    echo "Le fichier $wg0_config_path a été supprimé."
+    echo -e "\e[33mLe fichier $wg0_config_path a été supprimé.\e[0m"
   else
-    echo "Le fichier $wg0_config_path ne sera pas supprimé. Le script est terminé."
-    exit 0
+    echo -e "\e[33mLe fichier $wg0_config_path ne sera pas supprimé. Le script est terminé..\e[0m"
+    echo -e "\e[32mAppuyez sur Entrée pour revenir au menu principal.\e[0m"
+    read -r
+    main_menu
   fi
 fi
 
 # Vérifier et créer le répertoire si nécessaire
 if [ ! -d "$APP_SETTINGS_DIR/wireguard/config" ]; then
-  echo "Le répertoire $APP_SETTINGS_DIR/wireguard/config n'existe pas. Voulez-vous le créer ? (Oui/Non) "
+  echo -e "\e[32mLe répertoire $APP_SETTINGS_DIR/wireguard/config n'existe pas. Voulez-vous le créer ? (Oui/Non) \e[0m"
   read create_dir_choice
   if [ "$create_dir_choice" = "oui" ] || [ "$create_dir_choice" = "Oui" ] || [ "$create_dir_choice" = "o" ] || [ "$create_dir_choice" = "O" ]; then
     create_directory "$APP_SETTINGS_DIR/wireguard/config"
-    echo "Le répertoire $APP_SETTINGS_DIR/wireguard/config a été créé et les permissions ont été définies."
+    echo -e "\e[33mLe répertoire $APP_SETTINGS_DIR/wireguard/config a été créé et les permissions ont été définies.\e[0m"
   else
-    echo "Le répertoire $APP_SETTINGS_DIR/wireguard/config n'a pas été créé. Le fichier WireGuard ne sera pas enregistré."
+    echo -e "\e[33mLe répertoire $APP_SETTINGS_DIR/wireguard/config n'a pas été créé. Le fichier WireGuard ne sera pas enregistré.\e[0m"
     exit 1
   fi
 fi
@@ -81,13 +86,17 @@ fi
 create_directory "$APP_SETTINGS_DIR/wireguard"
 
 # Enregistrer le code de configuration WireGuard
-echo "Veuillez coller le code de configuration WireGuard ci-dessous (appuyez sur Entrée puis Ctrl+D pour terminer) : "
+echo -e "\e[32mVeuillez coller le code de configuration WireGuard ci-dessous (appuyez sur Entrée puis Ctrl+D pour terminer) : \e[0m"
 wireguard_config=""
 while IFS= read -r line; do
   wireguard_config+="$line\n"
 done
 
 # Enregistrez le code de configuration WireGuard dans le fichier
-echo -e "$wireguard_config" | sudo tee "$wg0_config_path" >/dev/null
+echo -e "$wireguard_config" | sudo tee "$wg0_config_path"
 sudo chmod 755 "$wg0_config_path"  # Appliquer les permissions rwxr-xr-x au fichier
-echo -e "Le code de configuration WireGuard a été enregistré dans $wg0_config_path avec les permissions rwxr-xr-x."
+echo -e "\e[33mLe code de configuration WireGuard a été enregistré dans $wg0_config_path avec les permissions rwxr-xr-x.\e[0m"
+echo -e "\e[32mAppuyez sur Entrée pour revenir au menu principal.\e[0m"
+read -r
+main_menu
+

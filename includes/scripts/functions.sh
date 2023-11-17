@@ -100,7 +100,8 @@ cd $scripts_dir
     else
       echo -e "\e[1;33m 3. Lancer la console plex_debrid \e[0m"
     fi
-    echo -e "\e[1;32m 4. Quitter \e[0m"
+    echo -e "\e[1;32m 4. Reinstallation zurg - rclone - rd_refresh \e[0m"
+    echo -e "\e[1;32m 5. Quitter \e[0m"
 
     read -p "Entrer votre choix: " choice
 
@@ -158,7 +159,26 @@ cd $scripts_dir
             source console_plex_debrid.sh 
           fi
          ;;
+
         4)
+          # reinstall zurg
+          clear
+          echo -e "\e[32m##################################################################\e[0m"
+          echo -e "\e[32m###          RESINSTALLATION ZURG - RCLONE - RD_REFRESH        ###\e[0m"
+          echo -e "\e[32m##################################################################\e[0m"
+          echo ""
+          docker stop rclone zurg > /dev/null 2>&1
+          docker rm -f rclone zurg rd_refresh > /dev/null 2>&1
+          source /home/$USER/.env
+          echo zurg >> $SERVICESPERUSER
+          install_service
+          echo ""
+          echo -e "\e[32mAppuyer sur [ENTREE] pour retourner au menu...\e[0m"
+          read -r
+          main_menu
+         ;;
+
+        5)
         exit 1       
         esac
   done
@@ -194,7 +214,7 @@ function choose_services() {
       echo -e  $(echo ${APPDOCKER,,} | tr -d '"') >>"${SERVICESPERUSER}"
     done
   else
-    return
+    main_menu
   fi
 }
 
@@ -256,18 +276,22 @@ function manage_apps() {
           SERVICE=$(echo $SERVICEACTIVATED | cut -d\. -f1)
           TABSERVICES+=( ${SERVICE//\"} " " )
 	done
-	APPSELECTED=$(whiptail --title "App Manager" --menu \
-        "Sélectionner l'Appli à supprimer" 19 45 11 \
-        "${TABSERVICES[@]}"  3>&1 1>&2 2>&3)
-	[[ "$?" = 1 ]]
-	echo -e " ${GREEN}   * $APPSELECTED${NC}"
-	docker rm -f "$APPSELECTED" > /dev/null 2>&1
-	sudo rm -rf /home/$USER/seedbox/app_settings/"$APPSELECTED"
-	rm /home/$USER/seedbox/yml/$APPSELECTED.yml > /dev/null 2>&1
-	docker system prune -af > /dev/null 2>&1
-        echo -e "\n$APPSELECTED a été supprimé, Appuyer sur [ENTREE] pour retourner au menu..."
-        read -r
-        main_menu
+	APPSELECTED=$(
+          whiptail --title "App Manager" --menu \
+            "Sélectionner l'Appli à supprimer" 19 45 11 \
+             "${TABSERVICES[@]}"  3>&1 1>&2 2>&3
+        )
+	exitstatus=$?
+        if [ $exitstatus = 0 ]; then
+	  echo -e " ${GREEN}   * $APPSELECTED${NC}"
+	  docker rm -f "$APPSELECTED" > /dev/null 2>&1
+	  sudo rm -rf /home/$USER/seedbox/app_settings/"$APPSELECTED"
+	  rm /home/$USER/seedbox/yml/$APPSELECTED.yml > /dev/null 2>&1
+	  docker system prune -af > /dev/null 2>&1
+          echo -e "\n$APPSELECTED a été supprimé, Appuyer sur [ENTREE] pour retourner au menu..."
+          read -r
+          main_menu
+        fi
 	;;
 
 	3) ## Réinitialisation container
@@ -277,32 +301,56 @@ function manage_apps() {
           SERVICE=$(echo $SERVICEACTIVATED | cut -d\. -f1)
           TABSERVICES+=( ${SERVICE//\"} " " )
 	done
-	line=$(whiptail --title "App Manager" --menu \
-        "Sélectionner le container à réinitialiser" 19 45 11 \
-        "${TABSERVICES[@]}"  3>&1 1>&2 2>&3)
-	[[ "$?" = 1 ]]
-	echo -e "### Les fichiers de configuration de \e[32m$line\e[0m ne seront pas effacés ###"
-	echo ""
-        if [ $line = "zurg" ]; then
-          docker stop zurg rclone rd_refresh > /dev/null 2>&1
-          docker rm -f zurg rclone rd_refresh > /dev/null 2>&1
-          echo -e "\e[32mLancement container zurg - rclone - rd_refresh\e[0m"
-          source /home/$USER/.env
-          echo $line >> $SERVICESPERUSER
-          install_service
-        else
-          docker rm -f "$line" > /dev/null 2>&1
-	  echo $line >> $SERVICESPERUSER
-	  install_service
+	line=$(
+          whiptail --title "App Manager" --menu \
+            "Sélectionner le container à réinitialiser" 19 45 11 \
+            "${TABSERVICES[@]}"  3>&1 1>&2 2>&3
+        )
+        exitstatus=$?
+        if [ $exitstatus = 0 ]; then
+	  echo -e "### Les fichiers de configuration de \e[32m$line\e[0m ne seront pas effacés ###"
+	  echo ""
+            if [ $line = "zurg" ]; then
+              docker stop zurg rclone rd_refresh > /dev/null 2>&1
+              docker rm -f zurg rclone rd_refresh > /dev/null 2>&1
+              echo -e "\e[32mLancement container zurg - rclone - rd_refresh\e[0m"
+              source /home/$USER/.env
+              echo $line >> $SERVICESPERUSER
+              install_service
+            else
+              docker rm -f "$line" > /dev/null 2>&1
+	      echo $line >> $SERVICESPERUSER
+	      install_service
+            fi
+	  docker system prune -af > /dev/null 2>&1
+	  docker volume rm $(docker volume ls -qf "dangling=true") > /dev/null 2>&1
+          echo ""       
+	  echo -e "### Le Container \e[32m$line\e[0m a été Réinitialisé ###"
+          echo ""
+          echo -e "\e[32mAppuyer sur [ENTREE] pour retourner au menu...\e[0m"
+          read -r
+          main_menu
         fi
-	docker system prune -af > /dev/null 2>&1
-	docker volume rm $(docker volume ls -qf "dangling=true") > /dev/null 2>&1
-        echo ""       
-	echo -e "### Le Container \e[32m$line\e[0m a été Réinitialisé ###"
-        echo ""
-        echo -e "\e[32mAppuyer sur [ENTREE] pour retourner au menu...\e[0m"
-        read -r
-        main_menu
         esac
+}
+
+function plex() {
+# lancement Plex - délai validité claim
+echo ""
+echo ""
+echo -e "\e[32mLancement container Plex\e[0m"
+source /home/$USER/.env
+echo plex >> $SERVICESPERUSER    
+install_service
+}
+
+function zurg() {
+# Lancement zurg - rclone - rd_refresh 
+echo -e "\e[32mLancement container zurg - rclone - rd_refresh\e[0m"
+cp /home/$USER/docker-setup/includes/templates/config.yml $user_home/seedbox/app_settings/zurg/
+sed -i "/token: YOUR_RD_API_TOKEN/c\token: $rd_api_key" "$user_home/seedbox/app_settings/zurg/config.yml"
+source /home/$USER/.env
+echo zurg >> $SERVICESPERUSER
+install_service
 }
 

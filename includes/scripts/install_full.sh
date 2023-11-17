@@ -16,7 +16,7 @@ done
 for script_path in "${script_paths[@]}"; do
     if [ -f "$script_path" ]; then
         chmod +x "$script_path" # Assurez-vous que le script soit exécutable
-        echo "Exécution de $script_path :"
+        #echo "Exécution de $script_path :"
         "$script_path"
 
         # Vérifie si le dernier script a renvoyé "Installation de rclone terminée"
