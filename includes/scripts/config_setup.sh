@@ -159,12 +159,6 @@ EOL
 
     >&2 echo "Votre Token Plex : $rd_token_plex"
 
-    # Utilisation de curl pour récupérer l'adresse IP publique de l'utilisateur depuis httpbin.org
-    ip_public=$(curl -s http://httpbin.org/ip | grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+')
-
-    # URL Plex par défaut avec IP publique
-    plex_address="http://$ip_public:32400"
-
     # Demander à l'utilisateur le claim Plex (https://www.plex.tv/claim/)
     echo ""
     >&2 echo -en "\e[32mVeuillez entrer votre claim Plex et non pas le token (https://www.plex.tv/claim/) :\e[0m"

@@ -310,12 +310,12 @@ function manage_apps() {
         if [ $exitstatus = 0 ]; then
 	  echo -e "### Les fichiers de configuration de \e[32m$line\e[0m ne seront pas effacés ###"
 	  echo ""
-            if [ $line = "zurg" ]; then
+            if [ $line = "zurg" -o $line = "rclone" -o rd_refresh ]; then
               docker stop zurg rclone rd_refresh > /dev/null 2>&1
               docker rm -f zurg rclone rd_refresh > /dev/null 2>&1
               echo -e "\e[32mLancement container zurg - rclone - rd_refresh\e[0m"
               source /home/$USER/.env
-              echo $line >> $SERVICESPERUSER
+              echo zurg >> $SERVICESPERUSER
               install_service
             else
               docker rm -f "$line" > /dev/null 2>&1
