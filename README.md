@@ -48,9 +48,9 @@ Suivez ces étapes pour installer Docker Setup sur votre système :
    ```bash
    sudo ./install.sh
    ```
-   **en version rapide**
+   **Une fois les premiers éléments installé, un message vous demandera de vous déconnecter puis reconnecter, ensuite lancer la commande san sudo**
    ```bash
-   git clone https://github.com/kesurof/docker-setup.git && cd docker-setup && sudo./install.sh
+   ./install.sh
    ```
 
 3. **Suivez les instructions du script** : Pendant l'exécution du script, il vous demandera peut-être des informations spécifiques ou des confirmations. Assurez-vous de suivre ces instructions et de fournir les informations requises.
