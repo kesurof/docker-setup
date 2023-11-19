@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# vérification rclone installé
+docker ps -qa -f name=rclone > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+    echo -e "\e[1;32mVeuillez au préalable installer zurg avant de continuer.\e[0m"
+    exit 1
+fi
+
 # Chemin du répertoire d'installation de plex_debrid
 folder_plex_debrid="$APP_SETTINGS_DIR/plex_debrid"
 
