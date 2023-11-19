@@ -19,7 +19,9 @@ services:
       - /mnt:/mnt
       - {{USER_HOME}}:{{USER_HOME}}
     restart: unless-stopped
-    network_mode: bridge
+    networks:
+      mon-reseau:
+        ipv4_address: 172.18.0.20
 
 networks:
   mon-reseau:

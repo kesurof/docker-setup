@@ -55,14 +55,28 @@ if [ -f "$env_file" ]; then
     
     if [ "$modify_choice" != "O" ] && [ "$modify_choice" != "o" ]; then
       echo "La configuration existante sera conservée. Sortie du script."
+      clear
       exit 0  # Quitter le script proprement
     fi
-
+    clear
     # Définir le chemin du répertoire de l'utilisateur
     user_home="/home/$(logname)"
 
+    # Demander à l'utilisateur le chemin d'installation des volumes des containers (par défaut /home/$USER/seedbox/app_settings)
+    echo -e "\e[33mVeuillez entrer le chemin d'installation des volumes des containers : par défaut /home/$USER/seedbox/app_settings:  \e[0m"
+    read folder_app_settings
+
+    # Utiliser le chemin par défaut si l'utilisateur n'a rien saisi
+    if [ -z "$folder_app_settings" ]; then
+    folder_app_settings="/home/$USER/seedbox/app_settings"
+    fi
+
+    # Créer le répertoire si nécessaire
+    create_directory "$folder_app_settings"
+
     # Définir le chemin des dossiers à créer
-    folders=("$user_home/seedbox/local" "$user_home/Medias" "$user_home/seedbox/app_settings" "$user_home/seedbox/app_settings/zurg" "/mnt/zurg")
+    folders=("$user_home/seedbox/local" "$user_home/Medias" "$folder_app_settings" "$folder_app_settings/zurg/zurgdata" "$user_home/seedbox/yml")
+    mkdir -p $user_home/seedbox/local/{radarr,sonarr}
 
     # Initialiser une variable pour suivre si les dossiers ont été créés
     folders_created=false
@@ -77,14 +91,11 @@ if [ -f "$env_file" ]; then
     # Afficher un message de confirmation si les dossiers ont été créés
     if [ "$folders_created" = true ]; then
       for folder in "${folders[@]}"; do
-        echo " - $folder : $(stat -c '%a %n' "$folder")"
+        echo -e "\e[32m - $folder : $(stat -c '%a %n' "$folder")\e[0m"
       done
     fi
 
-    echo -e "\e[32mTous les dossiers ont été créés avec succès.\e[0m"
-
-    # Demander à l'utilisateur la clé API de RealDebrid
-    read -r -p "Veuillez entrer votre clé API RealDebrid : " rd_api_key
+    echo -e "\e[33mTous les dossiers ont été créés avec succès.\e[0m"
 
     # Chemin du fichier rclone.conf
     rclone_config_file="/home/$(logname)/.config/rclone/rclone.conf"
@@ -101,21 +112,26 @@ no_head = false
 no_slash = false
 EOL
 
-    echo -e "\e[32mLe fichier rclone.conf a été créé dans $rclone_config_file.\e[0m"
+    echo -e "\e[33mLe fichier rclone.conf a été créé dans $rclone_config_file.\e[0m"
+    echo ""
+    # Demander à l'utilisateur la clé API de RealDebrid
+    >&2 echo -en "\e[32mVeuillez entrer votre clé API RealDebrid :\e[0m"
+    read rd_api_key
+    echo ""
 
     # Récupération du token Plex pour Plex_debrid
-
+    echo -e "\e[44mATTENTION IMPORTANT - NE PAS FAIRE D'ERREUR - SINON RECOMMENCER PROCEDURE INSTALL\e[0m"
     plex_user=$1
     plex_passwd=$2
 
     if [ -z "$plex_user" ] || [ -z "$plex_passwd" ]; then
         while [ -z "$plex_user" ]; do
-            >&2 echo -n "Veuillez entrer votre nom d'utilisateur Plex (e-mail ou nom d'utilisateur) : "
+            >&2 echo -en "\e[32mVeuillez entrer votre nom d'utilisateur Plex (e-mail ou nom d'utilisateur) : \e[0m"
             read plex_user
         done
 
         while [ -z "$plex_passwd" ]; do
-            >&2 echo -n "Veuillez entrer votre mot de passe Plex : "
+            >&2 echo -en "\e[32mVeuillez entrer votre mot de passe Plex : \e[0m"
             read -s plex_passwd
         done
     fi
@@ -136,21 +152,20 @@ EOL
     if [ -z "$rd_token_plex" ]; then
         cat /tmp/plex_sign_in
         rm -f /tmp/plex_sign_in
-        >&2 echo 'Échec de la récupération du Token'
+        >&2 echo -e  "\e[44mÉchec de la récupération du Token, recommencer l'install complète\e[0m"
         exit 1
     fi
     rm -f /tmp/plex_sign_in
 
     >&2 echo "Votre Token Plex : $rd_token_plex"
 
-    # Utilisation de curl pour récupérer l'adresse IP publique de l'utilisateur depuis httpbin.org
-    ip_public=$(curl -s http://httpbin.org/ip | grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+')
-
-    # URL Plex par défaut avec IP publique
-    plex_address="http://$ip_public:32400"
-
     # Demander à l'utilisateur le claim Plex (https://www.plex.tv/claim/)
-    read -r -p "Veuillez entrer votre claim Plex (https://www.plex.tv/claim/) : " plex_claim
+    echo ""
+    >&2 echo -en "\e[32mVeuillez entrer votre claim Plex et non pas le token (https://www.plex.tv/claim/) :\e[0m"
+    read plex_claim
+    echo ""
+    >&2 echo -en "\e[44m### IMPORTANT ### le claim n'est valable que 4mn d'ou la néccessité du lancement de plex dans ce délais\e[0m"
+
 
     # Écrire les réponses dans le fichier .env
     {
@@ -174,26 +189,17 @@ EOL
     } > "$env_file"
 
     # lancement Plex - délai validité claim
-    echo -e "\e[32mLancement container Plex\e[0m"
-    source /home/$USER/.env
-    echo plex >> $SERVICESPERUSER    
-    install_service
-    rm $SERVICESPERUSER
+      plex
 
     # Lancement zurg - rclone - rd_refresh 
-    echo -e "\e[32mLancement container zurg - rclone - rd_refresh\e[0m"
-    cp /home/$USER/docker-setup/includes/templates/config.yml $user_home/seedbox/app_settings/zurg/config.yml
-    sed -i "/token: YOUR_RD_API_TOKEN/c\token: $rd_api_key" "$user_home/seedbox/app_settings/zurg/config.yml"
-    source /home/$USER/.env
-    echo zurg >> $SERVICESPERUSER
-    install_service
-    rm $SERVICESPERUSER
-
+      zurg
+    
+    # Création dossiers Medias
+    create_folders
 
     echo -e "\e[32mConfiguration terminée. Les informations ont été écrites dans le fichier $env_file.\e[0m"
     # Demander à l'utilisateur s'il souhaite refaire la configuration
     if read -r -p "Souhaitez-vous refaire la configuration ? (O/N) " redo_choice && [ "$redo_choice" != "O" ] && [ "$redo_choice" != "o" ]; then
-      echo "Sortie du script."
       exit 0  # Quitter le script proprement
     fi
   done
