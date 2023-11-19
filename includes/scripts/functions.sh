@@ -313,17 +313,21 @@ function manage_apps() {
             if [ $line = "zurg" -o $line = "rclone" ]; then
               docker stop zurg rclone rd_refresh > /dev/null 2>&1
               docker rm -f zurg rclone rd_refresh > /dev/null 2>&1
+              docker rmi $(docker images | grep zurg | tr -s ' ' | cut -d ' ' -f 3) > /dev/null 2>&1
+              docker rmi $(docker images | grep rclone | tr -s ' ' | cut -d ' ' -f 3) > /dev/null 2>&1
+              docker rmi $(docker images | grep rd_refresh | tr -s ' ' | cut -d ' ' -f 3) > /dev/null 2>&1
               echo -e "\e[32mLancement container zurg - rclone - rd_refresh\e[0m"
               source /home/$USER/.env
               echo zurg >> $SERVICESPERUSER
               install_service
             else
               docker rm -f "$line" > /dev/null 2>&1
+              docker rmi $(docker images | grep "$line" | tr -s ' ' | cut -d ' ' -f 3) > /dev/null 2>&1
 	      echo $line >> $SERVICESPERUSER
 	      install_service
             fi
 	  docker system prune -af > /dev/null 2>&1
-	  docker volume rm $(docker volume ls -qf "dangling=true") > /dev/null 2>&1
+          docker volume ls -qf dangling=true | xargs -r docker volume rm > /dev/null 2>&1
           echo ""       
 	  echo -e "### Le Container \e[32m$line\e[0m a été Réinitialisé ###"
           echo ""
