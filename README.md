@@ -1,7 +1,7 @@
 # Docker Setup
 
-Docker Setup est un script Bash d'automatisation conçu pour simplifier l'installation et la configuration d'un environnement Docker pour les applications de serveur populaires.
-Il vise à faciliter la mise en place d'une seedbox, d'un serveur Plex, et d'autres services dans un environnement Docker avec comme source de stockage Real Debrid.
+Ce script simplifie grandement la mise en place d'un environnement docker de streaming basé sur Real Debrid, Rclone et RDTclient.
+Suivez les étapes d'installation pour profiter rapidement de ces services sur votre système Linux.
 
 ## Avantages
 
@@ -61,8 +61,3 @@ Suivez ces étapes pour installer Docker Setup sur votre système :
 
 
 C'est tout ! Vous avez maintenant installé et exécuté le script à partir du dépôt GitHub. Assurez-vous de suivre les instructions spécifiques au script et aux composants que vous installez pour garantir une installation correcte et sécurisée.
-
----
-
-Ce script simplifie grandement la mise en place d'un environnement de téléchargement et de streaming basé sur Real Debrid, Rclone et Plex Debrid. Suivez les étapes d'installation pour profiter rapidement de ces services sur votre système Linux.
----
