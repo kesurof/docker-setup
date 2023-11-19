@@ -193,6 +193,9 @@ EOL
 
     # Lancement zurg - rclone - rd_refresh 
       zurg
+    
+    # Création dossiers Medias
+    create_folders
 
     echo -e "\e[32mConfiguration terminée. Les informations ont été écrites dans le fichier $env_file.\e[0m"
     # Demander à l'utilisateur s'il souhaite refaire la configuration

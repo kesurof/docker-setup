@@ -4,7 +4,7 @@
 scripts_dir="$(dirname "$0")"
 
 # Liste des noms de scripts à exécuter dans l'ordre spécifié
-scripts=("config_setup.sh" "create_folder.sh" "conf_wireguard.sh")
+scripts=("config_setup.sh" "conf_wireguard.sh")
 
 # Chemin complet vers les scripts
 script_paths=()

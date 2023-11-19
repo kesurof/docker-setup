@@ -2,12 +2,6 @@
 
 source "${SETTINGS_SOURCE}/includes/scripts/functions.sh"
 
-
-# Fonction pour afficher une question en jaune
-function ask_question() {
-  echo -e "\033[33m$1\033[0m"
-}
-
 # Fonction pour créer un répertoire s'il n'existe pas
 function create_directory() {
   if [ ! -d "$1" ]; then
@@ -55,6 +49,7 @@ wg0_config_path="$APP_SETTINGS_DIR/wireguard/config/wg0.conf"
 
 # Vérifier si le fichier wg0.conf existe
 if [ -e "$wg0_config_path" ]; then
+  clear
   echo -e "\e[33mLe fichier $wg0_config_path existe déjà.\e[0m"
   echo -e "\e[32mVoulez-vous le supprimer ? (Oui/Non)\e[0m"
   read remove_file_choice

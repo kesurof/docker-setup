@@ -95,7 +95,7 @@ cd $scripts_dir
 
     echo -e "\e[1;32m 1. Installation \e[0m"
     echo -e "\e[1;32m 2. Gestion des Applications \e[0m"
-    if [ ! -d "/home/$USER/seedbox/app_settings/plex_debrid" ];then
+    if [ ! -d "$APP_SETTINGS_DIR/plex_debrid" ];then
       echo -e "\e[1;32m 3. Installation plex_debrid \e[0m"
     else
       echo -e "\e[1;33m 3. Lancer la console plex_debrid \e[0m"
@@ -152,7 +152,7 @@ cd $scripts_dir
 
         3)
           # plex_debrid
-          if [ ! -d "/home/$USER/seedbox/app_settings/plex_debrid" ];then
+          if [ ! -d "$APP_SETTINGS_DIR/plex_debrid" ];then
             source install_plex_debrid.sh
             main_menu
           else
@@ -285,7 +285,7 @@ function manage_apps() {
         if [ $exitstatus = 0 ]; then
 	  echo -e " ${GREEN}   * $APPSELECTED${NC}"
 	  docker rm -f "$APPSELECTED" > /dev/null 2>&1
-	  sudo rm -rf /home/$USER/seedbox/app_settings/"$APPSELECTED"
+	  rm -rf $APP_SETTINGS_DIR/"$APPSELECTED"
 	  rm /home/$USER/seedbox/yml/$APPSELECTED.yml > /dev/null 2>&1
 	  docker system prune -af > /dev/null 2>&1
           echo -e "\n$APPSELECTED a été supprimé, Appuyer sur [ENTREE] pour retourner au menu..."
@@ -310,7 +310,7 @@ function manage_apps() {
         if [ $exitstatus = 0 ]; then
 	  echo -e "### Les fichiers de configuration de \e[32m$line\e[0m ne seront pas effacés ###"
 	  echo ""
-            if [ $line = "zurg" -o $line = "rclone" -o rd_refresh ]; then
+            if [ $line = "zurg" -o $line = "rclone" ]; then
               docker stop zurg rclone rd_refresh > /dev/null 2>&1
               docker rm -f zurg rclone rd_refresh > /dev/null 2>&1
               echo -e "\e[32mLancement container zurg - rclone - rd_refresh\e[0m"
@@ -354,3 +354,17 @@ echo zurg >> $SERVICESPERUSER
 install_service
 }
 
+function create_folders() {
+echo ""
+echo -e "\e[32mEcrire les noms de dossiers à créer dans Medias ex: Films Series\e[0m \e[36m(touche Entrée après chaque saisie)\e[0m .. \e[32mpuis stop une fois terminé\e[0m"   				
+while :
+do		
+  read -p "" EXCLUDEPATH
+  mkdir -p /home/$USER/Medias/$EXCLUDEPATH
+  chown -R $USER:$USER /home/$USER/Medias/$EXCLUDEPATH
+  if [[ "$EXCLUDEPATH" = "STOP" ]] || [[ "$EXCLUDEPATH" = "stop" ]]; then
+    rm -rf /home/$USER/Medias/$EXCLUDEPATH
+    break
+  fi
+done
+}
