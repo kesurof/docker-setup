@@ -23,7 +23,7 @@ preferred_hosts: # Optional, run the script here https://github.com/debridmediam
 # List of directory definitions and their filtering rules
 directories:
   # Configuration for TV shows
-  Serie:
+  Series:
     group: media # directories on different groups have duplicates of the same torrent
     group_order: 1
     filters:
