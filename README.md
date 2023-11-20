@@ -40,7 +40,7 @@ Suivez ces étapes pour installer Docker Setup sur votre système :
 1. **Clonez le dépôt** : Ouvrez votre terminal et exécutez la commande suivante pour cloner le dépôt GitHub dans votre répertoire actuel (ou dans le répertoire de votre choix) :
 
    ```bash
-   git clone https://github.com/laster13/docker-setup.git && cd docker-setup
+   git clone https://github.com/kesurof/docker-setup.git && cd docker-setup
    ```
 
 2. **Exécutez le script** : Après avoir accédé au répertoire, assurez-vous que le script est exécutable en utilisant la commande `chmod` si nécessaire :
