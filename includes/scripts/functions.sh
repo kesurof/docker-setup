@@ -175,10 +175,6 @@ cd $scripts_dir
           mkdir -p $APP_SETTINGS_DIR/zurg/zurgdata
           # Chemin du fichier rclone.conf
           rclone_config_file="/home/$(logname)/.config/rclone/rclone.conf"
-
-          # Utilisez la fonction create_directory pour créer le répertoire .config/rclone s'il n'existe pas
-          create_directory "/home/$(logname)/.config/rclone"
-
           # Écrire la configuration rclone dans le fichier rclone.conf en remplaçant {{RD_API_KEY}}
           cat <<EOL > "$rclone_config_file"
 [zurg]
