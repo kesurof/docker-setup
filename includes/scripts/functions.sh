@@ -167,11 +167,13 @@ cd $scripts_dir
           echo -e "\e[32m###          RESINSTALLATION ZURG - RCLONE - RD_REFRESH        ###\e[0m"
           echo -e "\e[32m##################################################################\e[0m"
           echo ""
-          docker stop rclone zurg > /dev/null 2>&1
-          docker rm -f rclone zurg rd_refresh > /dev/null 2>&1
-          source /home/$USER/.env
-          echo zurg >> $SERVICESPERUSER
-          install_service
+          docker stop zurg rclone > /dev/null 2>&1
+          docker rm -f zurg rclone > /dev/null 2>&1
+          docker rmi $(docker images | grep zurg | tr -s ' ' | cut -d ' ' -f 3) > /dev/null 2>&1
+          docker rmi $(docker images | grep rclone | tr -s ' ' | cut -d ' ' -f 3) > /dev/null 2>&1
+          rm -rf $APP_SETTINGS_DIR/zurg
+          mkdir -p $APP_SETTINGS_DIR/zurg/zurgdata
+          zurg
           echo ""
           echo -e "\e[32mAppuyer sur [ENTREE] pour retourner au menu...\e[0m"
           read -r
@@ -311,15 +313,13 @@ function manage_apps() {
 	  echo -e "### Les fichiers de configuration de \e[32m$line\e[0m ne seront pas effacés ###"
 	  echo ""
             if [ $line = "zurg" -o $line = "rclone" ]; then
-              docker stop zurg rclone rd_refresh > /dev/null 2>&1
-              docker rm -f zurg rclone rd_refresh > /dev/null 2>&1
+              docker stop zurg rclone > /dev/null 2>&1
+              docker rm -f zurg rclone > /dev/null 2>&1
               docker rmi $(docker images | grep zurg | tr -s ' ' | cut -d ' ' -f 3) > /dev/null 2>&1
               docker rmi $(docker images | grep rclone | tr -s ' ' | cut -d ' ' -f 3) > /dev/null 2>&1
-              docker rmi $(docker images | grep rd_refresh | tr -s ' ' | cut -d ' ' -f 3) > /dev/null 2>&1
-              echo -e "\e[32mLancement container zurg - rclone - rd_refresh\e[0m"
-              source /home/$USER/.env
-              echo zurg >> $SERVICESPERUSER
-              install_service
+              rm -rf $APP_SETTINGS_DIR/zurg
+              mkdir -p $APP_SETTINGS_DIR/zurg/zurgdata
+              zurg
             else
               docker rm -f "$line" > /dev/null 2>&1
               docker rmi $(docker images | grep "$line" | tr -s ' ' | cut -d ' ' -f 3) > /dev/null 2>&1
@@ -350,9 +350,9 @@ install_service
 
 function zurg() {
 # Lancement zurg - rclone - rd_refresh 
-echo -e "\e[32mLancement container zurg - rclone - rd_refresh\e[0m"
+echo -e "\e[32mLancement container zurg - rclone\e[0m"
 cp /home/$USER/docker-setup/includes/templates/config.yml $APP_SETTINGS_DIR/zurg/
-sed -i "/token: YOUR_RD_API_TOKEN/c\token: $rd_api_key" "$APP_SETTINGS_DIR/zurg/config.yml"
+sed -i "/token: YOUR_RD_API_TOKEN/c\token: $RD_API_KEY" "$APP_SETTINGS_DIR/zurg/config.yml"
 source /home/$USER/.env
 echo zurg >> $SERVICESPERUSER
 install_service

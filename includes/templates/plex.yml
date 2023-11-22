@@ -18,6 +18,9 @@ services:
       - {{APP_SETTINGS_DIR}}/plex/transcode:/transcode
       - /mnt:/mnt
       - {{USER_HOME}}:{{USER_HOME}}
+    depends_on:
+      - zurg
+      - rclone
     restart: unless-stopped
     networks:
       mon-reseau:
