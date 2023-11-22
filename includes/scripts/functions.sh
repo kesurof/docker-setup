@@ -94,7 +94,7 @@ cd $scripts_dir
     echo -e "\e[1;33mMenu\e[0m"
 
     echo -e "\e[1;32m 1. Installation \e[0m"
-    echo -e "\e[1;32m 8. Gestion des Applications \e[0m"
+    echo -e "\e[1;32m 2. Gestion des Applications \e[0m"
     if [ ! -d "$APP_SETTINGS_DIR/plex_debrid" ];then
       echo -e "\e[1;32m 3. Installation plex_debrid \e[0m"
     else
@@ -144,7 +144,7 @@ cd $scripts_dir
           done
           ;;
 
-        8)
+        2)
           # gestion des applis
           manage_apps
           main_menu 
