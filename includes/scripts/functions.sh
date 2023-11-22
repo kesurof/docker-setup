@@ -173,6 +173,26 @@ cd $scripts_dir
           docker rmi $(docker images | grep rclone | tr -s ' ' | cut -d ' ' -f 3) > /dev/null 2>&1
           rm -rf $APP_SETTINGS_DIR/zurg
           mkdir -p $APP_SETTINGS_DIR/zurg/zurgdata
+          # Chemin du fichier rclone.conf
+          rclone_config_file="/home/$(logname)/.config/rclone/rclone.conf"
+
+          # Utilisez la fonction create_directory pour créer le répertoire .config/rclone s'il n'existe pas
+          create_directory "/home/$(logname)/.config/rclone"
+
+          # Écrire la configuration rclone dans le fichier rclone.conf en remplaçant {{RD_API_KEY}}
+          cat <<EOL > "$rclone_config_file"
+[zurg]
+type = webdav
+url = http://zurg:9999
+vendor = other
+pacer_min_sleep = 0
+
+[zurghttp]
+type = http
+url = http://zurg:9999/http
+no_head = false
+no_slash = false
+EOL
           zurg
           echo ""
           echo -e "\e[32mAppuyer sur [ENTREE] pour retourner au menu...\e[0m"
