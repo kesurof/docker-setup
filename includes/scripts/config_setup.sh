@@ -106,6 +106,12 @@ if [ -f "$env_file" ]; then
     # Écrire la configuration rclone dans le fichier rclone.conf en remplaçant {{RD_API_KEY}}
     cat <<EOL > "$rclone_config_file"
 [zurg]
+type = webdav
+url = http://zurg:9999
+vendor = other
+pacer_min_sleep = 0
+
+[zurghttp]
 type = http
 url = http://zurg:9999/http
 no_head = false
