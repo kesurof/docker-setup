@@ -164,7 +164,7 @@ cd $scripts_dir
           # reinstall zurg
           clear
           echo -e "\e[32m##################################################################\e[0m"
-          echo -e "\e[32m###          RESINSTALLATION ZURG - RCLONE - RD_REFRESH        ###\e[0m"
+          echo -e "\e[32m###          RESINSTALLATION ZURG - RCLONE                     ###\e[0m"
           echo -e "\e[32m##################################################################\e[0m"
           echo ""
           docker stop zurg rclone > /dev/null 2>&1
