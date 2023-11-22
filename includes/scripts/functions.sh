@@ -100,7 +100,7 @@ cd $scripts_dir
     else
       echo -e "\e[1;33m 3. Lancer la console plex_debrid \e[0m"
     fi
-    echo -e "\e[1;32m 4. Reinstallation zurg - rclone - rd_refresh \e[0m"
+    echo -e "\e[1;32m 4. Reinstallation zurg \e[0m"
     echo -e "\e[1;32m 5. Quitter \e[0m"
 
     read -p "Entrer votre choix: " choice
@@ -182,12 +182,6 @@ type = webdav
 url = http://zurg:9999
 vendor = other
 pacer_min_sleep = 0
-
-[zurghttp]
-type = http
-url = http://zurg:9999/http
-no_head = false
-no_slash = false
 EOL
           zurg
           echo ""

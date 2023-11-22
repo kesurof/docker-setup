@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   zurg:
-    image: ghcr.io/debridmediamanager/zurg-testing:v0-nonfuse
+    image: ghcr.io/debridmediamanager/zurg-testing:v0-fuse
     container_name: zurg
     restart: unless-stopped
     ports:
@@ -10,39 +10,17 @@ services:
     volumes:
       - {{APP_SETTINGS_DIR}}/zurg/config.yml:/app/config.yml
       - {{APP_SETTINGS_DIR}}/zurg/zurgdata:/app/data
+      - /mnt/zurg:/app/mnt:shared
     cap_add:
       - SYS_ADMIN
     security_opt:
       - apparmor:unconfined
     devices:
-      - /dev/fuse:/dev/fuse:rwm
+      - /dev/fuse
+    command: mount -o attr_timeout=1.0 -o allow_other -o uid={{PUID}} -o gid={{PGID}} -o fsname=myawesomemount -o subtype=zurg -o atomic_o_trunc -o max_readahead=131072 -o default_permissions -o ro
     networks:
       mon-reseau:
         ipv4_address: 172.18.0.14
-
-  rclone:
-    image: rclone/rclone:latest
-    container_name: rclone
-    restart: unless-stopped
-    environment:
-      - TZ=Europe/Paris
-      - PUID={{PUID}}
-      - PGID={{PGID}}
-    volumes:
-      - /mnt/zurg:/data:rshared
-      - {{USER_HOME}}/.config/rclone/rclone.conf:/config/rclone/rclone.conf
-    cap_add:
-      - SYS_ADMIN
-    security_opt:
-      - apparmor:unconfined
-    devices:
-      - /dev/fuse:/dev/fuse:rwm
-    depends_on:
-      - zurg
-    command: "mount zurg: /data --allow-non-empty --allow-other --uid={{PUID}} --gid={{PGID}} --dir-cache-time 10s --read-only"
-    networks:
-      mon-reseau:
-        ipv4_address: 172.18.0.15
 
 networks:
   mon-reseau:
@@ -50,4 +28,3 @@ networks:
     ipam:
       config:
         - subnet: 172.18.0.0/16
-        
