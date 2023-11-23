@@ -16,12 +16,8 @@ services:
       - 9696:9696
     restart: unless-stopped
     networks:
-      mon-reseau:
-        ipv4_address: 172.18.0.6 # Adresse IP statique pour prowlarr
+      - monreseau
 
 networks:
-  mon-reseau:
+  docker-setup-reseau:
     driver: bridge
-    ipam:
-      config:
-        - subnet: 172.18.0.0/16

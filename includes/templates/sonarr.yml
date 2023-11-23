@@ -18,12 +18,8 @@ services:
       - 8989:8989
     restart: unless-stopped
     networks:
-      mon-reseau:
-        ipv4_address: 172.18.0.9 # Adresse IP statique pour sonarr
+      - monreseau
 
 networks:
-  mon-reseau:
+  docker-setup-reseau:
     driver: bridge
-    ipam:
-      config:
-        - subnet: 172.18.0.0/16

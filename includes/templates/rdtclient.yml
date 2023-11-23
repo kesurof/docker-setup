@@ -21,13 +21,9 @@ services:
     ports:
       - '6500:6500'
     networks:
-      mon-reseau:
-        ipv4_address: 172.18.0.3 # Adresse IP statique pour radarr
+      - monreseau
 
 networks:
-  mon-reseau:
+  docker-setup-reseau:
     driver: bridge
-    ipam:
-      config:
-        - subnet: 172.18.0.0/16
 

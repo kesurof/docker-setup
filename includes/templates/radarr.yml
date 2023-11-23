@@ -18,12 +18,8 @@ services:
       - 7878:7878
     restart: unless-stopped
     networks:
-      mon-reseau:
-        ipv4_address: 172.18.0.10 # Adresse IP statique pour radarr
+      - monreseau
 
 networks:
-  mon-reseau:
+  docker-setup-reseau:
     driver: bridge
-    ipam:
-      config:
-        - subnet: 172.18.0.0/16

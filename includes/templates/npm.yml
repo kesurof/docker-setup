@@ -18,12 +18,8 @@ services:
       - {{APP_SETTINGS_DIR}}/nginx-proxy-manager/letsencrypt:/etc/letsencrypt
       - {{USER_HOME}}:{{USER_HOME}}
     networks:
-      mon-reseau:
-        ipv4_address: 172.18.0.2 # Adresse IP statique pour nginx-proxy-manager
+      - monreseau
 
 networks:
-  mon-reseau:
+  docker-setup-reseau:
     driver: bridge
-    ipam:
-      config:
-        - subnet: 172.18.0.0/16

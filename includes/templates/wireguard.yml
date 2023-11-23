@@ -21,12 +21,8 @@ services:
       #- 51820:51820/udp
     restart: unless-stopped
     networks:
-      mon-reseau:
-        ipv4_address: 172.18.0.8 # Adresse IP statique pour wireguard
+      - monreseau
 
 networks:
-  mon-reseau:
+  docker-setup-reseau:
     driver: bridge
-    ipam:
-      config:
-        - subnet: 172.18.0.0/16

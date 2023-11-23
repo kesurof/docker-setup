@@ -17,12 +17,8 @@ services:
       - PUID={{PUID}}
       - PGID={{PGID}}
     networks:
-      mon-reseau:
-        ipv4_address: 172.18.0.11 # Adresse IP statique pour filebot-node
+      - monreseau
 
 networks:
-  mon-reseau:
+  docker-setup-reseau:
     driver: bridge
-    ipam:
-      config:
-        - subnet: 172.18.0.0/16
