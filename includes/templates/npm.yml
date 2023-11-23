@@ -18,7 +18,7 @@ services:
       - {{APP_SETTINGS_DIR}}/nginx-proxy-manager/letsencrypt:/etc/letsencrypt
       - {{USER_HOME}}:{{USER_HOME}}
     networks:
-      - monreseau
+      - docker-setup-reseau
 
 networks:
   docker-setup-reseau:

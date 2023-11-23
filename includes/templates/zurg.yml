@@ -19,7 +19,7 @@ services:
       - /dev/fuse
     command: mount -o attr_timeout=1.0 -o allow_other -o uid={{PUID}} -o gid={{PGID}} -o fsname=myawesomemount -o subtype=zurg -o atomic_o_trunc -o max_readahead=131072 -o default_permissions -o ro
     networks:
-      - monreseau
+      - docker-setup-reseau
 
 networks:
   docker-setup-reseau:

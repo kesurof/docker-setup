@@ -17,7 +17,7 @@ services:
       - PGID=101
       - TZ=Europe/Paris
     networks:
-      - monreseau
+      - docker-setup-reseau
 
 networks:
   docker-setup-reseau:

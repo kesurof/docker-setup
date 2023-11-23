@@ -21,7 +21,7 @@ services:
     ports:
       - '6500:6500'
     networks:
-      - monreseau
+      - docker-setup-reseau
 
 networks:
   docker-setup-reseau:

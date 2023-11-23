@@ -16,7 +16,7 @@ services:
       - 9117:9117
     restart: unless-stopped
     networks:
-      - monreseau
+      - docker-setup-reseau
 
 networks:
   docker-setup-reseau:

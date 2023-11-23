@@ -15,7 +15,7 @@ services:
       WATCHTOWER_NO_STARTUP_MESSAGE: "true"
       WATCHTOWER_SCHEDULE: "0 0 4 * * *"
     networks:
-      - monreseau
+      - docker-setup-reseau
 
 networks:
   docker-setup-reseau:

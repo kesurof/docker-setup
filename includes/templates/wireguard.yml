@@ -21,7 +21,7 @@ services:
       #- 51820:51820/udp
     restart: unless-stopped
     networks:
-      - monreseau
+      - docker-setup-reseau
 
 networks:
   docker-setup-reseau:
