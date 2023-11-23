@@ -10,7 +10,7 @@ check_for_changes_every_secs: 15
 info_cache_time_hours: 12
 
 enable_repair: true # BEWARE! THERE CAN ONLY BE 1 INSTANCE OF ZURG THAT SHOULD REPAIR YOUR TORRENTS
-retain_folder_name_extension: true # if true, zurg won't modify the filenames from real-debrid
+retain_folder_name_extension: false # if true, zurg won't modify the filenames from real-debrid
 on_library_update: |
   echo "hook"
 
