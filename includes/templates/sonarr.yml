@@ -14,8 +14,6 @@ services:
       - {{USER_HOME}}:{{USER_HOME}}
       - {{LOCAL_DIR}}/sonarr:/data/downloads/sonarr
       - /mnt/zurg/torrents:/mnt/zurg/torrents
-    ports:
-      - 8989:8989
     restart: unless-stopped
     networks:
       - docker-setup-reseau

@@ -18,8 +18,6 @@ services:
       driver: json-file
       options:
         max-size: 10m
-    ports:
-      - '6500:6500'
     networks:
       - docker-setup-reseau
 

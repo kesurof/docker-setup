@@ -13,8 +13,6 @@ services:
     volumes:
       - {{APP_SETTINGS_DIR}}/overseerr:/config
       - {{USER_HOME}}:{{USER_HOME}}
-    ports:
-      - 5055:5055
     restart: unless-stopped
     networks:
       - docker-setup-reseau

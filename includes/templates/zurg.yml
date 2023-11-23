@@ -5,8 +5,6 @@ services:
     image: ghcr.io/debridmediamanager/zurg-testing:v0-fuse
     container_name: zurg
     restart: unless-stopped
-    ports:
-      - 9999:9999
     volumes:
       - {{APP_SETTINGS_DIR}}/zurg/config.yml:/app/config.yml
       - {{APP_SETTINGS_DIR}}/zurg/zurgdata:/app/data

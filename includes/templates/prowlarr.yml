@@ -12,8 +12,6 @@ services:
     volumes:
       - {{APP_SETTINGS_DIR}}/prowlarr:/config
       - {{USER_HOME}}:{{USER_HOME}}
-    ports:
-      - 9696:9696
     restart: unless-stopped
     networks:
       - docker-setup-reseau
