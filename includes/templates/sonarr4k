@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+
+  sonarr4k:
+    image: lscr.io/linuxserver/sonarr:develop
+    container_name: sonarr4k
+    environment:
+      - PUID={{PUID}}
+      - PGID={{PGID}}
+      - TZ=Europe/Paris
+    volumes:
+      - {{APP_SETTINGS_DIR}}/sonarr4k:/config
+      - {{USER_HOME}}:{{USER_HOME}}
+      - {{LOCAL_DIR}}/sonarr:/data/downloads/sonarr
+      - /mnt/zurg/torrents:/mnt/zurg/torrents
+    restart: unless-stopped
+    networks:
+      - docker-setup-reseau
+
+networks:
+  docker-setup-reseau:
+    driver: bridge
