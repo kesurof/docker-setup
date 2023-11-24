@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+
+  radarr4k:
+    image: lscr.io/linuxserver/radarr4k:latest
+    container_name: radarr
+    environment:
+      - PUID={{PUID}}
+      - PGID={{PGID}}
+      - TZ=Europe/Paris
+    volumes:
+      - {{APP_SETTINGS_DIR}}/radarr4k:/config
+      - {{USER_HOME}}:{{USER_HOME}}
+      - {{LOCAL_DIR}}/radarr:/data/downloads/radarr
+      - /mnt/zurg/torrents:/mnt/zurg/torrents
+    ports:
+      - 7979:7878
+    restart: unless-stopped
+    networks:
+      mon-reseau:
+        ipv4_address: 172.18.0.22 # Adresse IP statique pour radarr
+
+networks:
+  mon-reseau:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.18.0.0/16
