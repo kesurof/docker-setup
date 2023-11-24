@@ -4,7 +4,7 @@ services:
 
   radarr4k:
     image: lscr.io/linuxserver/radarr4k:latest
-    container_name: radarr
+    container_name: radarr4k
     environment:
       - PUID={{PUID}}
       - PGID={{PGID}}
