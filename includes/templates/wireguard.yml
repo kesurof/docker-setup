@@ -19,12 +19,8 @@ services:
       - net.ipv4.conf.all.src_valid_mark=1
     restart: unless-stopped
     networks:
-      mon-reseau:
-        ipv4_address: 172.18.0.8 # Adresse IP statique pour wireguard
+      - mon-reseau
 
 networks:
   mon-reseau:
     driver: bridge
-    ipam:
-      config:
-        - subnet: 172.18.0.0/16

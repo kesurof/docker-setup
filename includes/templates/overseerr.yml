@@ -15,12 +15,8 @@ services:
       - {{USER_HOME}}:{{USER_HOME}}
     restart: unless-stopped
     networks:
-      mon-reseau:
-        ipv4_address: 172.18.0.5 # Adresse IP statique pour overseerr
+      - mon-reseau
 
 networks:
   mon-reseau:
     driver: bridge
-    ipam:
-      config:
-        - subnet: 172.18.0.0/16

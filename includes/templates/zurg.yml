@@ -41,13 +41,9 @@ services:
       - zurg
     command: "mount zurg: /data --allow-non-empty --allow-other --uid={{PUID}} --gid={{PGID}} --dir-cache-time 10s --read-only"
     networks:
-      mon-reseau:
-        ipv4_address: 172.18.0.15
+      - mon-reseau
 
 networks:
   mon-reseau:
     driver: bridge
-    ipam:
-      config:
-        - subnet: 172.18.0.0/16
         

@@ -16,12 +16,8 @@ services:
       - /mnt/zurg/torrents:/mnt/zurg/torrents
     restart: unless-stopped
     networks:
-      mon-reseau:
-        ipv4_address: 172.18.0.10 # Adresse IP statique pour radarr
+      - mon-reseau
 
 networks:
   mon-reseau:
     driver: bridge
-    ipam:
-      config:
-        - subnet: 172.18.0.0/16
