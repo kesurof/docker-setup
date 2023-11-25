@@ -6,8 +6,7 @@ services:
     deploy:
       replicas: 1
     networks:
-      mon-reseau:
-        ipv4_address: 172.18.0.25 # Adresse IP statique pour radarr
+      - mon-reseau
 
   dmm:
     image: debridmediamanager/debrid-media-manager:latest
