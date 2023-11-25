@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+
+  radarr4k:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr4k
+    environment:
+      - PUID={{PUID}}
+      - PGID={{PGID}}
+      - TZ=Europe/Paris
+    volumes:
+      - {{APP_SETTINGS_DIR}}/radarr4k:/config
+      - {{USER_HOME}}:{{USER_HOME}}
+      - {{LOCAL_DIR}}/radarr:/data/downloads/radarr
+      - /mnt/zurg/torrents:/mnt/zurg/torrents
+    restart: unless-stopped
+    networks:
+      - mon-reseau
+
+networks:
+  mon-reseau:
+    driver: bridge
