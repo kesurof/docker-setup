@@ -101,7 +101,8 @@ cd $scripts_dir
       echo -e "\e[1;33m 3. Lancer la console plex_debrid \e[0m"
     fi
     echo -e "\e[1;32m 4. Reinstallation zurg - rclone - rd_refresh \e[0m"
-    echo -e "\e[1;32m 5. Quitter \e[0m"
+    echo -e "\e[1;32m 5. Reinstallation zurg - sans rclone \e[0m"
+    echo -e "\e[1;32m 6. Quitter \e[0m"
 
     read -p "Entrer votre choix: " choice
 
@@ -191,6 +192,28 @@ no_head = false
 no_slash = false
 EOL
           zurg
+          echo ""
+          echo -e "\e[32mAppuyer sur [ENTREE] pour retourner au menu...\e[0m"
+          read -r
+          main_menu
+         ;;
+
+
+        5)
+          # reinstall zurgfuse
+          clear
+          echo -e "\e[32m##################################################################\e[0m"
+          echo -e "\e[32m###          RESINSTALLATION ZURG - SANS RCLONE                ###\e[0m"
+          echo -e "\e[32m##################################################################\e[0m"
+          echo ""
+          docker stop zurg zurgfuse rclone > /dev/null 2>&1
+          docker rm -f zurg zurgfuse rclone > /dev/null 2>&1
+          docker rmi $(docker images | grep zurgfuse | tr -s ' ' | cut -d ' ' -f 3) > /dev/null 2>&1
+          docker rmi $(docker images | grep zurg | tr -s ' ' | cut -d ' ' -f 3) > /dev/null 2>&1
+          docker rmi $(docker images | grep rclone | tr -s ' ' | cut -d ' ' -f 3) > /dev/null 2>&1
+          rm -rf $APP_SETTINGS_DIR/zurg
+          mkdir -p $APP_SETTINGS_DIR/zurg/zurgdata
+          zurgfuse
           echo ""
           echo -e "\e[32mAppuyer sur [ENTREE] pour retourner au menu...\e[0m"
           read -r
@@ -404,6 +427,16 @@ cp /home/$USER/docker-setup/includes/templates/config.yml $APP_SETTINGS_DIR/zurg
 sed -i "/token: YOUR_RD_API_TOKEN/c\token: $RD_API_KEY" "$APP_SETTINGS_DIR/zurg/config.yml"
 source /home/$USER/.env
 echo zurg >> $SERVICESPERUSER
+install_service
+}
+
+function zurgfuse() {
+# Lancement zurgfuse - sans rclone
+echo -e "\e[32mLancement container zurgfuse - sans rclone\e[0m"
+cp /home/$USER/docker-setup/includes/templates/configfuse.yml $APP_SETTINGS_DIR/zurg/
+sed -i "/token: YOUR_RD_API_TOKEN/c\token: $RD_API_KEY" "$APP_SETTINGS_DIR/zurg/config.yml"
+source /home/$USER/.env
+echo zurgfuse >> $SERVICESPERUSER
 install_service
 }
 
