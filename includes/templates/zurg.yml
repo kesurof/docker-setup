@@ -39,7 +39,7 @@ services:
       - /dev/fuse:/dev/fuse:rwm
     depends_on:
       - zurg
-    command: "mount zurg: /data --allow-non-empty --allow-other --uid=1000 --gid=1000 --dir-cache-time 10s --timeout=1h --poll-interval=15s --cache-dir=/opt/rclone/cache/rd --vfs-cache-mode=full --vfs-cache-max-size=250G --vfs-cache-max-age=24h"
+    command: "mount zurg: /data --allow-non-empty --allow-other --uid={{PUID}} --gid={{PGID}} --dir-cache-time 10s --read-only"
     networks:
       mon-reseau:
         ipv4_address: 172.18.0.15
@@ -50,3 +50,4 @@ networks:
     ipam:
       config:
         - subnet: 172.18.0.0/16
+        
