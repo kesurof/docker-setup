@@ -8,7 +8,7 @@ host: "[::]" # do not change this if you are running it inside a docker containe
 port: 9999 # do not change this if you are running it inside a docker container
 concurrent_workers: 50
 check_for_changes_every_secs: 15 # check for new or deleted torrents
-# info_cache_time_hours: 12 # how long do we need to check for expired links?
+info_cache_time_hours: 12 # how long do we need to check for expired links?
 
 enable_repair: true # BEWARE! THERE CAN ONLY BE 1 INSTANCE OF ZURG THAT SHOULD REPAIR YOUR TORRENTS
 retain_folder_name_extension: false # if true, the folder name will contain the file extension when it is a torrent for a single file
