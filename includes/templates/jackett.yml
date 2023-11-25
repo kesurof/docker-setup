@@ -12,8 +12,6 @@ services:
     volumes:
       - {{APP_SETTINGS_DIR}}/jackett:/config
       - {{USER_HOME}}:{{USER_HOME}}
-    ports:
-      - 9117:9117
     restart: unless-stopped
     networks:
       mon-reseau:

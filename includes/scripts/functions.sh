@@ -147,6 +147,7 @@ cd $scripts_dir
         2)
           # gestion des applis
           manage_apps
+sleep 5s
           main_menu 
           ;;
 
@@ -239,10 +240,20 @@ function choose_services() {
 function install_service() {
   for line in $(cat $SERVICESPERUSER); do
     app_yml_dir="/home/$(logname)/seedbox/yml"
+    # configuration dmm
     if [[ -e "$app_yml_dir/${line}.yml" ]]; then
       launch_service "${line}"
     else
-      cp $SETTINGS_SOURCE/includes/templates/${line}.yml "$app_yml_dir"
+      cp $SETTINGS_SOURCE/includes/templates/${line}.yml "$app_yml_dir" 
+      if [[ "${line}" == dmm ]]; then
+        # Demander à l'utilisateur le nom de sa base de données PlanetScale
+        echo ""
+        >&2 echo -en "\e[32mVeuillez entrer votre base de données PlanetScale :\e[0m"
+        read PLANETSCALE
+        cp /home/$USER/docker-setup/includes/templates/.env.local $USER_HOME/seedbox/yml/.env.local
+        sed -i "/PLANETSCALE/c\token: '$PLANETSCALE'" "$USER_HOME/seedbox/yml/.env.local"
+        echo ""
+      fi
       # Remplacer les variables dans docker-compose.yml en utilisant les valeurs du .env
       env_vars=$(grep -oE '\{\{[A-Za-z_][A-Za-z_0-9]*\}\}' "$app_yml_dir/${line}.yml")
       for var in $env_vars; do
@@ -289,7 +300,7 @@ function manage_apps() {
 	2) ## Suppression APP
 	echo -e " ${BWHITE}* Application en cours de suppression${NC}"
 	TABSERVICES=()
-	for SERVICEACTIVATED in $(docker ps --format "{{.Names}}" | cut -d'-' -f2 | sort -u)
+	for SERVICEACTIVATED in $(docker ps --format "{{.Names}}" | cut -d'-' -f2 | sort -u | grep -v "rclone" | grep -v "tor")
 	do
           SERVICE=$(echo $SERVICEACTIVATED | cut -d\. -f1)
           TABSERVICES+=( ${SERVICE//\"} " " )
@@ -301,20 +312,42 @@ function manage_apps() {
         )
 	exitstatus=$?
         if [ $exitstatus = 0 ]; then
-	  echo -e " ${GREEN}   * $APPSELECTED${NC}"
-	  docker rm -f "$APPSELECTED" > /dev/null 2>&1
-	  rm -rf $APP_SETTINGS_DIR/"$APPSELECTED"
-	  rm /home/$USER/seedbox/yml/$APPSELECTED.yml > /dev/null 2>&1
-	  docker system prune -af > /dev/null 2>&1
-          echo -e "\n$APPSELECTED a été supprimé, Appuyer sur [ENTREE] pour retourner au menu..."
-          read -r
-          main_menu
+	  echo -e " \e[1;32m   * $APPSELECTED$\e[0m"
+          if [[ "$APPSELECTED" == dmm ]]; then
+            docker stop dmm tor > /dev/null 2>&1
+            docker rm -f tor dmm > /dev/null 2>&1
+            docker rmi $(docker images | grep tor | tr -s ' ' | cut -d ' ' -f 3) > /dev/null 2>&1
+            docker rmi $(docker images | grep debrid-media-manager | tr -s ' ' | cut -d ' ' -f 3) > /dev/null 2>&1
+            rm $USER_HOME/seedbox/yml/.env.local
+            echo ""
+            echo -e "\e[1;32m$APPSELECTED a été supprimé, Appuyer sur [ENTREE] pour retourner au menu...\e[0m"
+            read -r
+            main_menu
+          elif [[ "$APPSELECTED" == zurg ]]; then
+            docker stop zurg rclone > /dev/null 2>&1
+            docker rm -f zurg rclone > /dev/null 2>&1
+            docker rmi $(docker images | grep zurg | tr -s ' ' | cut -d ' ' -f 3) > /dev/null 2>&1
+            docker rmi $(docker images | grep rclone | tr -s ' ' | cut -d ' ' -f 3) > /dev/null 2>&1
+            rm -rf $APP_SETTINGS_DIR/zurg
+            echo ""
+            echo -e "\e[1;32m$APPSELECTED a été supprimé, Appuyer sur [ENTREE] pour retourner au menu...\e[0m"
+            read -r
+            main_menu
+          else
+	    docker rm -f "$APPSELECTED" > /dev/null 2>&1
+	    rm -rf $APP_SETTINGS_DIR/"$APPSELECTED"
+	    rm /home/$USER/seedbox/yml/$APPSELECTED.yml > /dev/null 2>&1
+	    docker system prune -af > /dev/null 2>&1
+            echo -e "\e[1;32m$APPSELECTED a été supprimé, Appuyer sur [ENTREE] pour retourner au menu...\e[0m"
+            read -r
+            main_menu
+          fi
         fi
 	;;
 
 	3) ## Réinitialisation container
 	TABSERVICES=()
-	for SERVICEACTIVATED in $(docker ps --format "{{.Names}}")
+	for SERVICEACTIVATED in $(docker ps --format "{{.Names}}" | grep -v "rclone" | grep -v "tor")
 	do
           SERVICE=$(echo $SERVICEACTIVATED | cut -d\. -f1)
           TABSERVICES+=( ${SERVICE//\"} " " )
@@ -328,7 +361,7 @@ function manage_apps() {
         if [ $exitstatus = 0 ]; then
 	  echo -e "### Les fichiers de configuration de \e[32m$line\e[0m ne seront pas effacés ###"
 	  echo ""
-            if [ $line = "zurg" -o $line = "rclone" ]; then
+            if [ $line = "zurg" ]; then
               docker stop zurg rclone > /dev/null 2>&1
               docker rm -f zurg rclone > /dev/null 2>&1
               docker rmi $(docker images | grep zurg | tr -s ' ' | cut -d ' ' -f 3) > /dev/null 2>&1
