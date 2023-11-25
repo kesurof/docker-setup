@@ -11,8 +11,6 @@ services:
       - {{RCLONE_DIR}}:/volume1/rclone/:rw
       - {{MEDIAS_DIR}}:/volume1/output/:rw
       - {{USER_HOME}}:{{USER_HOME}}
-    ports:
-      - 5452:5452
     environment:
       - PUID={{PUID}}
       - PGID={{PGID}}

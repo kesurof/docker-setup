@@ -10,6 +10,9 @@ CURRENT_SCRIPT=$(readlink -f "$0")
 # Absolute path this script is in.
 SETTINGS_SOURCE=$(dirname "$CURRENT_SCRIPT")
 export SETTINGS_SOURCE
+# Architecture
+TARGETPLATFORM=$(dpkg --print-architecture)
+export TARGETPLATFORM
 
 env="/home/$USER/.env"
 if [ -f "$env" ]; then
