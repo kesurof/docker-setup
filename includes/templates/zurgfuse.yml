@@ -18,8 +18,8 @@ services:
     devices:
       - /dev/fuse
     command: mount -o attr_timeout=1.0 -o allow_other -o uid=1000 -o gid=1000 -o fsname=myawesomemount -o subtype=zurg -o atomic_o_trunc -o max_readahead=131072 -o default_permissions -o ro
-		networks:
-		  - mon-reseau
+    networks:
+      - mon-reseau
 
 networks:
   mon-reseau:

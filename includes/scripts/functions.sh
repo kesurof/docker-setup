@@ -433,7 +433,7 @@ install_service
 function zurgfuse() {
 # Lancement zurgfuse - sans rclone
 echo -e "\e[32mLancement container zurgfuse - sans rclone\e[0m"
-cp /home/$USER/docker-setup/includes/templates/configfuse.yml $APP_SETTINGS_DIR/zurg/
+cp /home/$USER/docker-setup/includes/templates/zurgfuse/config.yml $APP_SETTINGS_DIR/zurg/
 sed -i "/token: YOUR_RD_API_TOKEN/c\token: $RD_API_KEY" "$APP_SETTINGS_DIR/zurg/config.yml"
 source /home/$USER/.env
 echo zurgfuse >> $SERVICESPERUSER
