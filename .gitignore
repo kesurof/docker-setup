@@ -30,6 +30,7 @@ node_modules/
 
 # Fichiers générés par l'environnement
 .env
+.env.local
 
 # Fichiers de configuration locaux
 *.local
