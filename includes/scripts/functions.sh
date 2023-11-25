@@ -220,7 +220,7 @@ EOL
           main_menu
          ;;
 
-        5)
+        6)
         exit 1       
         esac
   done
