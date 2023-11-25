@@ -1,0 +1,28 @@
+version: '3.9'
+services:
+  tor:
+    image: debridmediamanager/tor
+    container_name: tor
+    deploy:
+      replicas: 1
+    networks:
+      mon-reseau:
+        ipv4_address: 172.18.0.25 # Adresse IP statique pour radarr
+
+  dmm:
+    image: debridmediamanager/debrid-media-manager:latest
+    container_name: dmm
+    env_file:
+      - .env.local
+    depends_on:
+      - tor
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    networks:
+      - mon-reseau
+
+networks:
+  mon-reseau:
+    driver: bridge
