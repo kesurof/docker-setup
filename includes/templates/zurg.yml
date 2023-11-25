@@ -17,8 +17,7 @@ services:
     devices:
       - /dev/fuse:/dev/fuse:rwm
     networks:
-      mon-reseau:
-        ipv4_address: 172.18.0.14
+      - mon-reseau
 
   rclone:
     image: rclone/rclone:latest
