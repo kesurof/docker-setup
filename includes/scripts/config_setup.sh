@@ -171,7 +171,7 @@ EOL
     read plex_claim
     echo ""
     >&2 echo -en "\e[44m### IMPORTANT ### le claim n'est valable que 4mn d'ou la néccessité du lancement de plex dans ce délais\e[0m"
-
+    echo ""
 
     # Écrire les réponses dans le fichier .env
     {
@@ -202,11 +202,21 @@ EOL
     
     # Création dossiers Medias
     create_folders
+    echo ""
+    # Demander à l'utilisateur s'il souhaite configurer gluetun
+    echo -e "\e[32mSouhaitez-vous configurer Gluetun ? (O/N) \e[0m"
+    read choice
+    if [[ "$choice" = "O" ]] || [[ "$choice" = "o" ]]; then
+      source /home/$USER/docker-setup/includes/scripts/gluetun.sh
+    fi
 
     echo -e "\e[32mConfiguration terminée. Les informations ont été écrites dans le fichier $env_file.\e[0m"
-    # Demander à l'utilisateur s'il souhaite refaire la configuration
+    #Demander à l'utilisateur s'il souhaite refaire la configuration
     if read -r -p "Souhaitez-vous refaire la configuration ? (O/N) " redo_choice && [ "$redo_choice" != "O" ] && [ "$redo_choice" != "o" ]; then
-      exit 0  # Quitter le script proprement
+     echo""
+     echo -e "\e[32mAppuyer sur [ENTREE] pour retourner au menu...\e[0m"
+    read -r
+    main_menu
     fi
   done
 else

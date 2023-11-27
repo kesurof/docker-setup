@@ -109,12 +109,12 @@ cd $scripts_dir
     case $choice in
         1)
           # Liste des fichiers à afficher dans le menu
- 
+            
             # liste des scripts à installer
-            scripts=("install_full.sh" "config_setup.sh" "conf_wireguard.sh")
+            scripts=("install_full.sh" "config_setup.sh" "gluetun.sh")
  
             # Noms personnalisés pour les scripts
-            script_names=("Installation complète" "Config Setup variables" "Créer .conf de Wireguard")
+            script_names=("Installation complète" "Config Setup variables" "Config Gluetun")
    
           # Afficher un menu interactif
           while true; do
@@ -135,9 +135,7 @@ cd $scripts_dir
             elif [[ "$choix" =~ ^[0-9]+$ && "$choix" -ge 1 && "$choix" -le ${#scripts[@]} ]]; then
               select_file="${scripts[choix - 1]}"
               path="$scripts_dir/$select_file"
-              echo "Vous avez sélectionné : $path"
               source $path
-             sleep 10s
             else
               echo "Sélection invalide. Appuyez sur Entrée pour continuer."
               read -r
@@ -148,7 +146,6 @@ cd $scripts_dir
         2)
           # gestion des applis
           manage_apps
-sleep 5s
           main_menu 
           ;;
 
@@ -267,7 +264,12 @@ function install_service() {
     if [[ -e "$app_yml_dir/${line}.yml" ]]; then
       launch_service "${line}"
     else
-      cp $SETTINGS_SOURCE/includes/templates/${line}.yml "$app_yml_dir" 
+      if [[ "${line}" == gluetun ]]; then
+        cp /home/$USER/seedbox/${line}.yml "$app_yml_dir"
+        rm /home/$USER/seedbox/${line}.yml
+      else
+        cp $SETTINGS_SOURCE/includes/templates/${line}.yml "$app_yml_dir"
+      fi
       if [[ "${line}" == dmm ]]; then
         # Demander à l'utilisateur le nom de sa base de données PlanetScale
         echo ""
@@ -284,6 +286,7 @@ function install_service() {
         var_value=$(grep "^$var_name=" "$env_file" | cut -d'=' -f2)
         sed -i "s|{{${var_name}}}|${var_value}|g" "$app_yml_dir/${line}.yml"
       done
+
       launch_service "${line}"
     fi
   done
@@ -392,6 +395,13 @@ function manage_apps() {
               rm -rf $APP_SETTINGS_DIR/zurg
               mkdir -p $APP_SETTINGS_DIR/zurg/zurgdata
               zurg
+            elif [ $line = "dmm" ]; then
+              docker stop dmm tor > /dev/null 2>&1
+              docker rm -f dmm tor > /dev/null 2>&1
+              docker rmi $(docker images | grep debrid-media-manager | tr -s ' ' | cut -d ' ' -f 3) > /dev/null 2>&1
+              docker rmi $(docker images | grep tor | tr -s ' ' | cut -d ' ' -f 3) > /dev/null 2>&1
+	      echo $line >> $SERVICESPERUSER
+	      install_service
             else
               docker rm -f "$line" > /dev/null 2>&1
               docker rmi $(docker images | grep "$line" | tr -s ' ' | cut -d ' ' -f 3) > /dev/null 2>&1
