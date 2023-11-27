@@ -4,7 +4,7 @@
 scripts_dir="$(dirname "$0")"
 
 # Liste des noms de scripts à exécuter dans l'ordre spécifié
-scripts=("config_setup.sh" "conf_wireguard.sh")
+scripts=("config_setup.sh")
 
 # Chemin complet vers les scripts
 script_paths=()
@@ -18,13 +18,6 @@ for script_path in "${script_paths[@]}"; do
         chmod +x "$script_path" # Assurez-vous que le script soit exécutable
         #echo "Exécution de $script_path :"
         "$script_path"
-
-        # Vérifie si le dernier script a renvoyé "Installation de rclone terminée"
-        if [ "$script" == "conf_wireguard.sh" ] && grep -q "Le code de configuration WireGuard a été enregistré" "$script_path"; then
-            exit 0 # Quitte le script si la condition est remplie
-        fi
-    else
-        echo "Le script $script_path n'existe pas dans ce répertoire."
     fi
 done
 
