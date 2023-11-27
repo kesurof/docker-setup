@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+
+  jellyseerr:
+    image: fallenbagel/jellyseerr:latest
+    container_name: jellyseerr
+    environment:
+      - PUID={{PUID}}
+      - PGID={{PGID}}
+      - TZ=Europe/Paris
+    volumes:
+      - {{APP_SETTINGS_DIR}}/jellyseerr:/config
+      - {{USER_HOME}}:{{USER_HOME}}
+    restart: unless-stopped
+    networks:
+      - mon-reseau
+
+networks:
+  mon-reseau:
+    driver: bridge

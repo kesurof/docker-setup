@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+
+  emby:
+    image: lscr.io/linuxserver/emby:latest
+    container_name: emby
+    environment:
+      - PUID={{PUID}}
+      - PGID={{PGID}}
+      - TZ=Europe/Paris
+    ports:
+      - 8096:8096
+    volumes:
+      - {{APP_SETTINGS_DIR}}/emby:/config
+      - /mnt:/mnt
+      - {{USER_HOME}}:{{USER_HOME}}
+    restart: unless-stopped
+    networks:
+      - mon-reseau
+
+networks:
+  mon-reseau:
+    driver: bridge

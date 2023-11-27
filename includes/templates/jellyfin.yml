@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+
+  jellyfin:
+    image: lscr.io/linuxserver/jellyfin:latest
+    container_name: jellyfin
+    environment:
+      - PUID={{PUID}}
+      - PGID={{PGID}}
+      - TZ=Europe/Paris
+    ports:
+      - 8096:8096
+    volumes:
+      - {{APP_SETTINGS_DIR}}/jellyfin:/config
+      - /mnt:/mnt
+      - {{USER_HOME}}:{{USER_HOME}}
+    restart: unless-stopped
+    networks:
+      - mon-reseau
+
+networks:
+  mon-reseau:
+    driver: bridge

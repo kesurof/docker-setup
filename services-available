@@ -1,7 +1,11 @@
 Dmm-Media-Library-Manager
+Emby-EmbyMediaServer
+Heimdall-OrganiseLinksWebApplications
 Filebot-node-RenameMediasManagment
 Flaresolverr-ProxyManagment
 Jackett-indexermanager
+Jellyfin-EmbyMediaServer
+Jellyseerr-PlexRequestAndUserManagementSystem
 Npm-ProxyManagment
 Overseerr-PlexRequestAndUserManagementSystem
 Plex-PlexMediaServer
@@ -12,6 +16,7 @@ Radarr4k-MoviesAutomation
 Rdtclient-AutomateDownloadTorrent
 Sonarr-TVShowsAutomation
 Sonarr4k-TVShowsAutomation
+Tautulli-FeatureRichDashboardOfStatistics
 Watchover-ProxyManagment
 Wireguard-OpenSourceProtocolVpn
 
