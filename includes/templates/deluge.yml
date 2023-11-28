@@ -1,0 +1,19 @@
+version: "2.1"
+services:
+  deluge:
+    image: lscr.io/linuxserver/deluge:latest
+    container_name: deluge
+    environment:
+      - PUID={{PUID}}
+      - PGID={{PGID}}
+      - TZ=Europe/Paris
+      - DELUGE_LOGLEVEL=error #optional
+    volumes:
+      - {{APP_SETTINGS_DIR}}/deluge/config:/config
+      - {{USER_HOME}}/seedbox/deluge/downloads:/downloads
+    networks:
+      - mon-reseau
+
+networks:
+  mon-reseau:
+    driver: bridge
