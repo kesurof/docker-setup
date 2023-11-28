@@ -111,10 +111,10 @@ cd $scripts_dir
           # Liste des fichiers à afficher dans le menu
             
             # liste des scripts à installer
-            scripts=("install_full.sh" "config_setup.sh" "gluetun.sh")
+            scripts=("install_full.sh" "config_setup.sh" "gluetun.sh" "install_backup_arr.sh")
  
             # Noms personnalisés pour les scripts
-            script_names=("Installation complète" "Config Setup variables" "Config Gluetun")
+            script_names=("Installation complète" "Config Setup variables" "Config Gluetun" "Config Backup")
    
           # Afficher un menu interactif
           while true; do
