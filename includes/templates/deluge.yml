@@ -11,6 +11,7 @@ services:
     volumes:
       - {{APP_SETTINGS_DIR}}/deluge/config:/config
       - {{USER_HOME}}/seedbox/deluge/downloads:/downloads
+      - {{USER_HOME}}/seedbox/deluge/blackhole:/blackhole
     networks:
       - mon-reseau
 
