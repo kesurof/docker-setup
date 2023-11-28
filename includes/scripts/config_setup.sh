@@ -211,7 +211,7 @@ EOL
     fi
 
     echo -e "\e[32mConfiguration terminée. Les informations ont été écrites dans le fichier $env_file.\e[0m"
-    #Demander à l'utilisateur s'il souhaite refaire la configuration
+    # Demander à l'utilisateur s'il souhaite refaire la configuration
     if read -r -p "Souhaitez-vous refaire la configuration ? (O/N) " redo_choice && [ "$redo_choice" != "O" ] && [ "$redo_choice" != "o" ]; then
      echo""
      echo -e "\e[32mAppuyer sur [ENTREE] pour retourner au menu...\e[0m"
