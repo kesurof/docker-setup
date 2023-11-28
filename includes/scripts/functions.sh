@@ -266,7 +266,6 @@ function install_service() {
     else
       if [[ "${line}" == gluetun ]]; then
         cp /home/$USER/seedbox/${line}.yml "$app_yml_dir"
-        rm /home/$USER/seedbox/${line}.yml
       else
         cp $SETTINGS_SOURCE/includes/templates/${line}.yml "$app_yml_dir"
       fi
@@ -318,7 +317,7 @@ function manage_apps() {
 	1) ## Ajout APP
         choose_services
         install_service
-        echo -e "\nInstallation compose terminée, Appuyer sur [ENTREE] pour retourner au menu..."
+        echo -e "\e[1;32mInstallation compose terminée, Appuyer sur [ENTREE] pour retourner au menu...\e[0m"
         read -r
         main_menu
         ;;
