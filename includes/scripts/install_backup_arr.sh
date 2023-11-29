@@ -17,6 +17,12 @@ mkdir -p "/home/$USER/scripts"
 
 cd "$(dirname "$0")"
 
+# Supprimer le script principal s'il existe déjà
+if [ -e "/home/$USER/scripts/backup_arr.sh" ]; then
+    rm "/home/$USER/scripts/backup_arr.sh"
+    afficher_texte_jaune "Le fichier backup_arr.sh existant a été supprimé."
+fi
+
 # Copiez le script principal dans le répertoire scripts
 cp ../templates/backup_arr.sh "/home/$USER/scripts/backup_arr.sh"
 

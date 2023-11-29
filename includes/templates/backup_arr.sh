@@ -3,9 +3,6 @@
 source /home/$USER/.env
 source "${SETTINGS_SOURCE}/includes/scripts/functions.sh"
 
-# Infos user
-USER="$user_home"
-
 # Constantes
 LOG_FILE="$HOME/Logs/backups/backup_log.txt"
 MAX_BACKUPS=3
@@ -40,22 +37,22 @@ remove_old_backups() {
 # Remplacez le container_name, le port et la cle d'API par les votres
 RADARR_CONTAINER_NAME="radarr"
 RADARR_PORT="7878"
-RADARR_API_KEY="$radarr_api_key"
+RADARR_API_KEY="$RADARR_API_KEY"
 
 SONARR_CONTAINER_NAME="sonarr"
 SONARR_PORT="8989"
-SONARR_API_KEY="$sonarr_api_key"
+SONARR_API_KEY="$SONARR_API_KEY"
 
 PROWLARR_CONTAINER_NAME="prowlarr"
 PROWLARR_PORT="9696"
-PROWLARR_API_KEY="$prowlarr_api_key"
+PROWLARR_API_KEY="$PROWLARR_API_KEY"
 
 # Definir les chemins des dossiers
 backup_folder="$HOME/backups"
 medias_folder="$HOME/Medias"
-radarr_backup_folder="$HOME/seedbox/app_settings/radarr/Backups/manual"
-sonarr_backup_folder="$HOME/seedbox/app_settings/sonarr/Backups/manual"
-prowlarr_backup_folder="$HOME/seedbox/app_settings/prowlarr/Backups/manual"
+radarr_backup_folder="$APP_SETTINGS_DIR/radarr/Backups/manual"
+sonarr_backup_folder="$APP_SETTINGS_DIR/sonarr/Backups/manual"
+prowlarr_backup_folder="$APP_SETTINGS_DIR/prowlarr/Backups/manual"
 dropbox_folder="docker-setup"
 log_folder="$HOME/Logs/backups"
 log_crontab_folder="$HOME/Logs/crontab/backups"
