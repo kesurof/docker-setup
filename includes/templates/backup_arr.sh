@@ -7,12 +7,18 @@ source "${SETTINGS_SOURCE}/includes/scripts/functions.sh"
 LOG_FILE="$HOME/Logs/backups/backup_log.txt"
 MAX_BACKUPS=3
 
-# Fonction pour afficher les messages dans le terminal et ecrire dans le fichier de log
+# Fonction pour afficher les messages dans le terminal et écrire dans le fichier de log
 log_and_echo() {
     local message="$1"
+    local log_message="$(date +"%Y-%m-%d %H:%M:%S") - $message"
+    
+    # Imprimer le message dans le terminal
     echo "$message"
-    echo "$(date +"%Y-%m-%d %H:%M:%S") - $message" >> "$LOG_FILE"
+    
+    # Écrire le message dans le fichier de log
+    echo "$log_message" >> "$LOG_FILE"
 }
+
 
 # Fonction pour creer un dossier s'il n'existe pas
 create_folder() {
@@ -50,9 +56,9 @@ PROWLARR_API_KEY="$PROWLARR_API_KEY"
 # Definir les chemins des dossiers
 backup_folder="$HOME/backups"
 medias_folder="$HOME/Medias"
-radarr_backup_folder="$APP_SETTINGS_DIR/radarr/Backups/manual"
-sonarr_backup_folder="$APP_SETTINGS_DIR/sonarr/Backups/manual"
-prowlarr_backup_folder="$APP_SETTINGS_DIR/prowlarr/Backups/manual"
+radarr_backup_folder="$HOME/seedbox/app_settings/radarr/Backups/manual"
+sonarr_backup_folder="$HOME/seedbox/app_settings/sonarr/Backups/manual"
+prowlarr_backup_folder="$HOME/seedbox/app_settings/prowlarr/Backups/manual"
 dropbox_folder="docker-setup"
 log_folder="$HOME/Logs/backups"
 log_crontab_folder="$HOME/Logs/crontab/backups"
