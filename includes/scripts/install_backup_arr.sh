@@ -13,21 +13,21 @@ function afficher_texte_vert() {
 }
 
 # Créez le répertoire scripts dans le répertoire personnel s'il n'existe pas déjà
-mkdir -p "/home/$USER/scripts"
+mkdir -p "$HOME/scripts"
 
 cd "$(dirname "$0")"
 
 # Supprimer le script principal s'il existe déjà
-if [ -e "/home/$USER/scripts/backup_arr.sh" ]; then
-    rm "/home/$USER/scripts/backup_arr.sh"
+if [ -e "$HOME/scripts/backup_arr.sh" ]; then
+    rm "$HOME/scripts/backup_arr.sh"
     afficher_texte_jaune "Le fichier backup_arr.sh existant a été supprimé."
 fi
 
 # Copiez le script principal dans le répertoire scripts
-cp ../templates/backup_arr.sh "/home/$USER/scripts/backup_arr.sh"
+cp ../templates/backup_arr.sh "$HOME/scripts/backup_arr.sh"
 
 # Rendez le script principal exécutable
-chmod +x "/home/$USER/scripts/backup_arr.sh"
+chmod +x "$HOME/scripts/backup_arr.sh"
 
 # Fonction pour demander et mettre à jour la valeur dans le fichier .env
 update_value() {
@@ -59,7 +59,7 @@ update_value "SONARR_API_KEY"
 update_value "PROWLARR_API_KEY"
 
 # Tâche à ajouter
-new_cron_task="0 2 */2 * * /home/$USER/scripts/backup_arr.sh >> /home/$USER/Logs/crontab/backups/backup_log_\$(date +\%Y\%m\%d_\%H\%M\%S).txt 2>&1"
+new_cron_task="0 2 */2 * * $HOME/scripts/backup_arr.sh >> $HOME/Logs/crontab/backups/backup_log_\$(date +\%Y\%m\%d_\%H\%M\%S).txt 2>&1"
 
 # Vérifier si la tâche existe déjà dans crontab
 if ! (crontab -l 2>/dev/null | grep -Fxq "$new_cron_task"); then
@@ -72,4 +72,4 @@ fi
 
 
 # Exécutez le backup pour créer les dossiers
-/home/$USER/scripts/backup_arr.sh
+$HOME/scripts/backup_arr.sh
