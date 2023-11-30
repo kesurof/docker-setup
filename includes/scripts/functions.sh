@@ -166,12 +166,12 @@ cd $scripts_dir
           echo -e "\e[32m###          RESINSTALLATION ZURG - RCLONE                     ###\e[0m"
           echo -e "\e[32m##################################################################\e[0m"
           echo ""
-          sudo umount /mnt/zurg  > /dev/null 2>&1
-          rm -rf {{USER_HOME}}/seedbox/yml/zurg.yml
+          docker stop zurg rclone > /dev/null 2>&1
           docker rm -f zurg rclone > /dev/null 2>&1
           docker rmi $(docker images | grep zurg | tr -s ' ' | cut -d ' ' -f 3) > /dev/null 2>&1
           docker rmi $(docker images | grep rclone | tr -s ' ' | cut -d ' ' -f 3) > /dev/null 2>&1
           rm -rf $APP_SETTINGS_DIR/zurg
+          mkdir -p $APP_SETTINGS_DIR/zurg/zurgdata
           # Chemin du fichier rclone.conf
           rclone_config_file="/home/$(logname)/.config/rclone/rclone.conf"
           # Écrire la configuration rclone dans le fichier rclone.conf en remplaçant {{RD_API_KEY}}
@@ -203,13 +203,13 @@ EOL
           echo -e "\e[32m###          RESINSTALLATION ZURG - SANS RCLONE                ###\e[0m"
           echo -e "\e[32m##################################################################\e[0m"
           echo ""
-          sudo umount /mnt/zurg  > /dev/null 2>&1
-          rm -rf {{USER_HOME}}/seedbox/yml/zurgfuse.yml
+          docker stop zurg zurgfuse rclone > /dev/null 2>&1
           docker rm -f zurg zurgfuse rclone > /dev/null 2>&1
           docker rmi $(docker images | grep zurgfuse | tr -s ' ' | cut -d ' ' -f 3) > /dev/null 2>&1
           docker rmi $(docker images | grep zurg | tr -s ' ' | cut -d ' ' -f 3) > /dev/null 2>&1
           docker rmi $(docker images | grep rclone | tr -s ' ' | cut -d ' ' -f 3) > /dev/null 2>&1
           rm -rf $APP_SETTINGS_DIR/zurg
+          mkdir -p $APP_SETTINGS_DIR/zurg/zurgdata
           zurgfuse
           echo ""
           echo -e "\e[32mAppuyer sur [ENTREE] pour retourner au menu...\e[0m"
