@@ -165,9 +165,10 @@ cd $scripts_dir
           echo -e "\e[32m##################################################################\e[0m"
           echo -e "\e[32m###          RESINSTALLATION ZURG - RCLONE                     ###\e[0m"
           echo -e "\e[32m##################################################################\e[0m"
+          docker stop zurgfuse zurg rclone > /dev/null 2>&1
           sudo umount /mnt/zurg  > /dev/null 2>&1
           rm -rf /home/$(logname)/seedbox/yml/zurg.yml
-          docker rm -f zurg rclone > /dev/null 2>&1
+          docker rm -f zurgfuse zurg rclone > /dev/null 2>&1
           docker rmi $(docker images | grep zurg | tr -s ' ' | cut -d ' ' -f 3) > /dev/null 2>&1
           docker rmi $(docker images | grep rclone | tr -s ' ' | cut -d ' ' -f 3) > /dev/null 2>&1
           rm -rf $APP_SETTINGS_DIR/zurg
@@ -203,6 +204,7 @@ EOL
           echo -e "\e[32m###          RESINSTALLATION ZURG - SANS RCLONE                ###\e[0m"
           echo -e "\e[32m##################################################################\e[0m"
           echo ""
+          docker stop zurg zurgfuse rclone > /dev/null 2>&1
           sudo umount /mnt/zurg  > /dev/null 2>&1
           docker rm -f zurg zurgfuse rclone > /dev/null 2>&1
           rm -rf /home/$(logname)/seedbox/yml/zurg.yml > /dev/null 2>&1
