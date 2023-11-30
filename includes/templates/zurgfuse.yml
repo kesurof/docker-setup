@@ -9,7 +9,7 @@ services:
       - 9999:9999
     volumes:
       - {{APP_SETTINGS_DIR}}/zurg/config.yml:/app/config.yml
-      - {{APP_SETTINGS_DIR}}/zurg/zurgdata:/app/data
+      - /zurgdata:/app/data
       - /mnt/zurg:/app/mnt:shared
     cap_add:
       - SYS_ADMIN
@@ -24,3 +24,6 @@ services:
 networks:
   mon-reseau:
     driver: bridge
+
+volumes:
+  zurgdata:  
