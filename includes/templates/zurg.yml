@@ -9,13 +9,7 @@ services:
       - 9999:9999
     volumes:
       - {{APP_SETTINGS_DIR}}/zurg/config.yml:/app/config.yml
-      - {{APP_SETTINGS_DIR}}/zurg/zurgdata:/app/data
-    cap_add:
-      - SYS_ADMIN
-    security_opt:
-      - apparmor:unconfined
-    devices:
-      - /dev/fuse:/dev/fuse:rwm
+      - /zurgdata:/app/data
     networks:
       - mon-reseau
 
@@ -38,11 +32,13 @@ services:
       - /dev/fuse:/dev/fuse:rwm
     depends_on:
       - zurg
-    command: "mount zurg: /data --allow-non-empty --allow-other --uid={{PUID}} --gid={{PGID}} --dir-cache-time 10s --read-only"
+    command: "mount zurg: /data --allow-non-empty --allow-other --uid={{PUID}} --gid={{PGID}} --dir-cache-time 10s --vfs-cache-mode full"
     networks:
       - mon-reseau
 
 networks:
   mon-reseau:
     driver: bridge
-        
+
+volumes:
+  zurgdata:      

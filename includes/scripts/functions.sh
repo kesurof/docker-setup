@@ -166,7 +166,7 @@ cd $scripts_dir
           echo -e "\e[32m###          RESINSTALLATION ZURG - RCLONE                     ###\e[0m"
           echo -e "\e[32m##################################################################\e[0m"
           echo ""
-          docker stop zurg rclone > /dev/null 2>&1
+          sudo umount /mnt/zurg  > /dev/null 2>&1
           docker rm -f zurg rclone > /dev/null 2>&1
           docker rmi $(docker images | grep zurg | tr -s ' ' | cut -d ' ' -f 3) > /dev/null 2>&1
           docker rmi $(docker images | grep rclone | tr -s ' ' | cut -d ' ' -f 3) > /dev/null 2>&1
