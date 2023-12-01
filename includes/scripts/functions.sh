@@ -102,7 +102,8 @@ cd $scripts_dir
     fi
     echo -e "\e[1;32m 4. Reinstallation zurg - rclone - rd_refresh \e[0m"
     echo -e "\e[1;32m 5. Reinstallation zurg - sans rclone \e[0m"
-    echo -e "\e[1;32m 6. Quitter \e[0m"
+    echo -e "\e[1;32m 6. Installation ZurgRclone & ZurgFuse \e[0m"
+    echo -e "\e[1;32m q. Quitter \e[0m"
 
     read -p "Entrer votre choix: " choice
 
@@ -165,10 +166,9 @@ cd $scripts_dir
           echo -e "\e[32m##################################################################\e[0m"
           echo -e "\e[32m###          RESINSTALLATION ZURG - RCLONE                     ###\e[0m"
           echo -e "\e[32m##################################################################\e[0m"
-          docker stop zurgfuse zurg rclone > /dev/null 2>&1
           sudo umount /mnt/zurg  > /dev/null 2>&1
           rm -rf /home/$(logname)/seedbox/yml/zurg.yml
-          docker rm -f zurgfuse zurg rclone > /dev/null 2>&1
+          docker rm -f zurg rclone > /dev/null 2>&1
           docker rmi $(docker images | grep zurg | tr -s ' ' | cut -d ' ' -f 3) > /dev/null 2>&1
           docker rmi $(docker images | grep rclone | tr -s ' ' | cut -d ' ' -f 3) > /dev/null 2>&1
           rm -rf $APP_SETTINGS_DIR/zurg
@@ -204,7 +204,6 @@ EOL
           echo -e "\e[32m###          RESINSTALLATION ZURG - SANS RCLONE                ###\e[0m"
           echo -e "\e[32m##################################################################\e[0m"
           echo ""
-          docker stop zurg zurgfuse rclone > /dev/null 2>&1
           sudo umount /mnt/zurg  > /dev/null 2>&1
           docker rm -f zurg zurgfuse rclone > /dev/null 2>&1
           rm -rf /home/$(logname)/seedbox/yml/zurg.yml > /dev/null 2>&1
@@ -219,8 +218,48 @@ EOL
           read -r
           main_menu
          ;;
-
         6)
+          # Installation ZurgRclone & ZurgFuse
+          clear
+          echo -e "\e[32m##################################################################\e[0m"
+          echo -e "\e[32m###          Installation ZurgRclone & ZurgFuse                ###\e[0m"
+          echo -e "\e[32m##################################################################\e[0m"
+          sudo umount /mnt/zurg  > /dev/null 2>&1
+          sudo umount /mnt/zurgrclone  > /dev/null 2>&1
+          sudo umount /mnt/zurgfuse  > /dev/null 2>&1
+          rm -rf /home/$(logname)/seedbox/yml/zurgfuse_rclone.yml
+          docker rm -f zurg rclone zurgrclone zurgfuse > /dev/null 2>&1
+          docker rmi $(docker images | grep zurg | tr -s ' ' | cut -d ' ' -f 3) > /dev/null 2>&1
+          docker rmi $(docker images | grep rclone | tr -s ' ' | cut -d ' ' -f 3) > /dev/null 2>&1
+          docker rmi $(docker images | grep zurgrclone | tr -s ' ' | cut -d ' ' -f 3) > /dev/null 2>&1
+          docker rmi $(docker images | grep zurgfuse | tr -s ' ' | cut -d ' ' -f 3) > /dev/null 2>&1
+          rm -rf $APP_SETTINGS_DIR/zurgrclone
+          mkdir -p $APP_SETTINGS_DIR/zurgrclone
+          rm -rf $APP_SETTINGS_DIR/zurgfuse
+          mkdir -p $APP_SETTINGS_DIR/zurgfuse
+          # Chemin du fichier rclone.conf
+          rclone_config_file="/home/$(logname)/.config/rclone/rclone.conf"
+          # Écrire la configuration rclone dans le fichier rclone.conf en remplaçant {{RD_API_KEY}}
+          cat <<EOL > "$rclone_config_file"
+[zurg]
+type = webdav
+url = http://zurg:9999
+vendor = other
+pacer_min_sleep = 0
+
+[zurghttp]
+type = http
+url = http://zurg:9999/http
+no_head = false
+no_slash = false
+EOL
+          zurgfuse_rclone
+          echo ""
+          echo -e "\e[32mAppuyer sur [ENTREE] pour retourner au menu...\e[0m"
+          read -r
+          main_menu
+         ;;
+        q)
         exit 1       
         esac
   done
@@ -449,6 +488,18 @@ cp /home/$USER/docker-setup/includes/templates/zurgfuse/config.yml $APP_SETTINGS
 sed -i "/token: YOUR_RD_API_TOKEN/c\token: $RD_API_KEY" "$APP_SETTINGS_DIR/zurg/config.yml"
 source /home/$USER/.env
 echo zurgfuse >> $SERVICESPERUSER
+install_service
+}
+
+function zurgfuse_rclone() {
+# Installation ZurgRclone & ZurgFuse
+echo -e "\e[32mLancement container ZurgRclone & ZurgFuse\e[0m"
+cp /home/$USER/docker-setup/includes/templates/zurgfuse_rclone/zurgrclone/config.yml $APP_SETTINGS_DIR/zurgrclone/
+sed -i "/token: YOUR_RD_API_TOKEN/c\token: $RD_API_KEY" "$APP_SETTINGS_DIR/zurgrclone/config.yml"
+cp /home/$USER/docker-setup/includes/templates/zurgfuse_rclone/zurgfuse/config.yml $APP_SETTINGS_DIR/zurgfuse/
+sed -i "/token: YOUR_RD_API_TOKEN/c\token: $RD_API_KEY" "$APP_SETTINGS_DIR/zurgfuse/config.yml"
+source /home/$USER/.env
+echo zurgfuse_rclone >> $SERVICESPERUSER
 install_service
 }
 
