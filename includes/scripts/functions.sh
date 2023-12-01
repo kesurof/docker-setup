@@ -102,7 +102,6 @@ cd $scripts_dir
     fi
     echo -e "\e[1;32m 4. Reinstallation zurg - rclone - rd_refresh \e[0m"
     echo -e "\e[1;32m 5. Reinstallation zurg - sans rclone \e[0m"
-    echo -e "\e[1;32m 6. Installation ZurgRclone & ZurgFuse \e[0m"
     echo -e "\e[1;32m q. Quitter \e[0m"
 
     read -p "Entrer votre choix: " choice
@@ -213,24 +212,6 @@ EOL
           rm -rf $APP_SETTINGS_DIR/zurg
           mkdir -p $APP_SETTINGS_DIR/zurg
           zurgfuse
-          echo ""
-          echo -e "\e[32mAppuyer sur [ENTREE] pour retourner au menu...\e[0m"
-          read -r
-          main_menu
-         ;;
-        6)
-          # Installation Zurgrdt
-          clear
-          echo -e "\e[32m##################################################################\e[0m"
-          echo -e "\e[32m###          Installation Zurgrdt                             ###\e[0m"
-          echo -e "\e[32m##################################################################\e[0m"
-          sudo umount /mnt/zurgrdt  > /dev/null 2>&1
-          rm -rf /home/$(logname)/seedbox/yml/zurgrdt.yml
-          docker rm -f zurgrdt > /dev/null 2>&1
-          docker rmi $(docker images | grep zurgrdt | tr -s ' ' | cut -d ' ' -f 3) > /dev/null 2>&1
-          rm -rf $APP_SETTINGS_DIR/zurgrdt
-          mkdir -p $APP_SETTINGS_DIR/zurgrdt
-          zurgrdt
           echo ""
           echo -e "\e[32mAppuyer sur [ENTREE] pour retourner au menu...\e[0m"
           read -r
@@ -465,16 +446,6 @@ cp /home/$USER/docker-setup/includes/templates/zurgfuse/config.yml $APP_SETTINGS
 sed -i "/token: YOUR_RD_API_TOKEN/c\token: $RD_API_KEY" "$APP_SETTINGS_DIR/zurg/config.yml"
 source /home/$USER/.env
 echo zurgfuse >> $SERVICESPERUSER
-install_service
-}
-
-function zurgrdt() {
-# Installation zurgrdt
-echo -e "\e[32mLancement container zurgrdt \e[0m"
-cp /home/$USER/docker-setup/includes/templates/zurgrdt/config.yml $APP_SETTINGS_DIR/zurgrdt/
-sed -i "/token: YOUR_RD_API_TOKEN/c\token: $RD_API_KEY" "$APP_SETTINGS_DIR/zurgrdt/config.yml"
-source /home/$USER/.env
-echo zurgrdt >> $SERVICESPERUSER
 install_service
 }
 
