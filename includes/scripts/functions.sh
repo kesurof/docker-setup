@@ -219,41 +219,18 @@ EOL
           main_menu
          ;;
         6)
-          # Installation ZurgRclone & ZurgFuse
+          # Installation Zurgrdt
           clear
           echo -e "\e[32m##################################################################\e[0m"
-          echo -e "\e[32m###          Installation ZurgRclone & ZurgFuse                ###\e[0m"
+          echo -e "\e[32m###          Installation Zurgrdt                             ###\e[0m"
           echo -e "\e[32m##################################################################\e[0m"
-          sudo umount /mnt/zurg  > /dev/null 2>&1
-          sudo umount /mnt/zurgrclone  > /dev/null 2>&1
-          sudo umount /mnt/zurgfuse  > /dev/null 2>&1
-          rm -rf /home/$(logname)/seedbox/yml/zurgfuse_rclone.yml
-          docker rm -f zurg rclone zurgrclone zurgfuse > /dev/null 2>&1
-          docker rmi $(docker images | grep zurg | tr -s ' ' | cut -d ' ' -f 3) > /dev/null 2>&1
-          docker rmi $(docker images | grep rclone | tr -s ' ' | cut -d ' ' -f 3) > /dev/null 2>&1
-          docker rmi $(docker images | grep zurgrclone | tr -s ' ' | cut -d ' ' -f 3) > /dev/null 2>&1
-          docker rmi $(docker images | grep zurgfuse | tr -s ' ' | cut -d ' ' -f 3) > /dev/null 2>&1
-          rm -rf $APP_SETTINGS_DIR/zurgrclone
-          mkdir -p $APP_SETTINGS_DIR/zurgrclone
-          rm -rf $APP_SETTINGS_DIR/zurgfuse
-          mkdir -p $APP_SETTINGS_DIR/zurgfuse
-          # Chemin du fichier rclone.conf
-          rclone_config_file="/home/$(logname)/.config/rclone/rclone.conf"
-          # Écrire la configuration rclone dans le fichier rclone.conf en remplaçant {{RD_API_KEY}}
-          cat <<EOL > "$rclone_config_file"
-[zurg]
-type = webdav
-url = http://zurg:9999
-vendor = other
-pacer_min_sleep = 0
-
-[zurghttp]
-type = http
-url = http://zurg:9999/http
-no_head = false
-no_slash = false
-EOL
-          zurgfuse_rclone
+          sudo umount /mnt/zurgrdt  > /dev/null 2>&1
+          rm -rf /home/$(logname)/seedbox/yml/zurgrdt.yml
+          docker rm -f zurgrdt > /dev/null 2>&1
+          docker rmi $(docker images | grep zurgrdt | tr -s ' ' | cut -d ' ' -f 3) > /dev/null 2>&1
+          rm -rf $APP_SETTINGS_DIR/zurgrdt
+          mkdir -p $APP_SETTINGS_DIR/zurgrdt
+          zurgrdt
           echo ""
           echo -e "\e[32mAppuyer sur [ENTREE] pour retourner au menu...\e[0m"
           read -r
@@ -491,15 +468,13 @@ echo zurgfuse >> $SERVICESPERUSER
 install_service
 }
 
-function zurgfuse_rclone() {
-# Installation ZurgRclone & ZurgFuse
-echo -e "\e[32mLancement container ZurgRclone & ZurgFuse\e[0m"
-cp /home/$USER/docker-setup/includes/templates/zurgfuse_rclone/zurgrclone/config.yml $APP_SETTINGS_DIR/zurgrclone/
-sed -i "/token: YOUR_RD_API_TOKEN/c\token: $RD_API_KEY" "$APP_SETTINGS_DIR/zurgrclone/config.yml"
-cp /home/$USER/docker-setup/includes/templates/zurgfuse_rclone/zurgfuse/config.yml $APP_SETTINGS_DIR/zurgfuse/
-sed -i "/token: YOUR_RD_API_TOKEN/c\token: $RD_API_KEY" "$APP_SETTINGS_DIR/zurgfuse/config.yml"
+function zurgrdt() {
+# Installation zurgrdt
+echo -e "\e[32mLancement container zurgrdt \e[0m"
+cp /home/$USER/docker-setup/includes/templates/zurgrdt/config.yml $APP_SETTINGS_DIR/zurgrdt/
+sed -i "/token: YOUR_RD_API_TOKEN/c\token: $RD_API_KEY" "$APP_SETTINGS_DIR/zurgrdt/config.yml"
 source /home/$USER/.env
-echo zurgfuse_rclone >> $SERVICESPERUSER
+echo zurgrdt >> $SERVICESPERUSER
 install_service
 }
 
