@@ -6,10 +6,10 @@ services:
     container_name: zurg
     restart: unless-stopped
     ports:
-      - 9999:9999
+      - 9998:9998
     volumes:
       - {{APP_SETTINGS_DIR}}/zurg/config.yml:/app/config.yml
-      - zurgdata:/app/data
+      - {{APP_SETTINGS_DIR}}/zurg/zurgdata:/app/data
     networks:
       - mon-reseau
 
@@ -38,7 +38,4 @@ services:
 
 networks:
   mon-reseau:
-    driver: bridge
-
-volumes:
-  zurgdata:      
+    driver: bridge    

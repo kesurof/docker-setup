@@ -8,9 +8,9 @@ services:
     ports:
       - 9999:9999
     volumes:
-      - {{APP_SETTINGS_DIR}}/zurg/config.yml:/app/config.yml
-      - zurgfuse:/app/data
-      - /mnt/zurg:/app/mnt:shared
+      - {{APP_SETTINGS_DIR}}/zurgfuse/config.yml:/app/config.yml
+      - {{APP_SETTINGS_DIR}}/zurgfuse/zurgdata:/app/data
+      - /mnt/zurgfuse:/app/mnt:shared
     cap_add:
       - SYS_ADMIN
     security_opt:
@@ -24,6 +24,3 @@ services:
 networks:
   mon-reseau:
     driver: bridge
-
-volumes:
-  zurgfuse:  

@@ -4,8 +4,8 @@ zurg: v1
 token: YOUR_RD_API_TOKEN
 
 host: "[::]" # do not change this if you are running it inside a docker container
-port: 9999 # do not change this if you are running it inside a docker container
-concurrent_workers: 200
+port: 9998 # do not change this if you are running it inside a docker container
+concurrent_workers: 20
 check_for_changes_every_secs: 15
 # reliability configs
 unrestrict_workers: 10 # since unrestricting has a different rate limit, use a different worker pool. decrease this if you are getting 429s
