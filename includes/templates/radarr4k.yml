@@ -13,7 +13,7 @@ services:
       - {{APP_SETTINGS_DIR}}/radarr4k:/config
       - {{USER_HOME}}:{{USER_HOME}}
       - {{LOCAL_DIR}}/radarr:/data/downloads/radarr
-      - /mnt/zurg/torrents:/mnt/zurg/torrents
+      - /mnt:/mnt
     restart: unless-stopped
     networks:
       - mon-reseau

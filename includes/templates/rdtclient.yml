@@ -7,7 +7,7 @@ services:
     volumes:
       - '{{USER_HOME}}/seedbox/local:/data/downloads'
       - '{{APP_SETTINGS_DIR}}/rdt-client:/data/db' 
-      - '/mnt/zurg:/mnt/zurg'
+      - /mnt:/mnt
     image: 'laster13/rdtclient:${TARGETPLATFORM}'
     environment:
       - PUID={{PUID}}
