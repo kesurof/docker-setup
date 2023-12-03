@@ -26,8 +26,8 @@ fi
 }
 
 # logo
-plex_debrid() {
-text=Docker-Setup"
+docker_setup() {
+text="Docker-Setup"
 colors=("36") # Couleurs ANSI
 reset_color="\e[0m"
 
@@ -90,7 +90,7 @@ cd $scripts_dir
 
   while true; do
     clear
-    plex_debrid
+    docker_setup
     echo -e "\e[1;33mMenu\e[0m"
 
     echo -e "\e[1;32m 1. Installation \e[0m"
