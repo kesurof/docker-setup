@@ -107,7 +107,7 @@ if [ -f "$env_file" ]; then
     cat <<EOL > "$rclone_config_file"
 [zurg]
 type = webdav
-url = http://zurg:9998
+url = http://zurg:9998/dav
 vendor = other
 pacer_min_sleep = 0
 
